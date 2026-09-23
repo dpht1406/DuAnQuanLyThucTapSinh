@@ -130,7 +130,7 @@ public class StudentsController : ControllerBase
         if (adminId is null)
             return Unauthorized(ApiResponse<object>.FailResponse("Không xác định được người dùng hiện tại."));
 
-        var (success, error) = await _studentService.ChangeStatusAsync(id, dto, adminId.Value);
+        var (success, error) = await _studentService.ChangeStatusAsync(id, dto, adminId.Value, isAdmin: true);
         if (!success)
             return BadRequest(ApiResponse<object>.FailResponse(error!));
 

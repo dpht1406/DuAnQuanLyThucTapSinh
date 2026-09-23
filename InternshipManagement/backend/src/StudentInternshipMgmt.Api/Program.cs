@@ -14,6 +14,7 @@ using FluentValidation.AspNetCore;
 using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Application.Features.JobPositions;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
+using StudentInternshipMgmt.Application.Features.Dashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +60,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IJobPositionService, JobPositionService>();
 builder.Services.AddScoped<IPlacementRequestService, PlacementRequestService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddSingleton<IAuthorizationHandler, SameStudentAuthorizationHandler>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

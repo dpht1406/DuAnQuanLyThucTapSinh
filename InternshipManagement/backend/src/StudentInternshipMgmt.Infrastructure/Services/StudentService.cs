@@ -374,7 +374,7 @@ public class StudentService : IStudentService
 
     // ---------- 5. Đổi trạng thái ----------
 
-    public async Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int adminUserId)
+    public async Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId, bool isAdmin)
     {
         if (!Enum.IsDefined(typeof(StudentStatus), dto.NewStatus))
             return (false, "NewStatus không hợp lệ.");
@@ -386,13 +386,37 @@ public class StudentService : IStudentService
         var fromStatus = student.Status;
         var toStatus = dto.NewStatus;
 
+        if (fromStatus == toStatus)
+            return (false, "Trạng thái mới phải khác trạng thái hiện tại.");
+
+        // Bất kể vai trò: không cho chuyển tới Introduced trở lên nếu sinh viên chưa có doanh nghiệp.
+        // Việc gắn CompanyId phải đi qua duyệt/gán yêu cầu (PlacementRequestService / AssignCompanyDirectAsync).
+        if (toStatus != StudentStatus.NoCompany && student.CompanyId is null)
+            return (false, "Sinh viên chưa có doanh nghiệp — hãy duyệt yêu cầu hoặc gán doanh nghiệp trước.");
+
         // "lùi" = giá trị enum đích nhỏ hơn giá trị hiện tại (xem thứ tự khai báo StudentStatus)
         var isBackward = (int)toStatus < (int)fromStatus;
+
+        if (!isAdmin)
+        {
+            // Sinh viên chỉ được đi đúng 1 bước, đúng theo bộ chuyển đổi cho phép ở mục 5.3 PROJECT_CONTEXT.
+            var allowedForward =
+                (fromStatus == StudentStatus.Introduced && toStatus == StudentStatus.Interviewed) ||
+                (fromStatus == StudentStatus.Accepted && toStatus == StudentStatus.Interning);
+
+            var allowedBackward =
+                (fromStatus == StudentStatus.Introduced && toStatus == StudentStatus.NoCompany) ||
+                (fromStatus == StudentStatus.Interviewed && toStatus == StudentStatus.Introduced);
+
+            if (!allowedForward && !allowedBackward)
+                return (false, "Bạn không có quyền chuyển sang trạng thái này.");
+        }
 
         if (isBackward && string.IsNullOrWhiteSpace(dto.Note))
             return (false, "Phải nhập Note (lý do) khi lùi trạng thái.");
 
         student.Status = toStatus;
+        student.UpdatedAt = DateTime.UtcNow;
 
         if (toStatus == StudentStatus.NoCompany)
         {
@@ -416,7 +440,7 @@ public class StudentService : IStudentService
             CompanyId = student.CompanyId,
             Note = noteToSave,
             ChangedAt = DateTime.UtcNow,
-            ChangedBy = adminUserId
+            ChangedBy = changedByUserId
         });
 
         await _db.SaveChangesAsync();
