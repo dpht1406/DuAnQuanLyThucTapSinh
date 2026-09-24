@@ -83,6 +83,16 @@ public class StudentsController : ControllerBase
         return Ok(ApiResponse<CreateAccountsResultDto>.SuccessResponse(result));
     }
 
+    // POST /api/students/create-accounts/by-filter
+    // Tạo tài khoản cho TẤT CẢ sinh viên khớp filter hiện tại (không cần gửi danh sách Id cụ thể).
+    // Tái dùng StudentFilterDto — PageNumber/PageSize bị bỏ qua (không phân trang khi lọc để tạo hàng loạt).
+    [HttpPost("create-accounts/by-filter")]
+    public async Task<ActionResult<ApiResponse<CreateAccountsResultDto>>> CreateAccountsByFilter([FromBody] StudentFilterDto filter)
+    {
+        var result = await _studentService.CreateAccountsByFilterAsync(filter);
+        return Ok(ApiResponse<CreateAccountsResultDto>.SuccessResponse(result));
+    }
+
     // POST /api/students/accounts/export
     // Đổi từ GET -> POST vì cần nhận lại danh sách (Username, mật khẩu plain) trong body —
     // dữ liệu nhạy cảm không phù hợp để đưa vào query string của GET.
@@ -107,6 +117,24 @@ public class StudentsController : ControllerBase
         if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
             return $"\"{value.Replace("\"", "\"\"")}\"";
         return value;
+    }
+
+    // GET /api/students/export?format=csv|xlsx&Search=&Status=&CompanyId=
+    // Tái sử dụng StudentFilterDto (Search/Status/CompanyId) — bỏ qua PageNumber/PageSize,
+    // luôn lấy toàn bộ bản ghi khớp filter. Trả file trực tiếp, không bọc ApiResponse<T>
+    // vì đây là dữ liệu nhị phân.
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportStudents([FromQuery] StudentFilterDto filter, [FromQuery] string format)
+    {
+        if (string.IsNullOrWhiteSpace(format) ||
+            !(format.Equals("csv", StringComparison.OrdinalIgnoreCase) ||
+              format.Equals("xlsx", StringComparison.OrdinalIgnoreCase)))
+        {
+            return BadRequest(ApiResponse<object>.FailResponse("Định dạng không hợp lệ. Chỉ hỗ trợ 'csv' hoặc 'xlsx'."));
+        }
+
+        var (content, fileName, contentType) = await _studentService.ExportStudentsAsync(filter, format);
+        return File(content, contentType, fileName);
     }
 
     // POST /api/students/import

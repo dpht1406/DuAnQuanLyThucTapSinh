@@ -39,19 +39,7 @@ public class StudentService : IStudentService
             .Include(s => s.User)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(filter.Search))
-        {
-            var search = filter.Search.Trim().ToLower();
-            query = query.Where(s =>
-                s.StudentCode.ToLower().Contains(search) ||
-                s.FullName.ToLower().Contains(search));
-        }
-
-        if (filter.Status.HasValue)
-            query = query.Where(s => s.Status == filter.Status.Value);
-
-        if (filter.CompanyId.HasValue)
-            query = query.Where(s => s.CompanyId == filter.CompanyId.Value);
+        query = ApplyStudentFilter(query, filter);
 
         var totalCount = await query.CountAsync();
 
@@ -67,6 +55,28 @@ public class StudentService : IStudentService
         var items = entities.Select(MapToDto).ToList();
 
         return new PagedResult<StudentDto>(items, totalCount, pageNumber, pageSize);
+    }
+
+    private static IQueryable<Student> ApplyStudentFilter(IQueryable<Student> query, StudentFilterDto filter)
+    {
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var search = filter.Search.Trim().ToLower();
+            query = query.Where(s =>
+                s.StudentCode.ToLower().Contains(search) ||
+                s.FullName.ToLower().Contains(search));
+        }
+
+        if (filter.Status.HasValue)
+            query = query.Where(s => s.Status == filter.Status.Value);
+
+        if (filter.CompanyId.HasValue)
+            query = query.Where(s => s.CompanyId == filter.CompanyId.Value);
+
+        if (filter.HasAccount.HasValue)
+            query = query.Where(s => (s.User != null) == filter.HasAccount.Value);
+
+        return query;
     }
 
     public async Task<StudentDto?> GetStudentByIdAsync(int id)
@@ -188,6 +198,19 @@ public class StudentService : IStudentService
 
         await _db.SaveChangesAsync(); // 1 lần cho cả loạt — EF tự fixup Student.User qua User.StudentId
         return result;
+    }
+
+    public async Task<CreateAccountsResultDto> CreateAccountsByFilterAsync(StudentFilterDto filter)
+    {
+        var query = _db.Students
+            .Include(s => s.User)
+            .AsQueryable();
+
+        query = ApplyStudentFilter(query, filter);
+
+        var studentIds = await query.Select(s => s.Id).ToListAsync();
+
+        return await CreateAccountsAsync(studentIds);
     }
 
     private static string GenerateRandomPassword(int length = 10)
@@ -524,6 +547,129 @@ public class StudentService : IStudentService
 
         await _db.SaveChangesAsync();
         return (true, null);
+    }
+
+    // ---------- 8. Xuất danh sách sinh viên (Excel/CSV) ----------
+
+    // Nhãn tiếng Việt cho StudentStatus — chưa có sẵn ở đâu khác trong project (đã kiểm tra
+    // frontend/backend), nên khai báo dùng chung tại đây cho việc export.
+    private static readonly Dictionary<StudentStatus, string> StatusLabels = new()
+    {
+        [StudentStatus.NoCompany] = "Chưa có doanh nghiệp",
+        [StudentStatus.Introduced] = "Đã giới thiệu",
+        [StudentStatus.Interviewed] = "Đã phỏng vấn",
+        [StudentStatus.Accepted] = "Đã nhận",
+        [StudentStatus.Interning] = "Đang thực tập",
+        [StudentStatus.Completed] = "Hoàn thành"
+    };
+
+    private static readonly string[] ExportHeaders =
+    {
+        "MSSV", "Họ tên", "Lớp", "Ngành", "Email", "Số điện thoại",
+        "Trạng thái", "Doanh nghiệp", "Vị trí", "Ngày tạo tài khoản"
+    };
+
+    public async Task<(byte[] Content, string FileName, string ContentType)> ExportStudentsAsync(StudentFilterDto filter, string format)
+    {
+        // Global query filter (!IsDeleted) đã tự động áp dụng, không cần lọc tay thêm.
+        var query = _db.Students
+            .Include(s => s.Company)
+            .Include(s => s.JobPosition)
+            .Include(s => s.User)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var search = filter.Search.Trim().ToLower();
+            query = query.Where(s =>
+                s.StudentCode.ToLower().Contains(search) ||
+                s.FullName.ToLower().Contains(search));
+        }
+
+        if (filter.Status.HasValue)
+            query = query.Where(s => s.Status == filter.Status.Value);
+
+        if (filter.CompanyId.HasValue)
+            query = query.Where(s => s.CompanyId == filter.CompanyId.Value);
+
+        var students = await query
+            .OrderBy(s => s.StudentCode)
+            .ToListAsync();
+
+        var rows = students.Select(s => new[]
+        {
+            s.StudentCode,
+            s.FullName,
+            s.ClassName,
+            s.Major,
+            s.Email,
+            s.PhoneNumber,
+            StatusLabels.TryGetValue(s.Status, out var label) ? label : s.Status.ToString(),
+            s.Company?.Name ?? string.Empty,
+            s.JobPosition?.Title ?? string.Empty,
+            s.User is not null ? s.User.CreatedAt.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture) : string.Empty
+        }).ToList();
+
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+
+        return format.ToLowerInvariant() switch
+        {
+            "xlsx" => (
+                BuildExportXlsx(rows),
+                $"DanhSachSinhVien_{timestamp}.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+            "csv" => (
+                BuildExportCsv(rows),
+                $"DanhSachSinhVien_{timestamp}.csv",
+                "text/csv"),
+            _ => throw new InvalidOperationException("Định dạng không hợp lệ. Chỉ hỗ trợ 'csv' hoặc 'xlsx'.")
+        };
+    }
+
+    private static byte[] BuildExportXlsx(List<string[]> rows)
+    {
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Danh sách sinh viên");
+
+        for (int c = 0; c < ExportHeaders.Length; c++)
+        {
+            var cell = ws.Cell(1, c + 1);
+            cell.Value = ExportHeaders[c];
+            cell.Style.Font.Bold = true;
+        }
+
+        for (int r = 0; r < rows.Count; r++)
+        {
+            var row = rows[r];
+            for (int c = 0; c < row.Length; c++)
+                ws.Cell(r + 2, c + 1).Value = row[c];
+        }
+
+        ws.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        workbook.SaveAs(ms);
+        return ms.ToArray();
+    }
+
+    // Đồng bộ pattern EscapeCsv với ExportAccountsCsv ở StudentsController (Giai đoạn 3).
+    private static byte[] BuildExportCsv(List<string[]> rows)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine(string.Join(",", ExportHeaders.Select(EscapeCsv)));
+        foreach (var row in rows)
+            sb.AppendLine(string.Join(",", row.Select(EscapeCsv)));
+
+        // UTF-8 có BOM để Excel mở tiếng Việt không lỗi font.
+        return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+    }
+
+    private static string EscapeCsv(string value)
+    {
+        value ??= string.Empty;
+        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
+            return $"\"{value.Replace("\"", "\"\"")}\"";
+        return value;
     }
 
     // ---------- mapping tay Entity -> DTO ----------

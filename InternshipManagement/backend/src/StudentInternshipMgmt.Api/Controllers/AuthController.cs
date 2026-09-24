@@ -58,13 +58,10 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpGet("me")]
-    public ActionResult<ApiResponse<object>> Me()
+    public async Task<ActionResult<ApiResponse<MeResponseDto>>> Me(CancellationToken cancellationToken)
     {
-        var claims = User.Claims
-            .GroupBy(claim => claim.Type)
-            .ToDictionary(group => group.Key, group => group.Select(claim => claim.Value).ToArray());
-
-        return Ok(ApiResponse<object>.SuccessResponse(claims));
+        var data = await _authService.GetMeAsync(GetCurrentUserId(), cancellationToken);
+        return Ok(ApiResponse<MeResponseDto>.SuccessResponse(data));
     }
 
     private int GetCurrentUserId()

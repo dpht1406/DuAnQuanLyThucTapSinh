@@ -17,6 +17,8 @@ public interface IStudentService
 
     Task<CreateAccountsResultDto> CreateAccountsAsync(List<int> studentIds);
 
+    Task<CreateAccountsResultDto> CreateAccountsByFilterAsync(StudentFilterDto filter);
+
     Task<ImportResultDto> ImportStudentsAsync(Stream fileStream, string fileName);
 
     Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId, bool isAdmin);
@@ -24,4 +26,10 @@ public interface IStudentService
     Task<List<StatusHistoryDto>?> GetStatusHistoryAsync(int studentId);
 
     Task<(bool Success, string? Error)> AssignCompanyDirectAsync(int studentId, AssignCompanyDto dto, int adminUserId);
+
+    /// <summary>
+    /// Xuất toàn bộ danh sách sinh viên khớp filter (không phân trang) ra file Excel (.xlsx) hoặc CSV (.csv).
+    /// </summary>
+    /// <param name="format">"csv" hoặc "xlsx" (không phân biệt hoa thường).</param>
+    Task<(byte[] Content, string FileName, string ContentType)> ExportStudentsAsync(StudentFilterDto filter, string format);
 }

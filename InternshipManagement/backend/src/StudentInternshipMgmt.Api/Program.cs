@@ -62,6 +62,24 @@ builder.Services.AddScoped<IJobPositionService, JobPositionService>();
 builder.Services.AddScoped<IPlacementRequestService, PlacementRequestService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddSingleton<IAuthorizationHandler, SameStudentAuthorizationHandler>();
+
+// CORS cho môi trường Development — origin đọc từ config "Cors:AllowedOrigins",
+// mặc định "http://localhost:5173" nếu config trống. Không AllowCredentials vì
+// project dùng Bearer token trong header, không dùng cookie.
+var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+if (corsAllowedOrigins is null || corsAllowedOrigins.Length == 0)
+    corsAllowedOrigins = new[] { "http://localhost:5173" };
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendDev", policy =>
+    {
+        policy.WithOrigins(corsAllowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -73,6 +91,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseGlobalExceptionHandling();
+
+app.UseCors("AllowFrontendDev");
 
 if (app.Environment.IsDevelopment())
 {

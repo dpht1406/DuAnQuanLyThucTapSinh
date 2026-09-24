@@ -94,6 +94,27 @@ public class AuthService : IAuthService
         }
     }
 
+    public async Task<MeResponseDto> GetMeAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        if (user is null)
+        {
+            throw new KeyNotFoundException("Khong tim thay tai khoan.");
+        }
+
+        return new MeResponseDto
+        {
+            UserId = user.Id,
+            Username = user.Username,
+            Role = user.Role.ToString(),
+            StudentId = user.StudentId,
+            MustChangePassword = user.MustChangePassword
+        };
+    }
+
     private async Task<LoginResponseDto> IssueTokenPairAsync(User user, CancellationToken cancellationToken)
     {
         var refreshToken = new RefreshToken
@@ -128,6 +149,7 @@ public class AuthService : IAuthService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Username),
+            new(JwtRegisteredClaimNames.UniqueName, user.Username),
             new(ClaimTypes.Role, user.Role.ToString()),
             new("role", user.Role.ToString())
         };

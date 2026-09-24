@@ -1,7 +1,8 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import ConfirmDialog from 'primevue/confirmdialog'
 </script>
 
 <template>
-  <HelloWorld />
+  <router-view />
+  <ConfirmDialog />
 </template>
