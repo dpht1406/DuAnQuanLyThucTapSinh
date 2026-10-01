@@ -4,6 +4,7 @@ using StudentInternshipMgmt.Application.Features.Companies;
 using StudentInternshipMgmt.Application.Features.Companies.Dtos;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Infrastructure.Persistence;
+using System.Text.RegularExpressions;
 
 namespace StudentInternshipMgmt.Infrastructure.Services;
 
@@ -15,6 +16,14 @@ public class CompanyService : ICompanyService
     private const int AddressMaxLength = 300;
     private const int IndustryMaxLength = 150;
     private const int ContactPersonMaxLength = 150;
+    private const int ContactPhoneMaxLength = 20;
+    private const int ContactEmailMaxLength = 150;
+    private const int ContactPositionMaxLength = 100;
+
+    private static readonly Regex EmailRegex = new(
+        @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+    private static readonly Regex PhoneRegex = new(
+        @"^0\d{9}$", RegexOptions.Compiled);
 
     private readonly AppDbContext _db;
 
@@ -36,7 +45,7 @@ public class CompanyService : ICompanyService
         if (!string.IsNullOrWhiteSpace(filter.Industry))
         {
             var industry = filter.Industry.Trim().ToLower();
-            query = query.Where(c => c.Industry.ToLower() == industry);
+            query = query.Where(c => c.Industry.ToLower().Contains(industry));
         }
 
         // Chiếu (Select) trực tiếp sang CompanyDto ngay trong LINQ-to-Entities để EF Core
@@ -49,9 +58,22 @@ public class CompanyService : ICompanyService
                 Name = c.Name,
                 Address = c.Address,
                 Industry = c.Industry,
-                ContactPerson = c.ContactPerson
+                ContactPerson = c.ContactPerson,
+                ContactPhone = c.ContactPhone,
+                ContactEmail = c.ContactEmail,
+                ContactPosition = c.ContactPosition
             })
             .ToPagedResultAsync(filter);
+    }
+
+    public async Task<List<string>> GetDistinctIndustriesAsync()
+    {
+        return await _db.Companies
+            .Where(c => !string.IsNullOrWhiteSpace(c.Industry))
+            .Select(c => c.Industry.Trim())
+            .Distinct()
+            .OrderBy(i => i)
+            .ToListAsync();
     }
 
     public async Task<CompanyDetailDto?> GetCompanyByIdAsync(int id)
@@ -70,6 +92,9 @@ public class CompanyService : ICompanyService
             Address = company.Address,
             Industry = company.Industry,
             ContactPerson = company.ContactPerson,
+            ContactPhone = company.ContactPhone,
+            ContactEmail = company.ContactEmail,
+            ContactPosition = company.ContactPosition,
             JobPositions = company.JobPositions
                 .Select(jp => new JobPositionDto
                 {
@@ -84,7 +109,11 @@ public class CompanyService : ICompanyService
 
     public async Task<(bool Success, string? Error, CompanyDto? Data)> CreateCompanyAsync(CreateCompanyDto dto)
     {
-        var validationError = ValidateFields(dto.Name, dto.Address, dto.Industry, dto.ContactPerson);
+        var contactPhone = NormalizeOptional(dto.ContactPhone);
+        var contactEmail = NormalizeOptional(dto.ContactEmail);
+        var contactPosition = NormalizeOptional(dto.ContactPosition);
+        var validationError = ValidateFields(dto.Name, dto.Address, dto.Industry, dto.ContactPerson,
+            contactPhone, contactEmail, contactPosition);
         if (validationError is not null)
             return (false, validationError, null);
 
@@ -93,7 +122,10 @@ public class CompanyService : ICompanyService
             Name = dto.Name.Trim(),
             Address = dto.Address.Trim(),
             Industry = dto.Industry.Trim(),
-            ContactPerson = dto.ContactPerson.Trim()
+            ContactPerson = dto.ContactPerson.Trim(),
+            ContactPhone = contactPhone,
+            ContactEmail = contactEmail,
+            ContactPosition = contactPosition
         };
 
         _db.Companies.Add(company);
@@ -108,7 +140,11 @@ public class CompanyService : ICompanyService
         if (company is null)
             return (false, "Không tìm thấy công ty.", true);
 
-        var validationError = ValidateFields(dto.Name, dto.Address, dto.Industry, dto.ContactPerson);
+        var contactPhone = NormalizeOptional(dto.ContactPhone);
+        var contactEmail = NormalizeOptional(dto.ContactEmail);
+        var contactPosition = NormalizeOptional(dto.ContactPosition);
+        var validationError = ValidateFields(dto.Name, dto.Address, dto.Industry, dto.ContactPerson,
+            contactPhone, contactEmail, contactPosition);
         if (validationError is not null)
             return (false, validationError, false);
 
@@ -116,6 +152,9 @@ public class CompanyService : ICompanyService
         company.Address = dto.Address.Trim();
         company.Industry = dto.Industry.Trim();
         company.ContactPerson = dto.ContactPerson.Trim();
+        company.ContactPhone = contactPhone;
+        company.ContactEmail = contactEmail;
+        company.ContactPosition = contactPosition;
 
         await _db.SaveChangesAsync();
         return (true, null, false);
@@ -155,7 +194,14 @@ public class CompanyService : ICompanyService
         return (true, null, false);
     }
 
-    private static string? ValidateFields(string name, string address, string industry, string contactPerson)
+    private static string? ValidateFields(
+        string name,
+        string address,
+        string industry,
+        string contactPerson,
+        string? contactPhone,
+        string? contactEmail,
+        string? contactPosition)
     {
         if (string.IsNullOrWhiteSpace(name))
             return "Tên công ty (Name) là bắt buộc.";
@@ -171,8 +217,24 @@ public class CompanyService : ICompanyService
         if (contactPerson.Trim().Length > ContactPersonMaxLength)
             return $"Người liên hệ (ContactPerson) không được quá {ContactPersonMaxLength} ký tự.";
 
+        if (contactPhone is not null && contactPhone.Length > ContactPhoneMaxLength)
+            return $"Số điện thoại người tuyển dụng không được quá {ContactPhoneMaxLength} ký tự.";
+        if (contactPhone is not null && !PhoneRegex.IsMatch(contactPhone))
+            return "Số điện thoại người tuyển dụng phải gồm 10 chữ số và bắt đầu bằng số 0.";
+
+        if (contactEmail is not null && contactEmail.Length > ContactEmailMaxLength)
+            return $"Email người tuyển dụng không được quá {ContactEmailMaxLength} ký tự.";
+        if (contactEmail is not null && !EmailRegex.IsMatch(contactEmail))
+            return "Email người tuyển dụng không đúng định dạng.";
+
+        if (contactPosition is not null && contactPosition.Length > ContactPositionMaxLength)
+            return $"Chức vụ người tuyển dụng không được quá {ContactPositionMaxLength} ký tự.";
+
         return null;
     }
+
+    private static string? NormalizeOptional(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     private static CompanyDto MapToDto(Company c) => new()
     {
@@ -180,6 +242,9 @@ public class CompanyService : ICompanyService
         Name = c.Name,
         Address = c.Address,
         Industry = c.Industry,
-        ContactPerson = c.ContactPerson
+        ContactPerson = c.ContactPerson,
+        ContactPhone = c.ContactPhone,
+        ContactEmail = c.ContactEmail,
+        ContactPosition = c.ContactPosition
     };
 }

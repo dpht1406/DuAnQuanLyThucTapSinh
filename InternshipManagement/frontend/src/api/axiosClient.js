@@ -7,6 +7,7 @@ import { useAuthStore } from '../stores/auth.js'
 // để tránh việc response interceptor bên dưới tự gọi lại chính nó.
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -27,6 +28,23 @@ axiosClient.interceptors.request.use((config) => {
 // Nhiều request cùng lúc bị 401 chỉ nên kích hoạt 1 lần gọi refresh — các request còn lại
 // "ăn theo" cùng 1 promise này thay vì mỗi request tự gọi refresh riêng.
 let refreshPromise = null
+let loginRedirectInProgress = false
+
+async function redirectToLoginOnce() {
+  if (loginRedirectInProgress) return
+
+  loginRedirectInProgress = true
+  try {
+    const { default: router } = await import('../router')
+    if (router.currentRoute.value.path !== '/login') {
+      await router.replace('/login')
+    }
+  } catch (error) {
+    console.error('Không thể điều hướng về trang đăng nhập:', error)
+  } finally {
+    loginRedirectInProgress = false
+  }
+}
 
 axiosClient.interceptors.response.use(
   (response) => response,
@@ -64,8 +82,8 @@ axiosClient.interceptors.response.use(
       return axiosClient(originalRequest)
     } catch (refreshError) {
       authStore.logout()
-      // Chưa điều hướng router ở bước này (để dành 7B) — component/route guard gọi sau
-      // sẽ tự xử lý dựa trên authStore.isAuthenticated.
+      refreshError.authRefreshFailed = true
+      await redirectToLoginOnce()
       return Promise.reject(refreshError)
     }
   }

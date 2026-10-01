@@ -15,6 +15,7 @@ public class StatusHistoryDto
     public StudentStatus FromStatus { get; set; }
     public StudentStatus ToStatus { get; set; }
     public int? CompanyId { get; set; }
+    public string? CompanyName { get; set; }
     public string? Note { get; set; }
     public DateTime ChangedAt { get; set; }
     public string ChangedByUsername { get; set; } = default!;

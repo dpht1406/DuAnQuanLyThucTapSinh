@@ -32,4 +32,12 @@ public class DashboardController : ControllerBase
         var result = await _dashboardService.GetNeedAssignmentListAsync();
         return Ok(ApiResponse<List<NeedAssignmentDto>>.SuccessResponse(result));
     }
+
+    // GET /api/dashboard/recent-rejections
+    [HttpGet("recent-rejections")]
+    public async Task<ActionResult<ApiResponse<List<RecentRejectionDto>>>> GetRecentRejections()
+    {
+        var result = await _dashboardService.GetRecentRejectionsAsync();
+        return Ok(ApiResponse<List<RecentRejectionDto>>.SuccessResponse(result));
+    }
 }

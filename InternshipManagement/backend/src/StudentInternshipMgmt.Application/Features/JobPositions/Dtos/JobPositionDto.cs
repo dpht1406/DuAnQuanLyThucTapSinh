@@ -1,9 +1,6 @@
 namespace StudentInternshipMgmt.Application.Features.JobPositions.Dtos;
 
-// Đây là JobPositionDto "đầy đủ" cho chính feature JobPositions (Giai đoạn 4b) —
-// khác với StudentInternshipMgmt.Application.Features.Companies.Dtos.JobPositionDto,
-// vốn chỉ là bản tối giản (Id, Title, Quantity, IsOpen) dùng để lồng trong
-// CompanyDetailDto. Không sửa file đó.
+
 public class JobPositionDto
 {
     public int Id { get; set; }

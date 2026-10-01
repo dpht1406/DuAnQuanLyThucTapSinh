@@ -217,8 +217,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <div class="page-container">
   <Card>
-    <template #title>Tạo tài khoản</template>
+    <template #title><span class="page-title">Tạo tài khoản</span></template>
     <template #content>
       <TabView>
         <TabPanel header="Nhập từ file">
@@ -382,6 +383,7 @@ onBeforeUnmount(() => {
       </Dialog>
     </template>
   </Card>
+  </div>
 </template>
 
 <style scoped>

@@ -19,6 +19,8 @@ public interface IStudentService
 
     Task<CreateAccountsResultDto> CreateAccountsByFilterAsync(StudentFilterDto filter);
 
+    Task<(bool Success, string? Error, ResetPasswordResultDto? Data)> ResetPasswordAsync(int studentId, int adminUserId);
+
     Task<ImportResultDto> ImportStudentsAsync(Stream fileStream, string fileName);
 
     Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId, bool isAdmin);

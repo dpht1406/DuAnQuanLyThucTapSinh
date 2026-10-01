@@ -30,12 +30,12 @@ public class AuthService : IAuthService
 
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            throw new UnauthorizedAccessException("Ten dang nhap hoac mat khau khong dung.");
+            throw new UnauthorizedAccessException("Tên đăng nhập hoặc mật khẩu không đúng.");
         }
 
         if (!user.IsActive)
         {
-            throw new UnauthorizedAccessException("Tai khoan da bi vo hieu hoa.");
+            throw new UnauthorizedAccessException("Tài khoản đã bị vô hiệu hóa.");
         }
 
         return await IssueTokenPairAsync(user, cancellationToken);

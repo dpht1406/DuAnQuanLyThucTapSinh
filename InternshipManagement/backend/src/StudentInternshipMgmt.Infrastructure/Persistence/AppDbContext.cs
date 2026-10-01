@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<PlacementRequest> PlacementRequests => Set<PlacementRequest>();
     public DbSet<StatusHistory> StatusHistories => Set<StatusHistory>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,5 +30,6 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         modelBuilder.ApplyConfiguration(new PlacementRequestConfiguration());
         modelBuilder.ApplyConfiguration(new StatusHistoryConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
     }
 }

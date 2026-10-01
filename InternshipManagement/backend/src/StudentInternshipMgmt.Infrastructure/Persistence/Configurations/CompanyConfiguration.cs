@@ -29,6 +29,15 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .IsRequired()
             .HasMaxLength(150);
 
+        builder.Property(c => c.ContactPhone)
+            .HasMaxLength(20);
+
+        builder.Property(c => c.ContactEmail)
+            .HasMaxLength(150);
+
+        builder.Property(c => c.ContactPosition)
+            .HasMaxLength(100);
+
         builder.HasData(SeedData.Companies);
     }
 }

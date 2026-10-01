@@ -50,6 +50,18 @@ const routes = [
         meta: { requiresAuth: true, roles: ['Admin'] }
       },
       {
+        path: 'students/:id(\\d+)',
+        name: 'student-detail',
+        component: () => import('../views/students/StudentDetailView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'] }
+      },
+      {
+        path: 'about',
+        name: 'about',
+        component: () => import('../views/about/AboutView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'companies',
         name: 'companies',
         component: () => import('../views/companies/CompaniesView.vue'),
@@ -59,6 +71,12 @@ const routes = [
         path: 'placement-requests',
         name: 'placement-requests',
         component: () => import('../views/placement-requests/PlacementRequestsView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'] }
+      },
+      {
+        path: 'notifications',
+        name: 'notifications',
+        component: () => import('../views/notifications/NotificationsView.vue'),
         meta: { requiresAuth: true, roles: ['Admin'] }
       },
       {
@@ -79,6 +97,42 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+const CHUNK_RELOAD_KEY = 'chunk-reload-once'
+const CHUNK_ERROR_PATTERN = /Failed to fetch dynamically imported module|error loading dynamically imported module|Importing a module script failed/i
+
+function reloadAfterChunkError(fullPath) {
+  try {
+    if (sessionStorage.getItem(CHUNK_RELOAD_KEY)) return
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, 'true')
+  } catch {
+    return
+  }
+
+  window.location.assign(fullPath)
+}
+
+router.onError((error, to) => {
+  if (CHUNK_ERROR_PATTERN.test(String(error?.message || error))) {
+    reloadAfterChunkError(to.fullPath)
+  }
+})
+
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault?.()
+  const message = String(event?.payload?.message || event?.message || event)
+  if (CHUNK_ERROR_PATTERN.test(message)) {
+    reloadAfterChunkError(`${window.location.pathname}${window.location.search}${window.location.hash}`)
+  }
+})
+
+router.afterEach(() => {
+  try {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY)
+  } catch {
+    // Bỏ qua khi sessionStorage không khả dụng.
+  }
 })
 
 router.beforeEach((to, _from, next) => {

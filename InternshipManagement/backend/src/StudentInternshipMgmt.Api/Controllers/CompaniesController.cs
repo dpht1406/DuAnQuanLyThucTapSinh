@@ -27,6 +27,15 @@ public class CompaniesController : ControllerBase
         return Ok(ApiResponse<PagedResult<CompanyDto>>.SuccessResponse(result));
     }
 
+    // GET /api/companies/industries — Admin + User, trả danh sách ngành duy nhất để làm gợi ý autocomplete.
+    [Authorize(Roles = "Admin,User")]
+    [HttpGet("industries")]
+    public async Task<ActionResult<ApiResponse<List<string>>>> GetIndustries()
+    {
+        var industries = await _companyService.GetDistinctIndustriesAsync();
+        return Ok(ApiResponse<List<string>>.SuccessResponse(industries));
+    }
+
     // GET /api/companies/{id} — Admin + User (chỉ đọc), kèm danh sách JobPositions
     [Authorize(Roles = "Admin,User")]
     [HttpGet("{id:int}")]
@@ -40,6 +49,7 @@ public class CompaniesController : ControllerBase
     }
 
     // POST /api/companies — Admin
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<ApiResponse<CompanyDto>>> CreateCompany([FromBody] CreateCompanyDto dto)
     {
@@ -51,6 +61,7 @@ public class CompaniesController : ControllerBase
     }
 
     // PUT /api/companies/{id} — Admin
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<ApiResponse<object>>> UpdateCompany(int id, [FromBody] UpdateCompanyDto dto)
     {
@@ -64,6 +75,7 @@ public class CompaniesController : ControllerBase
     }
 
     // DELETE /api/companies/{id} — Admin. Chặn xóa nếu còn Student/JobPosition liên kết.
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteCompany(int id)
     {

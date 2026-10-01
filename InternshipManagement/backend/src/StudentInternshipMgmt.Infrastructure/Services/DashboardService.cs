@@ -59,4 +59,42 @@ public class DashboardService : IDashboardService
             DaysSinceCreated = (int)(DateTime.UtcNow - s.User!.CreatedAt).TotalDays
         }).ToList();
     }
+
+    public async Task<List<RecentRejectionDto>> GetRecentRejectionsAsync()
+    {
+        var recentDays = Math.Max(1, _configuration.GetValue<int?>("RecentRejectionDays") ?? 14);
+        var cutoff = DateTime.UtcNow.AddDays(-recentDays);
+        var studentsWithoutPendingRequest = _db.Students
+            .Where(student => student.Status == StudentStatus.NoCompany
+                && !_db.PlacementRequests.Any(request =>
+                    request.StudentId == student.Id && request.Status == RequestStatus.Pending));
+
+        var latestHistories = _db.StatusHistories
+            .Where(history => !_db.StatusHistories.Any(newer =>
+                newer.StudentId == history.StudentId
+                && (newer.ChangedAt > history.ChangedAt
+                    || (newer.ChangedAt == history.ChangedAt && newer.Id > history.Id))));
+
+        return await latestHistories
+            .Where(history => history.ToStatus == StudentStatus.NoCompany
+                && history.FromStatus != StudentStatus.NoCompany
+                && history.ChangedAt >= cutoff
+                && history.ChangedByUser.Role == UserRole.User)
+            .Join(studentsWithoutPendingRequest,
+                history => history.StudentId,
+                student => student.Id,
+                (history, student) => new { history, student })
+            .OrderByDescending(item => item.history.ChangedAt)
+            .ThenByDescending(item => item.history.Id)
+            .Select(item => new RecentRejectionDto
+            {
+                StudentId = item.student.Id,
+                StudentCode = item.student.StudentCode,
+                FullName = item.student.FullName,
+                RejectedCompanyName = item.history.Company != null ? item.history.Company.Name : string.Empty,
+                Reason = item.history.Note,
+                RejectedAt = item.history.ChangedAt
+            })
+            .ToListAsync();
+    }
 }

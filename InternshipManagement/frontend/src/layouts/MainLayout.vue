@@ -1,71 +1,90 @@
 <script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import Menubar from 'primevue/menubar'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import dayjs from '../utils/dayjs.js'
+import Avatar from 'primevue/avatar'
+import Badge from 'primevue/badge'
 import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import Drawer from 'primevue/drawer'
+import Menu from 'primevue/menu'
+import Popover from 'primevue/popover'
+import ChangePasswordForm from '../components/common/ChangePasswordForm.vue'
+import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '../stores/auth.js'
+import { getNotifications, getUnreadCount, markAllNotificationsRead, markNotificationRead } from '../api/notifications.js'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
+const toast = useToast()
+const adminMenu = [{ label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' }, { label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Duyệt yêu cầu', icon: 'pi pi-inbox', route: '/placement-requests' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }]
+const userMenu = [{ label: 'Hồ sơ của tôi', icon: 'pi pi-user', route: '/profile' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }]
+const menuItems = computed(() => (authStore.isAdmin ? adminMenu : userMenu))
+const mobileTabs = computed(() => authStore.isAdmin ? [{ label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Duyệt', icon: 'pi pi-inbox', route: '/placement-requests' }] : [{ label: 'Hồ sơ', icon: 'pi pi-user', route: '/profile' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }])
+const mobileMoreItems = computed(() => authStore.isAdmin ? [{ label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }] : [{ label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }])
+const pickActiveRoute = (items) => items.filter((i) => route.path === i.route || route.path.startsWith(`${i.route}/`)).sort((a, b) => b.route.length - a.route.length)[0]?.route
+const activeRoute = computed(() => pickActiveRoute(menuItems.value))
+const mobileActiveRoute = computed(() => pickActiveRoute([...mobileTabs.value, ...mobileMoreItems.value]))
+const userMenuRef = ref(null)
+const notificationPopover = ref(null)
+const notifications = ref([])
+const unreadCount = ref(0)
+const notificationsLoading = ref(false)
+const passwordDialogVisible = ref(false)
+const mobileMoreVisible = ref(false)
+const mobileNotificationsVisible = ref(false)
+let notificationPollTimer = null
+const usernameInitial = computed(() => (authStore.user?.username || 'U').charAt(0).toUpperCase())
+const isActive = (item) => item.route === activeRoute.value
+const isMobileActive = (item) => item.route === mobileActiveRoute.value
+const isMobileMoreActive = () => mobileMoreVisible.value || mobileMoreItems.value.some((item) => item.route === mobileActiveRoute.value)
+const userMenuItems = computed(() => [{ label: 'Đổi mật khẩu', icon: 'pi pi-key', command: () => { passwordDialogVisible.value = true } }, { separator: true }, { label: 'Đăng xuất', icon: 'pi pi-sign-out', class: 'danger-menu-item', command: onLogout }])
 
-const adminMenu = [
-  { label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' },
-  { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' },
-  { label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' },
-  { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' },
-  { label: 'Duyệt yêu cầu', icon: 'pi pi-inbox', route: '/placement-requests' },
-  { label: 'Đổi mật khẩu', icon: 'pi pi-key', route: '/change-password' }
-]
-
-const userMenu = [
-  { label: 'Hồ sơ của tôi', icon: 'pi pi-user', route: '/profile' },
-  { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' },
-  { label: 'Đổi mật khẩu', icon: 'pi pi-key', route: '/change-password' }
-]
-
-const menuItems = computed(() => {
-  const items = authStore.isAdmin ? adminMenu : userMenu
-  return items.map((item) => ({
-    label: item.label,
-    icon: item.icon,
-    command: () => router.push(item.route)
-  }))
-})
-
-function onLogout() {
-  authStore.logout()
-  router.push('/login')
-}
+function onLogout() { authStore.logout(); router.push('/login') }
+function toggleUserMenu(event) { userMenuRef.value?.toggle(event) }
+function openMobileMore() { mobileMoreVisible.value = true }
+function closeMobileDrawers() { mobileMoreVisible.value = false; mobileNotificationsVisible.value = false }
+function goTo(routePath) { closeMobileDrawers(); router.push(routePath) }
+function toggleNotifications(event) { notificationPopover.value?.toggle(event) }
+function isRejection(notification) { const kind = String(notification.type || notification.notificationType || '').toLowerCase(); return kind.includes('reject') || kind.includes('return') || kind.includes('back') }
+function notificationIcon(notification) { return isRejection(notification) ? 'pi pi-replay' : 'pi pi-exclamation' }
+function notificationTone(notification) { return isRejection(notification) ? 'warning' : 'danger' }
+async function refreshUnreadCount() { if (!authStore.isAdmin || document.hidden) return; try { unreadCount.value = Number((await getUnreadCount())?.unreadCount ?? 0) } catch { } }
+async function loadNotifications() { notificationsLoading.value = true; try { notifications.value = (await getNotifications({ pageNumber: 1, pageSize: 10 }))?.items ?? [] } catch { notifications.value = [] } finally { notificationsLoading.value = false } }
+async function openNotification(notification) { if (!notification.isRead) { try { await markNotificationRead(notification.id); notification.isRead = true; unreadCount.value = Math.max(0, unreadCount.value - 1) } catch { } } notificationPopover.value?.hide(); mobileNotificationsVisible.value = false; if (notification.studentId != null) router.push({ name: 'student-detail', params: { id: notification.studentId } }) }
+async function markAllRead() { try { await markAllNotificationsRead(); notifications.value = notifications.value.map((item) => ({ ...item, isRead: true })); unreadCount.value = 0 } catch { } }
+function stopNotificationPolling() { if (notificationPollTimer) { clearInterval(notificationPollTimer); notificationPollTimer = null } }
+function onDocumentVisibilityChange() { stopNotificationPolling(); if (!authStore.isAdmin || document.hidden) return; refreshUnreadCount(); notificationPollTimer = setInterval(refreshUnreadCount, 30000) }
+function onPasswordSuccess() { passwordDialogVisible.value = false; toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đổi mật khẩu thành công.', life: 3000 }) }
+onMounted(() => { if (authStore.isAdmin) { document.addEventListener('visibilitychange', onDocumentVisibilityChange); onDocumentVisibilityChange() } })
+onBeforeUnmount(() => { stopNotificationPolling(); document.removeEventListener('visibilitychange', onDocumentVisibilityChange) })
 </script>
 
 <template>
   <div class="main-layout">
-    <Menubar :model="menuItems">
-      <template #end>
-        <span class="username">{{ authStore.user?.username ?? '' }}</span>
-        <Button label="Đăng xuất" severity="secondary" text @click="onLogout" />
-      </template>
-    </Menubar>
-    <main class="main-content">
-      <router-view />
-    </main>
+    <header class="app-header"><div class="header-inner"><router-link to="/" class="brand" aria-label="Trang chủ QLTT"><span class="brand-icon pi pi-graduation-cap" /><span class="brand-name">QLTT</span></router-link><nav class="desktop-nav" aria-label="Điều hướng chính"><router-link v-for="item in menuItems" :key="item.route" :to="item.route" :class="['nav-link', { active: isActive(item) }]" ><span :class="item.icon" /><span>{{ item.label }}</span></router-link></nav><div class="header-actions"><div v-if="authStore.isAdmin" class="notification-trigger"><Button icon="pi pi-bell" severity="secondary" text rounded aria-label="Thông báo" title="Thông báo" @click="toggleNotifications" /><Badge v-if="unreadCount > 0" :value="unreadCount > 9 ? (unreadCount > 99 ? '99+' : unreadCount) : ''" severity="danger" class="notification-badge" /><Popover ref="notificationPopover" @show="loadNotifications"><section class="notification-panel" aria-label="Danh sách thông báo"><div class="notification-panel-header"><strong>Thông báo</strong><Button label="Đánh dấu tất cả đã đọc" text size="small" :disabled="unreadCount === 0" @click="markAllRead" /></div><p v-if="notificationsLoading" class="notification-empty">Đang tải thông báo...</p><p v-else-if="notifications.length === 0" class="notification-empty">Chưa có thông báo nào</p><button v-for="notification in notifications" :key="notification.id" type="button" class="notification-item" :class="{ unread: !notification.isRead }" @click="openNotification(notification)"><span class="notification-type" :class="notificationTone(notification)"><span :class="notificationIcon(notification)" /></span><span class="notification-copy"><strong>{{ notification.title }}</strong><span>{{ notification.message }}</span><time>{{ dayjs(notification.createdAt).fromNow() }}</time></span><span v-if="!notification.isRead" class="notification-unread-dot" /></button><router-link v-if="notifications.length" to="/notifications" class="notification-footer" @click="notificationPopover?.hide()">Xem tất cả thông báo</router-link></section></Popover></div><button type="button" class="user-chip" @click="toggleUserMenu"><Avatar :label="usernameInitial" shape="circle" /><span class="user-name">{{ authStore.user?.username ?? '' }}</span><span class="pi pi-chevron-down user-caret" /></button><Menu ref="userMenuRef" :model="userMenuItems" :popup="true" /></div></div></header>
+    <header class="mobile-header"><router-link to="/" class="brand"><span class="brand-icon pi pi-graduation-cap" /><span class="brand-name">QLTT</span></router-link><button type="button" class="mobile-avatar" @click="openMobileMore"><Avatar :label="usernameInitial" shape="circle" /></button></header>
+    <main class="main-content"><router-view /></main>
+    <nav class="mobile-tabs" aria-label="Điều hướng di động"><router-link v-for="item in mobileTabs" :key="item.route" :to="item.route" :class="['mobile-tab', { active: isActive(item) }]" ><span :class="item.icon" /><span>{{ item.label }}</span></router-link><button type="button" class="mobile-tab" :class="{ active: mobileMoreVisible }" @click="openMobileMore"><span class="pi pi-user" /><span>Tôi</span></button></nav>
+      <nav class="mobile-tabs" aria-label="Điều hướng di động"><router-link v-for="item in mobileTabs" :key="item.route" :to="item.route" :class="['mobile-tab', { active: isMobileActive(item) }]" ><span :class="item.icon" /><span>{{ item.label }}</span></router-link><button type="button" class="mobile-tab" :class="{ active: isMobileMoreActive() }" @click="openMobileMore"><span class="pi pi-user" /><span>Tôi</span></button></nav>
+    <Drawer v-model:visible="mobileMoreVisible" position="bottom" class="mobile-drawer" :style="{ height: 'auto' }"><div class="drawer-user"><Avatar :label="usernameInitial" shape="circle" /><div><strong>{{ authStore.user?.username }}</strong><small>{{ authStore.user?.role }}</small></div></div><button v-for="item in mobileMoreItems" :key="item.route" type="button" class="drawer-item" @click="goTo(item.route)"><span :class="item.icon" />{{ item.label }}</button><button v-if="authStore.isAdmin" type="button" class="drawer-item" @click="mobileMoreVisible = false; mobileNotificationsVisible = true"><span class="pi pi-bell" />Thông báo</button><button type="button" class="drawer-item" @click="mobileMoreVisible = false; passwordDialogVisible = true"><span class="pi pi-key" />Đổi mật khẩu</button><button type="button" class="drawer-item danger" @click="onLogout"><span class="pi pi-sign-out" />Đăng xuất</button></Drawer>
+    <Drawer v-model:visible="mobileNotificationsVisible" position="bottom" class="mobile-drawer notification-drawer" :style="{ height: 'min(80vh, 620px)' }" @show="loadNotifications"><section class="notification-panel mobile-panel"><div class="notification-panel-header"><strong>Thông báo</strong><Button label="Đánh dấu tất cả đã đọc" text size="small" :disabled="unreadCount === 0" @click="markAllRead" /></div><p v-if="notificationsLoading" class="notification-empty">Đang tải thông báo...</p><p v-else-if="notifications.length === 0" class="notification-empty">Chưa có thông báo nào</p><button v-for="notification in notifications" :key="notification.id" type="button" class="notification-item" :class="{ unread: !notification.isRead }" @click="openNotification(notification)"><span class="notification-type" :class="notificationTone(notification)"><span :class="notificationIcon(notification)" /></span><span class="notification-copy"><strong>{{ notification.title }}</strong><span>{{ notification.message }}</span><time>{{ dayjs(notification.createdAt).fromNow() }}</time></span></button><router-link v-if="notifications.length" to="/notifications" class="notification-footer" @click="mobileNotificationsVisible = false">Xem tất cả thông báo</router-link></section></Drawer>
+    <Dialog v-model:visible="passwordDialogVisible" modal header="Đổi mật khẩu" :style="{ width: 'min(28rem, calc(100vw - 2rem))' }"><ChangePasswordForm @success="onPasswordSuccess" /></Dialog>
   </div>
 </template>
 
 <style scoped>
-.main-layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex: 1;
-  padding: 1rem 1.5rem;
-}
-
-.username {
-  margin-right: 0.75rem;
-  font-size: 0.95rem;
-}
+.main-layout { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); }
+.header-inner { width: min(1200px, calc(100% - 32px)); min-height: 68px; margin: auto; display: flex; align-items: center; gap: 28px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text-h); text-decoration: none; font-size: 20px; font-weight: 700; }.brand-icon { display: grid; place-items: center; width: 36px; height: 36px; color: white; background: var(--primary); border-radius: 10px; font-size: 17px; }
+.desktop-nav { display: flex; align-items: center; gap: 4px; flex: 1; }.nav-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; color: var(--text); border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; }.nav-link:hover { background: var(--surface-soft); color: var(--text-h); }.nav-link.active { background: var(--primary-tint); color: var(--primary); font-weight: 600; }
+.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }.notification-trigger { position: relative; }.notification-badge { position: absolute; top: 1px; right: 0; min-width: 8px; height: 8px; padding: 0; border: 2px solid var(--surface); border-radius: 999px; font-size: 10px; pointer-events: none; }.notification-badge:deep(.p-badge-label:empty) { display: none; }.notification-badge:deep(.p-badge-label:not(:empty)) { min-width: 20px; height: 18px; padding: 0 4px; line-height: 18px; }
+.user-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; color: var(--text-h); background: transparent; border: 0; border-radius: 10px; font: inherit; cursor: pointer; }.user-chip:hover { background: var(--surface-soft); }.user-chip :deep(.p-avatar) { width: 32px; height: 32px; color: var(--primary); background: var(--primary-tint); font-size: 13px; font-weight: 600; }.user-name { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }.user-caret { color: var(--text); font-size: 11px; }
+.main-content { flex: 1; background: var(--page-bg); }.mobile-header, .mobile-tabs { display: none; }.notification-panel { width: min(380px, calc(100vw - 32px)); }.notification-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }.notification-panel-header strong { color: var(--text-h); font-size: 16px; }.notification-panel-header :deep(.p-button) { padding: 0; color: var(--primary); font-size: 12px; }
+.notification-item { position: relative; display: flex; width: 100%; gap: 12px; padding: 13px 8px; text-align: left; color: inherit; background: transparent; border: 0; border-bottom: 1px solid var(--border); cursor: pointer; }.notification-item:hover, .notification-item.unread { background: var(--primary-tint); }.notification-type { flex: 0 0 30px; display: grid; place-items: center; width: 30px; height: 30px; color: white; border-radius: 50%; }.notification-type.danger { background: var(--danger); }.notification-type.warning { background: var(--warning); }.notification-copy { display: grid; min-width: 0; gap: 4px; }.notification-copy strong { color: var(--text-h); font-size: 14px; }.notification-copy > span { display: -webkit-box; overflow: hidden; color: var(--text); font-size: 13px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }.notification-copy time { color: var(--text); font-size: 12px; }.notification-unread-dot { flex: 0 0 7px; width: 7px; height: 7px; margin-top: 5px; background: var(--primary); border-radius: 50%; }.notification-empty { margin: 24px 0; color: var(--text); text-align: center; font-size: 14px; }.notification-footer { display: block; padding-top: 13px; color: var(--primary); text-align: center; text-decoration: none; font-size: 13px; font-weight: 600; }
+.drawer-user { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }.drawer-user :deep(.p-avatar) { color: var(--primary); background: var(--primary-tint); }.drawer-user div { display: grid; gap: 3px; }.drawer-user small { color: var(--text); }.drawer-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 4px; color: var(--text-h); background: transparent; border: 0; border-bottom: 1px solid var(--border); text-align: left; font: inherit; cursor: pointer; }.drawer-item:hover { background: var(--surface-soft); }.drawer-item.danger { color: var(--danger); }.mobile-panel { width: 100%; }.mobile-panel .notification-item { padding-left: 0; padding-right: 0; }
+@media (max-width: 767px) { .app-header { display: none; }.mobile-header { display: flex; align-items: center; justify-content: space-between; min-height: 60px; padding: 0 16px; background: var(--surface); border-bottom: 1px solid var(--border); }.mobile-header .brand { font-size: 18px; }.mobile-header .brand-icon { width: 32px; height: 32px; }.mobile-avatar { padding: 0; background: transparent; border: 0; cursor: pointer; }.mobile-avatar :deep(.p-avatar) { color: var(--primary); background: var(--primary-tint); }.mobile-tabs { position: fixed; right: 0; bottom: 0; left: 0; z-index: 110; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 8px max(8px, env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--border); }.mobile-tab { display: grid; justify-items: center; gap: 4px; padding: 5px 2px; color: var(--text); background: transparent; border: 0; font: inherit; font-size: 10px; text-decoration: none; cursor: pointer; }.mobile-tab span:first-child { font-size: 17px; }.mobile-tab.active { color: var(--primary); font-weight: 600; }.notification-drawer :deep(.p-drawer-content) { overflow-y: auto; }.notification-drawer .notification-panel-header { position: sticky; top: 0; padding-top: 2px; background: var(--surface); }.main-content { padding-bottom: 68px; } }
+@media (min-width: 768px) { .mobile-drawer, .mobile-header { display: none; } }
 </style>

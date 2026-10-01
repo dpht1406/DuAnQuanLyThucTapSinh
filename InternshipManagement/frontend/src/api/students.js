@@ -16,6 +16,26 @@ export function deleteStudent(id) {
   return axiosClient.delete(`/students/${id}`)
 }
 
+export function getStudentById(id) {
+  return axiosClient.get(`/students/${id}`).then((res) => res.data.data)
+}
+
+export function changeStudentStatus(id, dto) {
+  return axiosClient.post(`/students/${id}/change-status`, dto).then((res) => res.data.data)
+}
+
+export function getStudentStatusHistory(id) {
+  return axiosClient.get(`/students/${id}/status-history`).then((res) => res.data.data)
+}
+
+export function assignCompanyToStudent(id, dto) {
+  return axiosClient.post(`/students/${id}/assign-company`, dto).then((res) => res.data.data)
+}
+
+export function resetStudentPassword(id) {
+  return axiosClient.post(`/students/${id}/reset-password`).then((res) => res.data.data)
+}
+
 export function createAccounts(studentIds) {
   return axiosClient.post('/students/create-accounts', { StudentIds: studentIds }).then((res) => res.data.data)
 }

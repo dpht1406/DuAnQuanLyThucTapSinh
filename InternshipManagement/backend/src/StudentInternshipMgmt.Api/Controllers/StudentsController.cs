@@ -165,6 +165,27 @@ public class StudentsController : ControllerBase
         return Ok(ApiResponse<object>.SuccessResponse(null!, "Đổi trạng thái thành công."));
     }
 
+    // POST /api/students/{id}/reset-password
+    [HttpPost("{id:int}/reset-password")]
+    public async Task<ActionResult<ApiResponse<ResetPasswordResultDto>>> ResetPassword(int id)
+    {
+        Response.Headers["Cache-Control"] = "no-store";
+        var adminId = GetCurrentAdminId();
+        if (adminId is null)
+            return Unauthorized(ApiResponse<ResetPasswordResultDto>.FailResponse("Không xác định được người dùng hiện tại."));
+
+        var (success, error, data) = await _studentService.ResetPasswordAsync(id, adminId.Value);
+        if (!success)
+        {
+            if (error == "Không tìm thấy sinh viên.")
+                return NotFound(ApiResponse<ResetPasswordResultDto>.FailResponse(error));
+
+            return BadRequest(ApiResponse<ResetPasswordResultDto>.FailResponse(error!));
+        }
+
+        return Ok(ApiResponse<ResetPasswordResultDto>.SuccessResponse(data!));
+    }
+
     // GET /api/students/{id}/status-history
     [HttpGet("{id:int}/status-history")]
     public async Task<ActionResult<ApiResponse<List<StatusHistoryDto>>>> GetStatusHistory(int id)

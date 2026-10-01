@@ -7,7 +7,8 @@ import { decodeJwt } from '../utils/jwt.js'
 // vì axiosClient gắn interceptor 401 -> gọi lại các action của store này (refreshAccessToken).
 // Nếu store lại gọi ngược qua axiosClient sẽ tạo vòng lặp interceptor.
 const authApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 15000
 })
 
 const ACCESS_TOKEN_KEY = 'accessToken'
@@ -44,6 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
   const refreshToken = ref(localStorage.getItem(REFRESH_TOKEN_KEY) || null)
   const mustChangePassword = ref(false)
   const user = ref(decodeUserFromToken(accessToken.value))
+  const ready = ref(false)
 
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!accessToken.value)
@@ -105,10 +107,11 @@ export const useAuthStore = defineStore('auth', () => {
       const { default: axiosClient } = await import('../api/axiosClient.js')
       const res = await axiosClient.get('/auth/me')
       const body = res.data
-      if (!body?.success || !body?.data) {
+      if (body?.success === false) {
         fail()
         return
       }
+      if (!body?.data) return
 
       const data = body.data
       user.value = {
@@ -118,8 +121,10 @@ export const useAuthStore = defineStore('auth', () => {
         studentId: data.studentId ?? null
       }
       mustChangePassword.value = !!data.mustChangePassword
-    } catch {
-      fail()
+    } catch (error) {
+      if (logoutOnError && error?.response?.status === 401 && error?.authRefreshFailed) {
+        logout()
+      }
     }
   }
 
@@ -175,6 +180,7 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken,
     mustChangePassword,
     user,
+    ready,
     // getters
     isAuthenticated,
     isAdmin,

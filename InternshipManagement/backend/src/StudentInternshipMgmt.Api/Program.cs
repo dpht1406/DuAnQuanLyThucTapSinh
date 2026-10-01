@@ -15,6 +15,7 @@ using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Application.Features.JobPositions;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
 using StudentInternshipMgmt.Application.Features.Dashboard;
+using StudentInternshipMgmt.Application.Features.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,7 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IJobPositionService, JobPositionService>();
 builder.Services.AddScoped<IPlacementRequestService, PlacementRequestService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IAuthorizationHandler, SameStudentAuthorizationHandler>();
 
 // CORS cho môi trường Development — origin đọc từ config "Cors:AllowedOrigins",

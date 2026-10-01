@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Dialog from 'primevue/dialog'
@@ -13,6 +14,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { createStudent, deleteStudent, getStudents, updateStudent } from '../../api/students.js'
 import { getCompanies } from '../../api/companies.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import StudentStatusDialog from '../../components/students/StudentStatusDialog.vue'
 import {
   STATUS_OPTIONS,
   STATUS_LABELS,
@@ -48,6 +50,10 @@ const studentForm = reactive({
 })
 
 const confirm = useConfirm()
+const route = useRoute()
+const router = useRouter()
+const statusDialogVisible = ref(false)
+const selectedStatusStudent = ref(null)
 
 let searchDebounceTimer = null
 
@@ -93,6 +99,15 @@ function openEditDialog(student) {
   editingId.value = student.id
   dialogErrorMessage.value = ''
   dialogVisible.value = true
+}
+
+function openStatusDialog(student) {
+  selectedStatusStudent.value = student
+  statusDialogVisible.value = true
+}
+
+function openStudentDetails(student) {
+  router.push({ name: 'student-detail', params: { id: student.id } })
 }
 
 function closeStudentDialog() {
@@ -208,6 +223,10 @@ watch(searchInput, () => {
 })
 
 onMounted(() => {
+  const queryStatus = Number(route.query.status)
+  if (Number.isInteger(queryStatus) && queryStatus >= 0 && queryStatus <= 5) {
+    filter.Status = queryStatus
+  }
   loadCompanyOptions()
   fetchStudents()
 })
@@ -218,8 +237,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <div class="page-container">
   <Card>
-    <template #title>Danh sách sinh viên</template>
+    <template #title><span class="page-title">Danh sách sinh viên</span></template>
     <template #content>
       <div class="students-toolbar">
         <div class="toolbar-field toolbar-search">
@@ -308,6 +328,24 @@ onBeforeUnmount(() => {
           <template #body="{ data }">
             <div class="action-buttons">
               <Button
+                icon="pi pi-sync"
+                severity="info"
+                text
+                rounded
+                aria-label="Đổi giai đoạn"
+                title="Đổi giai đoạn"
+                @click="openStatusDialog(data)"
+              />
+              <Button
+                icon="pi pi-eye"
+                severity="secondary"
+                text
+                rounded
+                aria-label="Xem chi tiết"
+                title="Xem chi tiết"
+                @click="openStudentDetails(data)"
+              />
+              <Button
                 icon="pi pi-pencil"
                 severity="secondary"
                 text
@@ -327,6 +365,12 @@ onBeforeUnmount(() => {
           </template>
         </Column>
       </DataTable>
+
+      <StudentStatusDialog
+        v-model:visible="statusDialogVisible"
+        :student="selectedStatusStudent"
+        @changed="fetchStudents"
+      />
 
       <Dialog
         v-model:visible="dialogVisible"
@@ -377,6 +421,7 @@ onBeforeUnmount(() => {
       </Dialog>
     </template>
   </Card>
+  </div>
 </template>
 
 <style scoped>

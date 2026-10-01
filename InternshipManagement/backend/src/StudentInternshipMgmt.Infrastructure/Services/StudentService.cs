@@ -7,8 +7,8 @@ using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Domain.Enums;
 using StudentInternshipMgmt.Infrastructure.Persistence;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -17,14 +17,16 @@ namespace StudentInternshipMgmt.Infrastructure.Services;
 public class StudentService : IStudentService
 {
     private readonly AppDbContext _db;
+    private readonly ILogger<StudentService> _logger;
     private static readonly Regex EmailRegex = new(
         @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
     private static readonly Regex PhoneRegex = new(
         @"^0\d{9}$", RegexOptions.Compiled);
 
-    public StudentService(AppDbContext db)
+    public StudentService(AppDbContext db, ILogger<StudentService> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     // ---------- 2. CRUD & tìm kiếm/lọc/xoá mềm ----------
@@ -174,7 +176,7 @@ public class StudentService : IStudentService
                 continue;
             }
 
-            var plainPassword = GenerateRandomPassword();
+            var plainPassword = PasswordGenerator.Generate();
             var user = new User
             {
                 Username = student.StudentCode,
@@ -213,32 +215,42 @@ public class StudentService : IStudentService
         return await CreateAccountsAsync(studentIds);
     }
 
-    private static string GenerateRandomPassword(int length = 10)
+    public async Task<(bool Success, string? Error, ResetPasswordResultDto? Data)> ResetPasswordAsync(int studentId, int adminUserId)
     {
-        const string upper = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // bỏ I, O dễ nhầm
-        const string lower = "abcdefghijkmnpqrstuvwxyz";
-        const string digits = "23456789";
-        const string all = upper + lower + digits;
+        var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == studentId);
+        if (student is null)
+            return (false, "Không tìm thấy sinh viên.", null);
 
-        Span<byte> buffer = stackalloc byte[length];
-        RandomNumberGenerator.Fill(buffer);
+        var user = await _db.Users.FirstOrDefaultAsync(u =>
+            u.StudentId == studentId && u.Role == UserRole.User);
+        if (user is null)
+            return (false, "Sinh viên này chưa có tài khoản.", null);
 
-        var chars = new char[length];
-        // đảm bảo có ít nhất 1 hoa, 1 thường, 1 số
-        chars[0] = upper[buffer[0] % upper.Length];
-        chars[1] = lower[buffer[1] % lower.Length];
-        chars[2] = digits[buffer[2] % digits.Length];
-        for (int i = 3; i < length; i++)
-            chars[i] = all[buffer[i] % all.Length];
+        var temporaryPassword = PasswordGenerator.Generate();
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(temporaryPassword);
+        user.MustChangePassword = true;
 
-        // trộn ngẫu nhiên vị trí
-        for (int i = chars.Length - 1; i > 0; i--)
+        var activeRefreshTokens = await _db.RefreshTokens
+            .Where(token => token.UserId == user.Id && !token.IsRevoked)
+            .ToListAsync();
+        var revokedAt = DateTime.UtcNow;
+        foreach (var token in activeRefreshTokens)
         {
-            var j = RandomNumberGenerator.GetInt32(i + 1);
-            (chars[i], chars[j]) = (chars[j], chars[i]);
+            token.IsRevoked = true;
+            token.RevokedAt = revokedAt;
         }
 
-        return new string(chars);
+        await _db.SaveChangesAsync();
+        _logger.LogInformation(
+            "Admin {AdminUserId} đã đặt lại mật khẩu cho sinh viên {StudentId}",
+            adminUserId,
+            studentId);
+
+        return (true, null, new ResetPasswordResultDto
+        {
+            StudentCode = student.StudentCode,
+            TemporaryPassword = temporaryPassword
+        });
     }
 
     // ---------- 4. Import Excel/CSV ----------
@@ -408,6 +420,7 @@ public class StudentService : IStudentService
 
         var fromStatus = student.Status;
         var toStatus = dto.NewStatus;
+        var previousCompanyId = student.CompanyId;
 
         if (fromStatus == toStatus)
             return (false, "Trạng thái mới phải khác trạng thái hiện tại.");
@@ -438,6 +451,16 @@ public class StudentService : IStudentService
         if (isBackward && string.IsNullOrWhiteSpace(dto.Note))
             return (false, "Phải nhập Note (lý do) khi lùi trạng thái.");
 
+        var shouldCreateNotification = !isAdmin && isBackward;
+        string? previousCompanyName = null;
+        if (shouldCreateNotification && previousCompanyId.HasValue)
+        {
+            previousCompanyName = await _db.Companies
+                .Where(company => company.Id == previousCompanyId.Value)
+                .Select(company => company.Name)
+                .FirstOrDefaultAsync();
+        }
+
         student.Status = toStatus;
         student.UpdatedAt = DateTime.UtcNow;
 
@@ -460,11 +483,44 @@ public class StudentService : IStudentService
             StudentId = student.Id,
             FromStatus = fromStatus,
             ToStatus = toStatus,
-            CompanyId = student.CompanyId,
+            CompanyId = toStatus == StudentStatus.NoCompany ? previousCompanyId : student.CompanyId,
             Note = noteToSave,
             ChangedAt = DateTime.UtcNow,
             ChangedBy = changedByUserId
         });
+
+        if (shouldCreateNotification)
+        {
+            var notificationType = toStatus == StudentStatus.NoCompany
+                ? NotificationType.StudentReportedRejection
+                : NotificationType.StudentRevertedStage;
+            var title = toStatus == StudentStatus.NoCompany
+                ? "Sinh viên báo rớt doanh nghiệp"
+                : "Sinh viên quay lại giai đoạn trước";
+            var companyName = previousCompanyName ?? "doanh nghiệp không xác định";
+            var messagePrefix = toStatus == StudentStatus.NoCompany
+                ? $"Sinh viên {student.FullName} ({student.StudentCode}) báo rớt doanh nghiệp {companyName}."
+                : $"Sinh viên {student.FullName} ({student.StudentCode}) quay lại giai đoạn đã giới thiệu tại doanh nghiệp {companyName}.";
+            var notificationReason = string.IsNullOrWhiteSpace(dto.Note) ? null : dto.Note.Trim();
+            var reasonPrefix = string.IsNullOrEmpty(notificationReason) ? string.Empty : " Lý do: ";
+            var availableReasonLength = Math.Max(0, 1000 - messagePrefix.Length - reasonPrefix.Length);
+            var message = messagePrefix + (string.IsNullOrEmpty(notificationReason)
+                ? string.Empty
+                : reasonPrefix + notificationReason[..Math.Min(notificationReason.Length, availableReasonLength)]);
+
+            _db.Notifications.Add(new Notification
+            {
+                Type = notificationType,
+                Title = title,
+                Message = message,
+                StudentId = student.Id,
+                CompanyId = previousCompanyId,
+                CompanyName = previousCompanyName,
+                Reason = notificationReason is null ? null : notificationReason[..Math.Min(notificationReason.Length, 1000)],
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
 
         await _db.SaveChangesAsync();
         return (true, null);
@@ -480,6 +536,7 @@ public class StudentService : IStudentService
         return await _db.StatusHistories
             .Where(h => h.StudentId == studentId)
             .Include(h => h.ChangedByUser) // giả định navigation StatusHistory.ChangedByUser -> User
+            .Include(h => h.Company)
             .OrderByDescending(h => h.ChangedAt)
             .Select(h => new StatusHistoryDto
             {
@@ -487,6 +544,7 @@ public class StudentService : IStudentService
                 FromStatus = h.FromStatus,
                 ToStatus = h.ToStatus,
                 CompanyId = h.CompanyId,
+                CompanyName = h.Company != null ? h.Company.Name : null,
                 Note = h.Note,
                 ChangedAt = h.ChangedAt,
                 ChangedByUsername = h.ChangedByUser != null ? h.ChangedByUser.Username : string.Empty

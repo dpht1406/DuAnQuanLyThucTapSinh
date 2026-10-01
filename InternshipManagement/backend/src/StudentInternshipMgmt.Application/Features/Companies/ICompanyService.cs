@@ -7,6 +7,8 @@ public interface ICompanyService
 {
     Task<PagedResult<CompanyDto>> GetCompaniesAsync(CompanyFilterDto filter);
 
+    Task<List<string>> GetDistinctIndustriesAsync();
+
     Task<CompanyDetailDto?> GetCompanyByIdAsync(int id);
 
     Task<(bool Success, string? Error, CompanyDto? Data)> CreateCompanyAsync(CreateCompanyDto dto);
