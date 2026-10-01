@@ -173,6 +173,10 @@ public class CompanyService : ICompanyService
         if (hasActiveStudents)
             return (false, "Không thể xóa công ty vì vẫn còn sinh viên đang thực tập tại công ty này.", false);
 
+        var hasAccount = await _db.Users.AnyAsync(user => user.CompanyId == id);
+        if (hasAccount)
+            return (false, "Không thể xóa công ty vì đã có tài khoản đăng nhập liên kết với công ty này.", false);
+
         _db.Companies.Remove(company);
 
         try
