@@ -28,6 +28,11 @@ public class StatusHistoryConfiguration : IEntityTypeConfiguration<StatusHistory
         builder.Property(sh => sh.ChangedAt)
             .IsRequired();
 
+        builder.Property(sh => sh.ChangedByType)
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
         builder.HasOne(sh => sh.Student)
             .WithMany(s => s.StatusHistories)
             .HasForeignKey(sh => sh.StudentId)

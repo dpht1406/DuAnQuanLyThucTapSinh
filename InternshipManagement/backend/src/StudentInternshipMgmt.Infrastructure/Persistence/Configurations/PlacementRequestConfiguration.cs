@@ -26,6 +26,25 @@ public class PlacementRequestConfiguration : IEntityTypeConfiguration<PlacementR
         builder.Property(pr => pr.CreatedAt)
             .IsRequired();
 
+        builder.Property(pr => pr.InterviewLocation)
+            .HasMaxLength(500);
+
+        builder.Property(pr => pr.InterviewNote)
+            .HasMaxLength(1000);
+
+        builder.Property(pr => pr.ResultNote)
+            .HasMaxLength(1000);
+
+        builder.Property(pr => pr.StudentInterviewNote)
+            .HasMaxLength(500);
+
+        builder.Property(pr => pr.ResultActorType)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        builder.Property(pr => pr.ConfirmationSource)
+            .HasMaxLength(500);
+
         builder.HasOne(pr => pr.Student)
             .WithMany(s => s.PlacementRequests)
             .HasForeignKey(pr => pr.StudentId)

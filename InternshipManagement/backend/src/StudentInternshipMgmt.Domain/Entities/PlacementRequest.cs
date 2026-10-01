@@ -22,4 +22,14 @@ public class PlacementRequest : BaseEntity
     public int? ReviewedBy { get; set; }
     public User? ReviewedByUser { get; set; }
     public DateTime? ReviewedAt { get; set; }
+
+    public DateTime? DueAt { get; set; }
+    public DateTime? InterviewAt { get; set; }
+    public string? InterviewLocation { get; set; }
+    public string? InterviewNote { get; set; }
+    public string? ResultNote { get; set; }
+    public DateTime? StudentReportedInterviewAt { get; set; }
+    public string? StudentInterviewNote { get; set; }
+    public ActorType? ResultActorType { get; set; }
+    public string? ConfirmationSource { get; set; }
 }

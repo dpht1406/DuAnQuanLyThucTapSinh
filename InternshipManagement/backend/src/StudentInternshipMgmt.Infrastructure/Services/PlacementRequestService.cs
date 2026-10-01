@@ -178,7 +178,8 @@ public class PlacementRequestService : IPlacementRequestService
             CompanyId = request.CompanyId,
             Note = "Duyệt yêu cầu chọn doanh nghiệp.",
             ChangedAt = DateTime.UtcNow,
-            ChangedBy = adminUserId
+            ChangedBy = adminUserId,
+            ChangedByType = ActorType.Admin
         });
 
         request.Status = RequestStatus.Approved;

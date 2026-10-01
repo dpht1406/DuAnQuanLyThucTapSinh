@@ -19,4 +19,5 @@ public class StatusHistory : BaseEntity
 
     public int ChangedBy { get; set; }
     public User ChangedByUser { get; set; } = null!;
+    public ActorType ChangedByType { get; set; }
 }

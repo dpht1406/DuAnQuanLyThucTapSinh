@@ -486,7 +486,8 @@ public class StudentService : IStudentService
             CompanyId = toStatus == StudentStatus.NoCompany ? previousCompanyId : student.CompanyId,
             Note = noteToSave,
             ChangedAt = DateTime.UtcNow,
-            ChangedBy = changedByUserId
+            ChangedBy = changedByUserId,
+            ChangedByType = isAdmin ? ActorType.Admin : ActorType.Student
         });
 
         if (shouldCreateNotification)
@@ -600,7 +601,8 @@ public class StudentService : IStudentService
             CompanyId = dto.CompanyId,
             Note = string.IsNullOrWhiteSpace(dto.Note) ? "Admin gán doanh nghiệp trực tiếp." : dto.Note,
             ChangedAt = DateTime.UtcNow,
-            ChangedBy = adminUserId
+            ChangedBy = adminUserId,
+            ChangedByType = ActorType.Admin
         });
 
         await _db.SaveChangesAsync();
