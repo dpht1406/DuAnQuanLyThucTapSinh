@@ -71,6 +71,8 @@ public static class SeedData
             Id = 1,
             CompanyId = 1,
             Title = "Thuc tap sinh Lap trinh vien .NET",
+            Department = "Phòng Công nghệ",
+            Deadline = new DateTime(2026, 12, 31),
             Quantity = 3,
             Description = "Thuc tap phat trien API voi ASP.NET Core va Entity Framework Core.",
             IsOpen = true
@@ -80,6 +82,8 @@ public static class SeedData
             Id = 2,
             CompanyId = 1,
             Title = "Thuc tap sinh Kiem thu phan mem (Tester)",
+            Department = "Phòng Kiểm thử",
+            Deadline = new DateTime(2026, 10, 4),
             Quantity = 2,
             Description = "Thuc tap kiem thu chuc nang va viet test case.",
             IsOpen = true
@@ -89,6 +93,8 @@ public static class SeedData
             Id = 3,
             CompanyId = 2,
             Title = "Thuc tap sinh Frontend ReactJS",
+            Department = "Phòng Thiết kế",
+            Deadline = new DateTime(2026, 9, 20),
             Quantity = 2,
             Description = "Thuc tap xay dung giao dien nguoi dung voi ReactJS.",
             IsOpen = true
@@ -98,9 +104,54 @@ public static class SeedData
             Id = 4,
             CompanyId = 3,
             Title = "Thuc tap sinh Phan tich du lieu",
+            Department = "Phòng Dữ liệu",
             Quantity = 1,
             Description = "Thuc tap xu ly va truc quan hoa du lieu.",
             IsOpen = false
+        },
+        new JobPosition
+        {
+            Id = 1001,
+            CompanyId = 2,
+            Title = "Thực tập sinh Phân tích dữ liệu",
+            Department = "Phòng Dữ liệu",
+            Location = "Tòa nhà Công nghệ, Quận 3, TP.HCM",
+            Deadline = new DateTime(2026, 10, 4),
+            Quantity = 2,
+            Description = "Hỗ trợ làm sạch dữ liệu và xây dựng báo cáo trực quan.",
+            IsOpen = true
+        },
+        new JobPosition
+        {
+            Id = 1002,
+            CompanyId = 3,
+            Title = "Thực tập sinh Thiết kế sản phẩm",
+            Department = "Phòng Thiết kế",
+            Quantity = 1,
+            Description = "Tham gia thiết kế trải nghiệm và giao diện sản phẩm số.",
+            IsOpen = true
+        },
+        new JobPosition
+        {
+            Id = 1003,
+            CompanyId = 1,
+            Title = "Thực tập sinh Kiểm thử phần mềm",
+            Department = "Phòng Kiểm thử",
+            Deadline = new DateTime(2026, 12, 31),
+            Quantity = 2,
+            Description = "Viết và thực thi kịch bản kiểm thử cho sản phẩm.",
+            IsOpen = false
+        },
+        new JobPosition
+        {
+            Id = 1004,
+            CompanyId = 3,
+            Title = "Thực tập sinh Phát triển .NET",
+            Department = "Phòng Công nghệ",
+            Deadline = new DateTime(2026, 12, 31),
+            Quantity = 3,
+            Description = "Phát triển dịch vụ web với ASP.NET Core.",
+            IsOpen = true
         }
     };
 }

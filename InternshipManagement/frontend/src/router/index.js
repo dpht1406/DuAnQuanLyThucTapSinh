@@ -68,6 +68,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: 'job-positions',
+        name: 'job-positions',
+        component: () => import('../views/job-positions/JobPositionsView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'placement-requests',
         name: 'placement-requests',
         component: () => import('../views/placement-requests/PlacementRequestsView.vue'),

@@ -33,15 +33,20 @@ public class JobPositionService : IJobPositionService
     public async Task<PagedResult<JobPositionDto>> GetJobPositionsAsync(JobPositionFilterDto filter)
     {
         var query = BuildFilteredQuery(filter);
+        var today = DateTime.Today;
 
-        return await query
-            .OrderBy(jp => jp.Title)
+        return await ApplyOrdering(query, filter.Sort, today)
             .Select(jp => new JobPositionDto
             {
                 Id = jp.Id,
                 CompanyId = jp.CompanyId,
                 CompanyName = jp.Company.Name,
                 Title = jp.Title,
+                Department = jp.Department,
+                Location = jp.Location,
+                DisplayLocation = jp.Location != null && jp.Location.Trim() != "" ? jp.Location : jp.Company.Address,
+                Deadline = jp.Deadline,
+                IsExpired = jp.Deadline.HasValue && jp.Deadline.Value < today,
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen
@@ -52,15 +57,20 @@ public class JobPositionService : IJobPositionService
     public async Task<PagedResult<JobPositionAdminDto>> GetJobPositionsAdminAsync(JobPositionFilterDto filter)
     {
         var query = BuildFilteredQuery(filter);
+        var today = DateTime.Today;
 
-        return await query
-            .OrderBy(jp => jp.Title)
+        return await ApplyOrdering(query, filter.Sort, today)
             .Select(jp => new JobPositionAdminDto
             {
                 Id = jp.Id,
                 CompanyId = jp.CompanyId,
                 CompanyName = jp.Company.Name,
                 Title = jp.Title,
+                Department = jp.Department,
+                Location = jp.Location,
+                DisplayLocation = jp.Location != null && jp.Location.Trim() != "" ? jp.Location : jp.Company.Address,
+                Deadline = jp.Deadline,
+                IsExpired = jp.Deadline.HasValue && jp.Deadline.Value < today,
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen,
@@ -77,6 +87,7 @@ public class JobPositionService : IJobPositionService
 
     public async Task<JobPositionDto?> GetJobPositionByIdAsync(int id)
     {
+        var today = DateTime.Today;
         return await _db.JobPositions
             .Where(jp => jp.Id == id)
             .Select(jp => new JobPositionDto
@@ -85,6 +96,11 @@ public class JobPositionService : IJobPositionService
                 CompanyId = jp.CompanyId,
                 CompanyName = jp.Company.Name,
                 Title = jp.Title,
+                Department = jp.Department,
+                Location = jp.Location,
+                DisplayLocation = jp.Location != null && jp.Location.Trim() != "" ? jp.Location : jp.Company.Address,
+                Deadline = jp.Deadline,
+                IsExpired = jp.Deadline.HasValue && jp.Deadline.Value < today,
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen
@@ -94,6 +110,7 @@ public class JobPositionService : IJobPositionService
 
     public async Task<JobPositionAdminDto?> GetJobPositionByIdAdminAsync(int id)
     {
+        var today = DateTime.Today;
         return await _db.JobPositions
             .Where(jp => jp.Id == id)
             .Select(jp => new JobPositionAdminDto
@@ -102,6 +119,11 @@ public class JobPositionService : IJobPositionService
                 CompanyId = jp.CompanyId,
                 CompanyName = jp.Company.Name,
                 Title = jp.Title,
+                Department = jp.Department,
+                Location = jp.Location,
+                DisplayLocation = jp.Location != null && jp.Location.Trim() != "" ? jp.Location : jp.Company.Address,
+                Deadline = jp.Deadline,
+                IsExpired = jp.Deadline.HasValue && jp.Deadline.Value < today,
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen,
@@ -116,7 +138,7 @@ public class JobPositionService : IJobPositionService
 
     public async Task<(bool Success, string? Error, JobPositionDto? Data)> CreateJobPositionAsync(CreateJobPositionDto dto)
     {
-        var validationError = ValidateFields(dto.Title, dto.Quantity, dto.Description);
+        var validationError = ValidateFields(dto.Title, dto.Department, dto.Location, dto.Deadline, dto.Quantity, dto.Description, true);
         if (validationError is not null)
             return (false, validationError, null);
 
@@ -128,6 +150,9 @@ public class JobPositionService : IJobPositionService
         {
             CompanyId = dto.CompanyId,
             Title = dto.Title.Trim(),
+            Department = (dto.Department ?? string.Empty).Trim(),
+            Location = string.IsNullOrWhiteSpace(dto.Location) ? null : dto.Location.Trim(),
+            Deadline = dto.Deadline?.Date,
             Quantity = dto.Quantity,
             Description = dto.Description.Trim(),
             IsOpen = dto.IsOpen
@@ -142,6 +167,11 @@ public class JobPositionService : IJobPositionService
             CompanyId = jobPosition.CompanyId,
             CompanyName = company.Name,
             Title = jobPosition.Title,
+            Department = jobPosition.Department,
+            Location = jobPosition.Location,
+            DisplayLocation = string.IsNullOrWhiteSpace(jobPosition.Location) ? company.Address : jobPosition.Location,
+            Deadline = jobPosition.Deadline,
+            IsExpired = jobPosition.Deadline.HasValue && jobPosition.Deadline.Value.Date < DateTime.Today,
             Quantity = jobPosition.Quantity,
             Description = jobPosition.Description,
             IsOpen = jobPosition.IsOpen
@@ -154,7 +184,7 @@ public class JobPositionService : IJobPositionService
         if (jobPosition is null)
             return (false, "Không tìm thấy vị trí tuyển dụng.", true);
 
-        var validationError = ValidateFields(dto.Title, dto.Quantity, dto.Description);
+        var validationError = ValidateFields(dto.Title, dto.Department, dto.Location, dto.Deadline, dto.Quantity, dto.Description, false);
         if (validationError is not null)
             return (false, validationError, false);
 
@@ -165,6 +195,9 @@ public class JobPositionService : IJobPositionService
                 false);
 
         jobPosition.Title = dto.Title.Trim();
+        jobPosition.Department = (dto.Department ?? string.Empty).Trim();
+        jobPosition.Location = string.IsNullOrWhiteSpace(dto.Location) ? null : dto.Location.Trim();
+        jobPosition.Deadline = dto.Deadline?.Date;
         jobPosition.Quantity = dto.Quantity;
         jobPosition.Description = dto.Description.Trim();
         jobPosition.IsOpen = dto.IsOpen;
@@ -232,7 +265,10 @@ public class JobPositionService : IJobPositionService
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
             var search = filter.Search.Trim().ToLower();
-            query = query.Where(jp => jp.Title.ToLower().Contains(search));
+            query = query.Where(jp =>
+                jp.Title.ToLower().Contains(search) ||
+                jp.Company.Name.ToLower().Contains(search) ||
+                jp.Department.ToLower().Contains(search));
         }
 
         if (filter.CompanyId.HasValue)
@@ -241,7 +277,27 @@ public class JobPositionService : IJobPositionService
         if (filter.IsOpen.HasValue)
             query = query.Where(jp => jp.IsOpen == filter.IsOpen.Value);
 
+        var today = DateTime.Today;
+        if (string.Equals(filter.Availability?.Trim(), "open", StringComparison.OrdinalIgnoreCase))
+            query = query.Where(jp => jp.IsOpen && (!jp.Deadline.HasValue || jp.Deadline.Value >= today));
+        else if (string.Equals(filter.Availability?.Trim(), "closed", StringComparison.OrdinalIgnoreCase))
+            query = query.Where(jp => !jp.IsOpen || (jp.Deadline.HasValue && jp.Deadline.Value < today));
+
         return query;
+    }
+
+    private static IOrderedQueryable<JobPosition> ApplyOrdering(IQueryable<JobPosition> query, string? sort, DateTime today)
+    {
+        if (string.Equals(sort?.Trim(), "recommended", StringComparison.OrdinalIgnoreCase))
+        {
+            return query
+                .OrderByDescending(jp => jp.IsOpen && (!jp.Deadline.HasValue || jp.Deadline.Value >= today))
+                .ThenBy(jp => jp.Deadline == null)
+                .ThenBy(jp => jp.Deadline)
+                .ThenBy(jp => jp.Title);
+        }
+
+        return query.OrderBy(jp => jp.Title);
     }
 
     private Task<int> CountAcceptedAsync(int jobPositionId)
@@ -252,12 +308,21 @@ public class JobPositionService : IJobPositionService
             AcceptedStatuses.Contains(s.Status));
     }
 
-    private static string? ValidateFields(string title, int quantity, string description)
+    private static string? ValidateFields(string title, string department, string? location, DateTime? deadline, int quantity, string description, bool isCreate)
     {
         if (string.IsNullOrWhiteSpace(title))
             return "Tiêu đề (Title) là bắt buộc.";
         if (title.Trim().Length > TitleMaxLength)
             return $"Tiêu đề (Title) không được quá {TitleMaxLength} ký tự.";
+
+        if ((department ?? string.Empty).Trim().Length > 100)
+            return "Phòng ban không được quá 100 ký tự.";
+
+        if ((location ?? string.Empty).Trim().Length > 300)
+            return "Địa điểm không được quá 300 ký tự.";
+
+        if (isCreate && deadline.HasValue && deadline.Value.Date < DateTime.Today)
+            return "Hạn nộp hồ sơ không được trước ngày hôm nay.";
 
         if (quantity <= 0)
             return "Số lượng tuyển (Quantity) phải lớn hơn 0.";

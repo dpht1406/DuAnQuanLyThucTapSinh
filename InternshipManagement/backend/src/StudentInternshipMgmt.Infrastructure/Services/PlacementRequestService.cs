@@ -47,6 +47,9 @@ public class PlacementRequestService : IPlacementRequestService
 
             if (!jobPosition.IsOpen)
                 return (false, "Vị trí này đã ngừng tuyển.", null);
+
+            if (jobPosition.Deadline.HasValue && jobPosition.Deadline.Value.Date < DateTime.Today)
+                return (false, "Vị trí này đã hết hạn nhận hồ sơ.", null);
         }
 
         var request = new PlacementRequest

@@ -12,4 +12,8 @@ public class JobPositionFilterDto : PaginationParams
 
     // Lọc theo trạng thái còn tuyển hay không.
     public bool? IsOpen { get; set; }
+
+    public string? Availability { get; set; }
+
+    public string? Sort { get; set; }
 }

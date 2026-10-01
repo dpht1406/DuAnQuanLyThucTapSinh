@@ -17,6 +17,16 @@ public class JobPositionConfiguration : IEntityTypeConfiguration<JobPosition>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(jp => jp.Department)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(jp => jp.Location)
+            .HasMaxLength(300);
+
+        builder.Property(jp => jp.Deadline)
+            .HasColumnType("date");
+
         builder.Property(jp => jp.Quantity)
             .IsRequired();
 

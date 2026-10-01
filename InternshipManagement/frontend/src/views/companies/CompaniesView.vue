@@ -5,6 +5,7 @@ import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
+import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import Drawer from 'primevue/drawer'
 import AutoComplete from 'primevue/autocomplete'
@@ -27,6 +28,8 @@ import { createCompany, deleteCompany, getCompanies, getCompanyById, getIndustri
 import { createJobPosition, deleteJobPosition, getJobPositions, toggleOpenJobPosition, updateJobPosition } from '../../api/job-positions.js'
 import { createPlacementRequest } from '../../api/me.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import dayjs from '../../utils/dayjs.js'
+import { formatDeadline } from '../../utils/jobPosition.js'
 
 const authStore = useAuthStore()
 const confirm = useConfirm()
@@ -58,7 +61,7 @@ const placementSuccess = ref('')
 const selectedPlacement = ref(null)
 const placementNote = ref('')
 const companyForm = reactive({ name: '', address: '', industry: '', contactPerson: '', contactPhone: '', contactEmail: '', contactPosition: '' })
-const jobForm = reactive({ companyId: null, title: '', quantity: 1, description: '', isOpen: true })
+const jobForm = reactive({ companyId: null, title: '', department: '', location: '', deadline: null, quantity: 1, description: '', isOpen: true })
 let searchDebounceTimer = null
 let industryDebounceTimer = null
 const isMobile = ref(false)
@@ -99,7 +102,7 @@ function errorText(err, fallback = 'Có lỗi xảy ra, vui lòng thử lại.')
   return err?.response?.data?.message?.trim() || extractErrorMessage(err, fallback)
 }
 function resetCompanyForm() { Object.assign(companyForm, { name: '', address: '', industry: '', contactPerson: '', contactPhone: '', contactEmail: '', contactPosition: '' }) }
-function resetJobForm(companyId = null) { Object.assign(jobForm, { companyId, title: '', quantity: 1, description: '', isOpen: true }) }
+function resetJobForm(companyId = null) { Object.assign(jobForm, { companyId, title: '', department: '', location: '', deadline: null, quantity: 1, description: '', isOpen: true }) }
 
 function openCreateCompany() {
   resetCompanyForm(); dialogType.value = 'company'; dialogMode.value = 'create'; editingId.value = null
@@ -121,7 +124,7 @@ function openCreateJob(company) {
 }
 
 function openEditJob(position) {
-  Object.assign(jobForm, { companyId: position.companyId, title: position.title ?? '', quantity: position.quantity ?? 1, description: position.description ?? '', isOpen: position.isOpen === true })
+  Object.assign(jobForm, { companyId: position.companyId, title: position.title ?? '', department: position.department ?? '', location: position.location ?? '', deadline: position.deadline ? dayjs(position.deadline).toDate() : null, quantity: position.quantity ?? 1, description: position.description ?? '', isOpen: position.isOpen === true })
   dialogType.value = 'job'; dialogMode.value = 'edit'; editingId.value = position.id; dialogErrorMessage.value = ''; dialogVisible.value = true
 }
 
@@ -145,6 +148,8 @@ function validateForm() {
     if (position.length > 100) { dialogErrorMessage.value = 'Chức vụ người tuyển dụng không được quá 100 ký tự.'; return false }
   }
   if (dialogType.value === 'job' && (!Number.isInteger(values.quantity) || values.quantity < 1)) { dialogErrorMessage.value = 'Số lượng phải lớn hơn hoặc bằng 1.'; return false }
+  if (dialogType.value === 'job' && String(values.department ?? '').trim().length > 100) { dialogErrorMessage.value = 'Phòng ban không được quá 100 ký tự.'; return false }
+  if (dialogType.value === 'job' && String(values.location ?? '').trim().length > 300) { dialogErrorMessage.value = 'Địa điểm không được quá 300 ký tự.'; return false }
   return true
 }
 
@@ -158,10 +163,10 @@ async function submitDialog() {
       else await updateCompany(editingId.value, { ...companyForm })
       dialogVisible.value = false; await fetchCompanies()
     } else if (dialogMode.value === 'create') {
-      await createJobPosition({ ...jobForm }); dialogVisible.value = false; await loadJobs(jobForm.companyId)
+      await createJobPosition({ ...jobForm, deadline: jobForm.deadline ? dayjs(jobForm.deadline).format('YYYY-MM-DD') : null }); dialogVisible.value = false; await loadJobs(jobForm.companyId)
     } else {
       const { companyId, ...dto } = jobForm
-      await updateJobPosition(editingId.value, dto); dialogVisible.value = false; await loadJobs(companyId)
+      await updateJobPosition(editingId.value, { ...dto, deadline: jobForm.deadline ? dayjs(jobForm.deadline).format('YYYY-MM-DD') : null }); dialogVisible.value = false; await loadJobs(companyId)
     }
   } catch (err) { dialogErrorMessage.value = errorText(err) } finally { saving.value = false }
 }
@@ -299,7 +304,28 @@ onBeforeUnmount(() => {
           <Message v-if="jobErrors[selectedCompany.id]" severity="error" :closable="false">{{ jobErrors[selectedCompany.id] }}</Message>
           <div v-if="jobLoading[selectedCompany.id]" class="drawer-job-list"><article v-for="placeholder in 3" :key="`job-skeleton-${placeholder}`" class="drawer-job-card"><Skeleton width="65%" height="1.1rem" /><Skeleton width="35%" height="1.4rem" /><Skeleton width="100%" height=".9rem" /><Skeleton width="80%" height=".9rem" /></article></div>
           <div v-else-if="!jobErrors[selectedCompany.id] && (jobsByCompany[selectedCompany.id] || []).length === 0" class="drawer-jobs-empty">Chưa có vị trí nào</div>
-          <div v-else class="drawer-job-list"><article v-for="position in jobsByCompany[selectedCompany.id] || []" :key="position.id" class="drawer-job-card"><div class="drawer-job-title"><h4>{{ position.title }}</h4><Tag :value="position.isOpen ? 'Đang tuyển' : 'Đã đóng'" :severity="position.isOpen ? 'success' : 'secondary'" /></div><div class="drawer-job-meta"><span>Số lượng: {{ position.quantity }}</span><span v-if="authStore.isAdmin">Đã nhận/Tổng: {{ position.acceptedCount ?? 0 }}/{{ position.quantity }}</span></div><p class="drawer-job-description">{{ emptyDisplay(position.description) }}</p><div class="drawer-job-actions"><div v-if="authStore.isAdmin" class="drawer-admin-actions"><InputSwitch v-model="position.isOpen" :disabled="jobLoading[selectedCompany.id]" :aria-label="`Đổi trạng thái vị trí ${position.title}`" @update:model-value="toggleJob(position, selectedCompany.id)" /><Button icon="pi pi-pencil" severity="secondary" text rounded aria-label="Sửa vị trí" @click="openEditJob(position)" /><Button icon="pi pi-trash" severity="danger" text rounded aria-label="Xóa vị trí" @click="confirmDeleteJob(position, selectedCompany.id)" /></div><Button v-else label="Tạo yêu cầu" icon="pi pi-send" :disabled="position.isOpen !== true" @click="openPlacementDialog(selectedCompany, position)" /></div></article></div>
+          <div v-else class="drawer-job-list">
+            <article v-for="position in jobsByCompany[selectedCompany.id] || []" :key="position.id" class="drawer-job-card">
+              <div class="drawer-job-title">
+                <h4>{{ position.title }}</h4>
+                <Tag :value="position.isExpired ? 'Đã hết hạn' : (position.isOpen ? 'Đang tuyển' : 'Đã đóng')" :severity="position.isExpired ? 'danger' : (position.isOpen ? 'success' : 'secondary')" />
+              </div>
+              <div class="drawer-job-meta">
+                <span>Số lượng: {{ position.quantity }}</span>
+                <span v-if="authStore.isAdmin">Đã nhận/Tổng: {{ position.acceptedCount ?? 0 }}/{{ position.quantity }}</span>
+              </div>
+              <small class="drawer-job-position-info">{{ position.department || 'Chưa cập nhật' }} · Hạn nộp {{ formatDeadline(position.deadline) }}</small>
+              <p class="drawer-job-description">{{ emptyDisplay(position.description) }}</p>
+              <div class="drawer-job-actions">
+                <div v-if="authStore.isAdmin" class="drawer-admin-actions">
+                  <InputSwitch v-model="position.isOpen" :disabled="jobLoading[selectedCompany.id]" :aria-label="`Đổi trạng thái vị trí ${position.title}`" @update:model-value="toggleJob(position, selectedCompany.id)" />
+                  <Button icon="pi pi-pencil" severity="secondary" text rounded aria-label="Sửa vị trí" @click="openEditJob(position)" />
+                  <Button icon="pi pi-trash" severity="danger" text rounded aria-label="Xóa vị trí" @click="confirmDeleteJob(position, selectedCompany.id)" />
+                </div>
+                <Button v-else label="Tạo yêu cầu" icon="pi pi-send" :disabled="position.isOpen !== true || position.isExpired" @click="openPlacementDialog(selectedCompany, position)" />
+              </div>
+            </article>
+          </div>
         </section>
       </template>
     </Drawer>
@@ -309,6 +335,7 @@ onBeforeUnmount(() => {
     <form class="entity-form" @submit.prevent="submitDialog">
       <template v-if="dialogType === 'company'"><div class="form-field"><label for="company-name">Tên doanh nghiệp</label><InputText id="company-name" v-model="companyForm.name" :disabled="saving" /></div><div class="form-field"><label for="company-address">Địa chỉ</label><InputText id="company-address" v-model="companyForm.address" :disabled="saving" /></div><div class="form-field"><label for="company-industry-form">Ngành</label><InputText id="company-industry-form" v-model="companyForm.industry" :disabled="saving" /></div><div class="form-field"><label for="company-contact">Người liên hệ (tên)</label><InputText id="company-contact" v-model="companyForm.contactPerson" :disabled="saving" /></div><div class="form-field"><label for="company-contact-phone">Số điện thoại</label><InputText id="company-contact-phone" v-model="companyForm.contactPhone" :disabled="saving" /></div><div class="form-field"><label for="company-contact-email">Email</label><InputText id="company-contact-email" v-model="companyForm.contactEmail" :disabled="saving" /></div><div class="form-field"><label for="company-contact-position">Chức vụ</label><InputText id="company-contact-position" v-model="companyForm.contactPosition" :disabled="saving" /></div></template>
       <template v-else><div class="form-field"><label for="job-title">Tên vị trí</label><InputText id="job-title" v-model="jobForm.title" :disabled="saving" /></div><div class="form-field"><label for="job-quantity">Số lượng</label><InputNumber id="job-quantity" v-model="jobForm.quantity" :min="1" :use-grouping="false" :disabled="saving" /></div><div class="form-field"><label for="job-description">Mô tả</label><Textarea id="job-description" v-model="jobForm.description" rows="4" :disabled="saving" /></div><div class="form-checkbox"><Checkbox v-model="jobForm.isOpen" input-id="job-is-open" binary :disabled="saving" /><label for="job-is-open">Đang tuyển</label></div></template>
+      <template v-if="dialogType === 'job'"><div class="form-field"><label for="job-department">Phòng ban</label><InputText id="job-department" v-model="jobForm.department" maxlength="100" :disabled="saving" /></div><div class="form-field"><label for="job-location">Địa điểm</label><InputText id="job-location" v-model="jobForm.location" maxlength="300" placeholder="Để trống để dùng địa chỉ công ty" :disabled="saving" /></div><div class="form-field"><label for="job-deadline">Hạn nộp hồ sơ</label><DatePicker id="job-deadline" v-model="jobForm.deadline" date-format="dd/mm/yy" show-button-bar :min-date="dialogMode === 'create' ? new Date() : undefined" :disabled="saving" /></div></template>
       <div class="dialog-actions"><Button type="button" label="Hủy" severity="secondary" text :disabled="saving" @click="closeDialog" /><Button type="submit" label="Lưu" icon="pi pi-check" :loading="saving" /></div>
     </form>
   </Dialog>
@@ -319,6 +346,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .companies-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }.page-subtitle { margin: .4rem 0 0; color: var(--text); font-size: .95rem; }
+.drawer-job-position-info { color: var(--text); font-size: 12px; }
 .companies-toolbar { display: flex; align-items: flex-end; gap: .75rem; margin-bottom: 1rem; }.toolbar-field { min-width: 12rem; flex: 1; }.toolbar-search { min-width: 16rem; }.toolbar-industry { min-width: 14rem; }.toolbar-field label, .form-field label { display: block; margin-bottom: .35rem; color: var(--text-h); font-weight: 600; }.view-mode-control { flex: 0 0 auto; }.view-mode-control :deep(.p-button) { min-width: 44px; min-height: 44px; }.view-mode-control :deep(.p-button.p-highlight) { color: var(--primary); background: var(--primary-tint); border-color: var(--primary-tint); }.view-message { margin-bottom: 1rem; }
 .companies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }.company-card { min-width: 0; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow .15s ease, transform .15s ease; }.company-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }.company-card-main { display: grid; width: 100%; gap: 1rem; padding: 0; color: inherit; text-align: left; background: transparent; border: 0; font: inherit; cursor: pointer; }.company-card-heading { display: flex; align-items: center; gap: .75rem; min-width: 0; }.company-avatar { flex: 0 0 44px; width: 44px; height: 44px; color: var(--primary); background: var(--primary-tint); border-radius: var(--radius-sm); font-weight: 700; }.company-card-title { display: grid; min-width: 0; justify-items: start; gap: .4rem; }.company-card-title h2 { display: -webkit-box; overflow: hidden; margin: 0; color: var(--text-h); font-size: 1rem; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }.company-detail-line { display: flex; align-items: flex-start; gap: .6rem; min-width: 0; color: var(--text); font-size: .9rem; line-height: 1.45; }.company-detail-line > i { flex: 0 0 1rem; padding-top: .15rem; color: var(--primary); }.company-address { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }.company-contact-line > span { display: grid; min-width: 0; gap: .2rem; }.company-contact-line strong { color: var(--text-h); font-weight: 600; }.company-contact-line small { overflow: hidden; color: var(--text); font-size: .8rem; text-overflow: ellipsis; white-space: nowrap; }.company-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .8rem; padding-top: .65rem; border-top: 1px solid var(--border); }.company-card-footer :deep(.p-button) { min-height: 44px; }.companies-empty { grid-column: 1 / -1; display: grid; justify-items: center; padding: 3rem 1rem; color: var(--text); text-align: center; }.companies-empty > i { color: var(--primary); font-size: 2.5rem; }.companies-empty h2 { margin: .8rem 0 .25rem; color: var(--text-h); font-size: 1.1rem; }.companies-empty p { margin: 0; }.company-card-skeleton { display: grid; align-content: start; gap: 1rem; }.skeleton-title { display: grid; flex: 1; gap: .5rem; }.skeleton-footer { display: flex; justify-content: flex-end; margin-top: .25rem; }.companies-paginator { margin-top: 1rem; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-md); }
 .job-header, .action-buttons, .dialog-actions, .form-checkbox { display: flex; align-items: center; gap: .75rem; }.job-expansion { padding: .75rem 1rem 1rem; }.job-header { justify-content: space-between; margin-bottom: .75rem; }.job-header h3 { margin: 0; font-size: 1rem; }.contact-cell { display: grid; gap: .2rem; }.contact-cell small, .contact-info-grid span { color: var(--text); font-size: .8rem; }.company-contact-info { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }.company-contact-info h3 { margin: 0 0 .65rem; font-size: 1rem; }.contact-info-grid { display: flex; flex-wrap: wrap; gap: .75rem 2rem; }.contact-info-grid div { display: grid; gap: .2rem; }.companies-table { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); }.entity-form { display: grid; gap: 1rem; }.form-field :deep(.p-inputtext), .form-field :deep(.p-inputnumber), .form-field :deep(.p-inputnumber-input), .form-field :deep(.p-textarea) { width: 100%; }.dialog-actions { justify-content: flex-end; margin-top: .25rem; }.action-buttons { flex-wrap: wrap; }
