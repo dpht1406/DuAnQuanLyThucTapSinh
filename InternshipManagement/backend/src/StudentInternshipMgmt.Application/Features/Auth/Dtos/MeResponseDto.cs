@@ -6,5 +6,6 @@ public class MeResponseDto
     public string Username { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public int? StudentId { get; set; }
+    public int? CompanyId { get; set; }
     public bool MustChangePassword { get; set; }
 }

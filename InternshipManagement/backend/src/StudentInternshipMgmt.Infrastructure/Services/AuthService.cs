@@ -111,6 +111,7 @@ public class AuthService : IAuthService
             Username = user.Username,
             Role = user.Role.ToString(),
             StudentId = user.StudentId,
+            CompanyId = user.CompanyId,
             MustChangePassword = user.MustChangePassword
         };
     }
@@ -157,6 +158,11 @@ public class AuthService : IAuthService
         if (user.StudentId.HasValue)
         {
             claims.Add(new Claim("StudentId", user.StudentId.Value.ToString()));
+        }
+
+        if (user.CompanyId.HasValue)
+        {
+            claims.Add(new Claim("CompanyId", user.CompanyId.Value.ToString()));
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));

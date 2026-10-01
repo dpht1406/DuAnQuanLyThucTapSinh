@@ -52,6 +52,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("SameStudentOnly", policy =>
         policy.Requirements.Add(new SameStudentRequirement()));
+    options.AddPolicy("SameCompanyOnly", policy =>
+        policy.Requirements.Add(new SameCompanyRequirement()));
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -64,6 +66,7 @@ builder.Services.AddScoped<IPlacementRequestService, PlacementRequestService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IAuthorizationHandler, SameStudentAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, SameCompanyAuthorizationHandler>();
 
 // CORS cho môi trường Development — origin đọc từ config "Cors:AllowedOrigins",
 // mặc định "http://localhost:5173" nếu config trống. Không AllowCredentials vì
