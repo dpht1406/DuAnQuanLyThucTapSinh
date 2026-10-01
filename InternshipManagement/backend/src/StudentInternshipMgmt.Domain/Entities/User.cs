@@ -12,6 +12,8 @@ public class User : BaseEntity
 
     public int? StudentId { get; set; }
     public Student? Student { get; set; }
+    public int? CompanyId { get; set; }
+    public Company? Company { get; set; }
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public bool MustChangePassword { get; set; }

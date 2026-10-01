@@ -51,6 +51,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey<User>(u => u.StudentId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasIndex(u => u.CompanyId)
+            .IsUnique()
+            .HasDatabaseName("IX_Users_CompanyId");
+
+        builder.HasOne(u => u.Company)
+            .WithOne(c => c.User)
+            .HasForeignKey<User>(u => u.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasData(SeedData.Users);
     }
 }

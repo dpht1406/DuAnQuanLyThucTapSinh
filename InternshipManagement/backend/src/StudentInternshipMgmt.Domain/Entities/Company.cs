@@ -12,6 +12,7 @@ public class Company : BaseEntity
     public string? ContactEmail { get; set; }
     public string? ContactPosition { get; set; }
 
+    public User? User { get; set; }
     public ICollection<Student> Students { get; set; } = new List<Student>();
     public ICollection<JobPosition> JobPositions { get; set; } = new List<JobPosition>();
 }
