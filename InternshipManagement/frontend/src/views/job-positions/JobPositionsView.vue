@@ -8,14 +8,15 @@ import Message from 'primevue/message'
 import Paginator from 'primevue/paginator'
 import Select from 'primevue/select'
 import Skeleton from 'primevue/skeleton'
+import { useRouter } from 'vue-router'
 import { getJobPositions } from '../../api/job-positions.js'
 import JobPositionCard from '../../components/job-positions/JobPositionCard.vue'
 import JobPositionDrawer from '../../components/job-positions/JobPositionDrawer.vue'
-import ApplyDialog from '../../components/job-positions/ApplyDialog.vue'
 import { useAuthStore } from '../../stores/auth.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 
 const authStore = useAuthStore()
+const router = useRouter()
 const isAdmin = computed(() => {
   const role = Array.isArray(authStore.user?.role) ? authStore.user.role[0] : authStore.user?.role
   return String(role ?? '').trim().toLowerCase() === 'admin' || authStore.isAdmin === true
@@ -31,7 +32,6 @@ const pageSize = ref(12)
 const loading = ref(false)
 const error = ref('')
 const drawerVisible = ref(false)
-const applyVisible = ref(false)
 const selectedPosition = ref(null)
 const compactViewport = ref(false)
 let debounceTimer = null
@@ -53,7 +53,9 @@ async function fetchPositions() {
   }
 }
 function openDetails(position) { selectedPosition.value = position; drawerVisible.value = true }
-function openApply(position) { selectedPosition.value = position; applyVisible.value = true }
+function openApply(position) {
+  router.push({ name: 'job-position-apply', params: { id: position.id }, query: { from: 'job-positions' } })
+}
 function onPage(event) { pageNumber.value = event.page + 1; pageSize.value = event.rows; fetchPositions() }
 function clearFilters() { searchInput.value = ''; search.value = ''; availability.value = ''; pageNumber.value = 1; fetchPositions() }
 watch(searchInput, () => {
@@ -89,7 +91,6 @@ onBeforeUnmount(() => {
     </section>
     <Paginator v-if="totalRecords > 0 && !error" :first="(pageNumber - 1) * pageSize" :rows="pageSize" :total-records="totalRecords" :rows-per-page-options="[12, 24, 48]" :template="compactViewport ? 'PrevPageLink CurrentPageReport NextPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown'" class="positions-paginator" @page="onPage" />
     <JobPositionDrawer v-model:visible="drawerVisible" :position="selectedPosition" :is-admin="isAdmin" @apply="openApply" />
-    <ApplyDialog v-model:visible="applyVisible" :position="selectedPosition" />
   </div>
 </template>
 

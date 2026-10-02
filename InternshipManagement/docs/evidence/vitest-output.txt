@@ -1,4 +1,4 @@
-
+﻿
 > frontend@0.0.0 test
 > vitest run
 
@@ -7,6 +7,7 @@
 
 
  Test Files  1 passed (1)
-      Tests  41 passed (41)
-   Start at  09:42:11
-   Duration  505ms (import 78%, transform 14%, tests 4%, worker 3%)
+      Tests  48 passed (48)
+   Start at  11:20:02
+   Duration  627ms (import 79%, transform 15%, tests 4%, worker 3%)
+

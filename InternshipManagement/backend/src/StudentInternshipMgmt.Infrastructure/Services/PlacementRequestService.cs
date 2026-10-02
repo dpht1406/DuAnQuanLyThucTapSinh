@@ -20,11 +20,6 @@ public class PlacementRequestService : IPlacementRequestService
         _logger = logger;
     }
 
-    public PlacementRequestService(AppDbContext db)
-        : this(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<PlacementRequestService>.Instance)
-    {
-    }
-
     public async Task<(bool Success, string? Error, PlacementRequestDto? Data)> CreateRequestAsync(int studentId, CreatePlacementRequestDto dto)
     {
         (bool Success, string? Error, PlacementRequestDto? Data) Reject(string reason, string message)

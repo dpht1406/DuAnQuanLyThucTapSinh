@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Domain.Enums;
@@ -26,10 +27,19 @@ public class PlacementRequestServiceTests
         var fixture = await SeedBaseAsync(dbContext);
         var originalStudent = new
         {
+            fixture.Student.Id,
+            fixture.Student.StudentCode,
             fixture.Student.FullName,
+            fixture.Student.Major,
+            fixture.Student.ClassName,
             fixture.Student.Email,
             fixture.Student.PhoneNumber,
-            fixture.Student.Major
+            fixture.Student.Status,
+            fixture.Student.CompanyId,
+            fixture.Student.JobPositionId,
+            fixture.Student.IsDeleted,
+            fixture.Student.CreatedAt,
+            fixture.Student.UpdatedAt
         };
         var dto = CreateValidDto(fixture.Company.Id, fixture.Position.Id);
         dto.ApplicantFullName = "  Ứng viên thử nghiệm  ";
@@ -40,7 +50,7 @@ public class PlacementRequestServiceTests
         dto.CvUrl = " https://example.com/cv.pdf ";
         dto.CoverLetter = "  Tôi mong muốn được tham gia thực tập.  ";
 
-        var result = await new PlacementRequestService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeTrue();
         var request = await dbContext.PlacementRequests.SingleAsync();
@@ -51,10 +61,22 @@ public class PlacementRequestServiceTests
         request.ApplicantMajor.Should().Be("Kỹ thuật phần mềm");
         request.CvUrl.Should().Be("https://example.com/cv.pdf");
         request.CoverLetter.Should().Be("Tôi mong muốn được tham gia thực tập.");
-        fixture.Student.FullName.Should().Be(originalStudent.FullName);
-        fixture.Student.Email.Should().Be(originalStudent.Email);
-        fixture.Student.PhoneNumber.Should().Be(originalStudent.PhoneNumber);
-        fixture.Student.Major.Should().Be(originalStudent.Major);
+        new
+        {
+            fixture.Student.Id,
+            fixture.Student.StudentCode,
+            fixture.Student.FullName,
+            fixture.Student.Major,
+            fixture.Student.ClassName,
+            fixture.Student.Email,
+            fixture.Student.PhoneNumber,
+            fixture.Student.Status,
+            fixture.Student.CompanyId,
+            fixture.Student.JobPositionId,
+            fixture.Student.IsDeleted,
+            fixture.Student.CreatedAt,
+            fixture.Student.UpdatedAt
+        }.Should().BeEquivalentTo(originalStudent);
     }
 
     [Fact]
@@ -65,7 +87,7 @@ public class PlacementRequestServiceTests
         var dto = CreateValidDto(fixture.Company.Id, fixture.Position.Id);
         dto.ApplicantEmail = "new.contact@example.com";
 
-        var result = await new PlacementRequestService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeTrue();
         (await dbContext.PlacementRequests.SingleAsync()).ApplicantEmail.Should().Be("new.contact@example.com");
@@ -92,7 +114,7 @@ public class PlacementRequestServiceTests
             default: throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
         }
 
-        var result = await new PlacementRequestService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeFalse();
         result.Error.Should().Be(expectedError);
@@ -117,7 +139,7 @@ public class PlacementRequestServiceTests
         });
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext).CreateRequestAsync(
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(
             fixture.Student.Id,
             CreateValidDto(fixture.Company.Id, fixture.Position.Id));
 
@@ -134,7 +156,7 @@ public class PlacementRequestServiceTests
         fixture.Student.Status = StudentStatus.Introduced;
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext).CreateRequestAsync(
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(
             fixture.Student.Id,
             CreateValidDto(fixture.Company.Id, fixture.Position.Id));
 
@@ -158,7 +180,7 @@ public class PlacementRequestServiceTests
         });
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext).GetMyRequestsAsync(fixture.Student.Id);
+        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).GetMyRequestsAsync(fixture.Student.Id);
 
         result.Should().ContainSingle();
         result[0].ApplicantFullName.Should().BeNull();

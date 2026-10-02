@@ -9,7 +9,13 @@
 
 ## Chạy lại từ đầu
 
-1. Clone repository và mở thư mục `InternshipManagement`.
+1. Clone repository (thay `<repository-url>` bằng URL Git thực tế) và vào thư mục dự án:
+
+```powershell
+git clone <repository-url> InternshipManagement
+Set-Location InternshipManagement
+```
+
 2. Cấu hình SQL Server và connection string `DefaultConnection` trong `backend/src/StudentInternshipMgmt.Api/appsettings.Development.json`. Không đưa thông tin đăng nhập thật vào Git.
 3. Trong thư mục `backend`, khôi phục package, cập nhật database, rồi chạy API:
 
@@ -45,10 +51,18 @@ npm run test
 
 Ảnh dùng tên `TC-xx-before.png` và `TC-xx-after.png`, với `xx` là mã ca trong `TEST-CASES.md`.
 
-Coverage backend đo bằng collector `coverlet.collector` đã có sẵn trong các project test: 1.528/11.475 dòng (13,32%) hợp nhất theo file và số dòng để tránh đếm trùng giữa hai báo cáo. Báo cáo Cobertura riêng của từng project nằm dưới `backend/tests/StudentInternshipMgmt.Infrastructure.Tests/TestResults/` và `backend/tests/StudentInternshipMgmt.Tests/TestResults/` sau khi chạy lệnh:
+## Kết quả lần chạy
+
+- Backend solution: 113/113 pass, 0 fail; 7,527 giây wall-clock. Gồm `StudentInternshipMgmt.Tests` 54/54 và `StudentInternshipMgmt.Infrastructure.Tests` 59/59.
+- Frontend: 48/48 pass, 0 fail; Vitest duration 627 ms.
+- Backend build/test output có warning NU1903 (AutoMapper 13.0.1 advisory) và MSB3277 (xung đột phiên bản EF Core 8.0.10/8.0.31); đây là warning dependency/build đang tồn tại, không do test assertion mới.
+
+Coverage backend được thu bằng `coverlet.collector` đã có sẵn trong các project test, không cài thêm package. Báo cáo Cobertura riêng của từng project được tạo dưới `backend/tests/StudentInternshipMgmt.Infrastructure.Tests/TestResults/` và `backend/tests/StudentInternshipMgmt.Tests/TestResults/` khi chạy lệnh:
 
 ```powershell
 dotnet test backend/InternshipManagement.sln --collect:"XPlat Code Coverage"
 ```
+
+Lần chạy evidence hiện tại ghi nhận line coverage: `StudentInternshipMgmt.Tests` 84/11.470 (0,73%) và `StudentInternshipMgmt.Infrastructure.Tests` 1.449/11.470 (12,63%). Đây là coverage riêng theo từng project, không cộng gộp vì các assembly được instrument có phần mã trùng nhau.
 
 Vitest coverage không được đo vì project chưa có coverage provider; không cài thêm package.

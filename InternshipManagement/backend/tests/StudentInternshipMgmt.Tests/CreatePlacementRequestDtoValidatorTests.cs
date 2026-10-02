@@ -49,12 +49,17 @@ public class CreatePlacementRequestDtoValidatorTests
         yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "1234567890"];
         yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "012345678a"];
         yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "01234567890"];
+        yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "０９０１２３４５６７"];
+        yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "٠٩٠١٢٣٤٥٦٧"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "javascript:alert(1)"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "data:text/html,x"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "ftp://x.com/cv"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "file:///c:/cv.pdf"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "not a url"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/cv file.pdf"];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), " https://a.com/cv"];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/cv "];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/c v"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), $"https://x.com/{new string('x', 487)}"];
         yield return [nameof(CreatePlacementRequestDto.CoverLetter), new string('x', 19)];
         yield return [nameof(CreatePlacementRequestDto.CoverLetter), new string('x', 2001)];

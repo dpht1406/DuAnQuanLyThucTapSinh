@@ -7,6 +7,12 @@ export const LIMITS = {
   email: 254
 }
 
+export function resolveReturnPath(from) {
+  if (from === 'job-positions') return '/job-positions'
+  if (from === 'companies') return '/companies'
+  return '/profile'
+}
+
 const FIELD_LABELS = {
   applicantFullName: 'Họ tên',
   applicantEmail: 'Email ứng viên',

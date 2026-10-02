@@ -1,4 +1,4 @@
-  Determining projects to restore...
+﻿  Determining projects to restore...
 D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\InternshipManagement.sln]
   All projects are up-to-date for restore.
 D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
@@ -20,17 +20,20 @@ C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433
   StudentInternshipMgmt.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll
 Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
 Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
-VSTest version 17.14.1-release-25428-01 (x64)
+VSTest version 17.14.1 (x64)
 
-VSTest version 17.14.1-release-25428-01 (x64)
+VSTest version 17.14.1 (x64)
 
 Starting test execution, please wait...
-Logging Vstest Diagnostics in file: D:\baitapthuctap\duanquanlythuctapsinh\vstest-utf8.log
+A total of 1 test files matched the specified pattern.
 Starting test execution, please wait...
-Logging Vstest Diagnostics in file: D:\baitapthuctap\duanquanlythuctapsinh\vstest-utf8.log
-A total of 1 test files matched the specified pattern.
 A total of 1 test files matched the specified pattern.
 
-Passed!  - Failed:     0, Passed:    49, Skipped:     0, Total:    49, Duration: 85 ms - StudentInternshipMgmt.Tests.dll (net8.0)
+Passed!  - Failed:     0, Passed:    54, Skipped:     0, Total:    54, Duration: 104 ms - StudentInternshipMgmt.Tests.dll (net8.0)
 
-Passed!  - Failed:     0, Passed:    59, Skipped:     0, Total:    59, Duration: 3 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+Passed!  - Failed:     0, Passed:    59, Skipped:     0, Total:    59, Duration: 2 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+
+Attachments:
+  D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\TestResults\90428f05-93f1-4b0a-b202-0d2ad1fa7cba\coverage.cobertura.xml
+  D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\TestResults\f21fb08d-1af2-4c96-ac0c-5d238917f654\coverage.cobertura.xml
+Overall command wall time: 00:00:07.5274758

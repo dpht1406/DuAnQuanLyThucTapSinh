@@ -1,5 +1,6 @@
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
@@ -22,19 +23,16 @@ import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 import Textarea from 'primevue/textarea'
 import { useConfirm } from 'primevue/useconfirm'
-import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '../../stores/auth.js'
 import { createCompany, deleteCompany, getCompanies, getCompanyById, getIndustries, updateCompany } from '../../api/companies.js'
 import { createJobPosition, deleteJobPosition, getJobPositions, toggleOpenJobPosition, updateJobPosition } from '../../api/job-positions.js'
-import { createPlacementRequest } from '../../api/me.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import dayjs from '../../utils/dayjs.js'
 import { formatDeadline } from '../../utils/jobPosition.js'
 
 const authStore = useAuthStore()
+const router = useRouter()
 const confirm = useConfirm()
-let toast = null
-try { toast = useToast() } catch { }
 const filter = reactive({ Search: '', Industry: '', PageNumber: 1, PageSize: 10 })
 const searchInput = ref('')
 const industryInput = ref('')
@@ -54,12 +52,6 @@ const dialogType = ref('company')
 const editingId = ref(null)
 const saving = ref(false)
 const dialogErrorMessage = ref('')
-const placementDialogVisible = ref(false)
-const placementSaving = ref(false)
-const placementError = ref('')
-const placementSuccess = ref('')
-const selectedPlacement = ref(null)
-const placementNote = ref('')
 const companyForm = reactive({ name: '', address: '', industry: '', contactPerson: '', contactPhone: '', contactEmail: '', contactPosition: '' })
 const jobForm = reactive({ companyId: null, title: '', department: '', location: '', deadline: null, quantity: 1, description: '', isOpen: true })
 let searchDebounceTimer = null
@@ -208,17 +200,7 @@ async function toggleJob(position, companyId) {
 }
 
 function openPlacementDialog(company, position) {
-  selectedPlacement.value = { company, position }; placementNote.value = ''; placementError.value = ''; placementSuccess.value = ''; placementDialogVisible.value = true
-}
-
-async function submitPlacement() {
-  placementSaving.value = true; placementError.value = ''
-  const { company, position } = selectedPlacement.value
-  try {
-    await createPlacementRequest({ companyId: company.id, jobPositionId: position.id, note: placementNote.value })
-    placementDialogVisible.value = false; placementSuccess.value = 'Tạo yêu cầu thành công.'
-    try { toast?.add({ severity: 'success', summary: 'Thành công', detail: placementSuccess.value, life: 3000 }) } catch { }
-  } catch (err) { placementError.value = errorText(err) } finally { placementSaving.value = false }
+  router.push({ name: 'job-position-apply', params: { id: position.id }, query: { from: 'companies' } })
 }
 
 function onPage(event) { filter.PageNumber = event.page + 1; filter.PageSize = event.rows; fetchCompanies() }
@@ -260,7 +242,6 @@ onBeforeUnmount(() => {
       </SelectButton>
     </div>
     <Message v-if="errorMessage" severity="error" :closable="false" class="view-message">{{ errorMessage }}</Message>
-    <Message v-if="placementSuccess" severity="success" :closable="true" class="view-message" @close="placementSuccess = ''">{{ placementSuccess }}</Message>
 
     <section v-if="viewMode === 'grid' || isMobile" class="companies-grid" aria-label="Danh sách doanh nghiệp">
       <article v-for="company in loading ? [] : companies" :key="company.id" class="company-card">
@@ -288,7 +269,7 @@ onBeforeUnmount(() => {
             <Column field="title" header="Tên vị trí" /><Column field="quantity" header="Số lượng" /><Column field="description" header="Mô tả"><template #body="{ data: position }">{{ emptyDisplay(position.description) }}</template></Column>
             <Column header="Trạng thái"><template #body="{ data: position }"><Tag :value="position.isOpen ? 'Đang tuyển' : 'Đã đóng'" :severity="position.isOpen ? 'success' : 'secondary'" /></template></Column>
             <Column v-if="authStore.isAdmin" header="Đã nhận/Tổng"><template #body="{ data: position }">{{ position.acceptedCount ?? 0 }}/{{ position.quantity }}</template></Column>
-            <Column header="Thao tác"><template #body="{ data: position }"><div class="action-buttons"><template v-if="authStore.isAdmin"><InputSwitch v-model="position.isOpen" :disabled="jobLoading[data.id]" @update:model-value="toggleJob(position, data.id)" /><Button icon="pi pi-pencil" severity="secondary" text rounded aria-label="Sửa vị trí" @click="openEditJob(position)" /><Button icon="pi pi-trash" severity="danger" text rounded aria-label="Xóa vị trí" @click="confirmDeleteJob(position, data.id)" /></template><Button v-else label="Tạo yêu cầu" icon="pi pi-send" size="small" :disabled="position.isOpen !== true" @click="openPlacementDialog(data, position)" /></div></template></Column>
+            <Column header="Thao tác"><template #body="{ data: position }"><div class="action-buttons"><template v-if="authStore.isAdmin"><InputSwitch v-model="position.isOpen" :disabled="jobLoading[data.id]" @update:model-value="toggleJob(position, data.id)" /><Button icon="pi pi-pencil" severity="secondary" text rounded aria-label="Sửa vị trí" @click="openEditJob(position)" /><Button icon="pi pi-trash" severity="danger" text rounded aria-label="Xóa vị trí" @click="confirmDeleteJob(position, data.id)" /></template><Button v-else label="Ứng tuyển" icon="pi pi-send" size="small" :disabled="position.isOpen !== true || position.isExpired" @click="openPlacementDialog(data, position)" /></div></template></Column>
           </DataTable>
         </div>
       </template>
@@ -322,7 +303,7 @@ onBeforeUnmount(() => {
                   <Button icon="pi pi-pencil" severity="secondary" text rounded aria-label="Sửa vị trí" @click="openEditJob(position)" />
                   <Button icon="pi pi-trash" severity="danger" text rounded aria-label="Xóa vị trí" @click="confirmDeleteJob(position, selectedCompany.id)" />
                 </div>
-                <Button v-else label="Tạo yêu cầu" icon="pi pi-send" :disabled="position.isOpen !== true || position.isExpired" @click="openPlacementDialog(selectedCompany, position)" />
+                <Button v-else label="Ứng tuyển" icon="pi pi-send" :disabled="position.isOpen !== true || position.isExpired" @click="openPlacementDialog(selectedCompany, position)" />
               </div>
             </article>
           </div>
@@ -339,8 +320,6 @@ onBeforeUnmount(() => {
       <div class="dialog-actions"><Button type="button" label="Hủy" severity="secondary" text :disabled="saving" @click="closeDialog" /><Button type="submit" label="Lưu" icon="pi pi-check" :loading="saving" /></div>
     </form>
   </Dialog>
-
-  <Dialog v-model:visible="placementDialogVisible" modal class="app-fullscreen-dialog" header="Tạo yêu cầu thực tập" :style="{ width: 'min(32rem, calc(100vw - 2rem))' }"><Message v-if="placementError" severity="error" :closable="false">{{ placementError }}</Message><div v-if="selectedPlacement" class="entity-form"><div class="form-field"><label>Công ty</label><InputText :model-value="selectedPlacement.company.name" readonly /></div><div class="form-field"><label>Vị trí</label><InputText :model-value="selectedPlacement.position.title" readonly /></div><div class="form-field"><label for="placement-note">Ghi chú</label><Textarea id="placement-note" v-model="placementNote" rows="4" :disabled="placementSaving" /></div><div class="dialog-actions"><Button label="Hủy" severity="secondary" text :disabled="placementSaving" @click="placementDialogVisible = false" /><Button label="Xác nhận" icon="pi pi-check" :loading="placementSaving" @click="submitPlacement" /></div></div></Dialog>
 </div>
 </template>
 

@@ -87,7 +87,7 @@ public class StudentStatusHistoryTests
         dbContext.AddRange(company, student, request);
         await dbContext.SaveChangesAsync();
 
-        var service = new PlacementRequestService(dbContext);
+        var service = new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance);
         var result = await service.ApproveRequestAsync(request.Id, adminUserId: 53);
 
         result.Success.Should().BeTrue();

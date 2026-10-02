@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LIMITS, mapServerErrors, validateApplication } from './applicationValidation.js'
+import { LIMITS, mapServerErrors, resolveReturnPath, validateApplication } from './applicationValidation.js'
 
 const validForm = {
   applicantFullName: 'Nguyễn Văn A',
@@ -88,5 +88,19 @@ describe('mapServerErrors', () => {
     expect(mapServerErrors({
       response: { data: { message: 'Bạn đã có một yêu cầu đang chờ duyệt.' } }
     })).toEqual({ _form: 'Bạn đã có một yêu cầu đang chờ duyệt.' })
+  })
+})
+
+describe('resolveReturnPath', () => {
+  it.each([
+    ['job-positions', '/job-positions'],
+    ['companies', '/companies'],
+    ['//evil.com', '/profile'],
+    ['https://example.com', '/profile'],
+    ['unexpected-source', '/profile'],
+    [['companies'], '/profile'],
+    [undefined, '/profile']
+  ])('allows only the known source %s', (from, expected) => {
+    expect(resolveReturnPath(from)).toBe(expected)
   })
 })
