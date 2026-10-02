@@ -25,6 +25,28 @@
   --text-caption: 12px;
   --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.03);
   --shadow-md: 0 2px 8px rgba(17, 24, 39, 0.05);
+  --apply-primary: #6366f1;
+  --apply-primary-hover: #4f46e5;
+  --apply-primary-soft: #eef0ff;
+  --apply-surface: #ffffff;
+  --apply-ink: #0f172a;
+  --apply-muted: #64748b;
+  --apply-border: #e2e8f0;
+  --apply-canvas: #f6f7fb;
+  --apply-error: #ef4444;
+  --apply-success: #10b981;
+  --apply-warning-soft: #fef3c7;
+  --apply-danger-soft: #fef2f2;
+  --apply-neutral-soft: #f1f5f9;
+  --apply-placeholder: #94a3b8;
+  --apply-warning-ink: #92400e;
+  --apply-error-ink: #b91c1c;
+  --apply-success-soft: #d1fae5;
+  --apply-disabled-bg: #a5b4fc;
+  --apply-focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.18);
+  --apply-error-ring: 0 0 0 3px rgba(239, 68, 68, 0.14);
+  --apply-button-shadow: 0 4px 10px rgba(99, 102, 241, 0.18);
+  --apply-shadow: 0 2px 10px rgba(15, 23, 42, 0.035);
 
   color: var(--text);
   background: var(--page-bg);
@@ -323,4 +345,8 @@ body {
     min-width: 44px;
     min-height: 44px;
   }
+}
+
+.main-content:has(.apply-page) {
+  background: var(--apply-canvas);
 }
