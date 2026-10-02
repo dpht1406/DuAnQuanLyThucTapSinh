@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
 using StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
@@ -11,45 +12,60 @@ namespace StudentInternshipMgmt.Infrastructure.Services;
 public class PlacementRequestService : IPlacementRequestService
 {
     private readonly AppDbContext _db;
+    private readonly ILogger<PlacementRequestService> _logger;
 
-    public PlacementRequestService(AppDbContext db)
+    public PlacementRequestService(AppDbContext db, ILogger<PlacementRequestService> logger)
     {
         _db = db;
+        _logger = logger;
+    }
+
+    public PlacementRequestService(AppDbContext db)
+        : this(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<PlacementRequestService>.Instance)
+    {
     }
 
     public async Task<(bool Success, string? Error, PlacementRequestDto? Data)> CreateRequestAsync(int studentId, CreatePlacementRequestDto dto)
     {
+        (bool Success, string? Error, PlacementRequestDto? Data) Reject(string reason, string message)
+        {
+            _logger.LogWarning(
+                "Placement request rejected: {Reason}; StudentId {StudentId}, CompanyId {CompanyId}, JobPositionId {JobPositionId}",
+                reason, studentId, dto.CompanyId, dto.JobPositionId);
+            return (false, message, null);
+        }
+
         var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == studentId);
         if (student is null)
-            return (false, "Không tìm thấy sinh viên.", null);
+            return Reject("StudentNotFound", "Không tìm thấy sinh viên.");
 
         if (student.Status != StudentStatus.NoCompany)
-            return (false, "Chỉ có thể tạo yêu cầu khi chưa có doanh nghiệp.", null);
+            return Reject("StudentAlreadyHasCompany", "Chỉ có thể tạo yêu cầu khi chưa có doanh nghiệp.");
 
         var hasPending = await _db.PlacementRequests
             .AnyAsync(r => r.StudentId == studentId && r.Status == RequestStatus.Pending);
         if (hasPending)
-            return (false, "Bạn đã có một yêu cầu đang chờ duyệt.", null);
+            return Reject("PendingRequestExists", "Bạn đã có một yêu cầu đang chờ duyệt.");
 
         var company = await _db.Companies.FirstOrDefaultAsync(c => c.Id == dto.CompanyId);
         if (company is null)
-            return (false, "Không tìm thấy doanh nghiệp.", null);
+            return Reject("CompanyNotFound", "Không tìm thấy doanh nghiệp.");
 
         JobPosition? jobPosition = null;
         if (dto.JobPositionId.HasValue)
         {
             jobPosition = await _db.JobPositions.FirstOrDefaultAsync(jp => jp.Id == dto.JobPositionId.Value);
             if (jobPosition is null)
-                return (false, "Không tìm thấy vị trí tuyển dụng.", null);
+                return Reject("JobPositionNotFound", "Không tìm thấy vị trí tuyển dụng.");
 
             if (jobPosition.CompanyId != dto.CompanyId)
-                return (false, "Vị trí tuyển dụng không thuộc doanh nghiệp đã chọn.", null);
+                return Reject("JobPositionCompanyMismatch", "Vị trí tuyển dụng không thuộc doanh nghiệp đã chọn.");
 
             if (!jobPosition.IsOpen)
-                return (false, "Vị trí này đã ngừng tuyển.", null);
+                return Reject("JobPositionClosed", "Vị trí này đã ngừng tuyển.");
 
             if (jobPosition.Deadline.HasValue && jobPosition.Deadline.Value.Date < DateTime.Today)
-                return (false, "Vị trí này đã hết hạn nhận hồ sơ.", null);
+                return Reject("JobPositionExpired", "Vị trí này đã hết hạn nhận hồ sơ.");
         }
 
         var request = new PlacementRequest
@@ -57,13 +73,24 @@ public class PlacementRequestService : IPlacementRequestService
             StudentId = studentId,
             CompanyId = dto.CompanyId,
             JobPositionId = dto.JobPositionId,
+            ApplicantFullName = CleanString(dto.ApplicantFullName),
+            ApplicantEmail = CleanString(dto.ApplicantEmail)?.ToLowerInvariant(),
+            ApplicantPhone = CleanString(dto.ApplicantPhone),
+            ApplicantSchool = CleanString(dto.ApplicantSchool),
+            ApplicantMajor = CleanString(dto.ApplicantMajor),
+            CvUrl = CleanString(dto.CvUrl),
+            CoverLetter = CleanString(dto.CoverLetter, preserveLineBreaks: true),
             Status = RequestStatus.Pending,
-            Note = dto.Note,
+            Note = CleanString(dto.Note),
             CreatedAt = DateTime.UtcNow
         };
 
         _db.PlacementRequests.Add(request);
         await _db.SaveChangesAsync();
+
+        _logger.LogInformation(
+            "Placement request created: RequestId {RequestId}, StudentId {StudentId}, CompanyId {CompanyId}, JobPositionId {JobPositionId}",
+            request.Id, studentId, request.CompanyId, request.JobPositionId);
 
         return (true, null, new PlacementRequestDto
         {
@@ -75,6 +102,13 @@ public class PlacementRequestService : IPlacementRequestService
             CompanyName = company.Name,
             JobPositionId = jobPosition?.Id,
             JobPositionTitle = jobPosition?.Title,
+            ApplicantFullName = request.ApplicantFullName,
+            ApplicantEmail = request.ApplicantEmail,
+            ApplicantPhone = request.ApplicantPhone,
+            ApplicantSchool = request.ApplicantSchool,
+            ApplicantMajor = request.ApplicantMajor,
+            CvUrl = request.CvUrl,
+            CoverLetter = request.CoverLetter,
             Status = request.Status,
             Note = request.Note,
             RejectReason = request.RejectReason,
@@ -111,6 +145,13 @@ public class PlacementRequestService : IPlacementRequestService
                 CompanyName = r.Company.Name,
                 JobPositionId = r.JobPositionId,
                 JobPositionTitle = r.JobPosition != null ? r.JobPosition.Title : null,
+                ApplicantFullName = r.ApplicantFullName,
+                ApplicantEmail = r.ApplicantEmail,
+                ApplicantPhone = r.ApplicantPhone,
+                ApplicantSchool = r.ApplicantSchool,
+                ApplicantMajor = r.ApplicantMajor,
+                CvUrl = r.CvUrl,
+                CoverLetter = r.CoverLetter,
                 Status = r.Status,
                 Note = r.Note,
                 RejectReason = r.RejectReason,
@@ -138,6 +179,13 @@ public class PlacementRequestService : IPlacementRequestService
                 CompanyName = r.Company.Name,
                 JobPositionId = r.JobPositionId,
                 JobPositionTitle = r.JobPosition != null ? r.JobPosition.Title : null,
+                ApplicantFullName = r.ApplicantFullName,
+                ApplicantEmail = r.ApplicantEmail,
+                ApplicantPhone = r.ApplicantPhone,
+                ApplicantSchool = r.ApplicantSchool,
+                ApplicantMajor = r.ApplicantMajor,
+                CvUrl = r.CvUrl,
+                CoverLetter = r.CoverLetter,
                 Status = r.Status,
                 Note = r.Note,
                 RejectReason = r.RejectReason,
@@ -147,6 +195,17 @@ public class PlacementRequestService : IPlacementRequestService
                 ReviewedAt = r.ReviewedAt
             })
             .ToListAsync();
+    }
+
+    private static string? CleanString(string? value, bool preserveLineBreaks = false)
+    {
+        if (value is null)
+            return null;
+
+        return new string(value.Trim()
+            .Where(character => !char.IsControl(character)
+                || preserveLineBreaks && character is '\r' or '\n')
+            .ToArray());
     }
 
     public async Task<(bool Success, string? Error, bool NotFound)> ApproveRequestAsync(int requestId, int adminUserId)

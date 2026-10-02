@@ -4,6 +4,9 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    dedupe: ['vue', 'vue-router', 'pinia', 'primevue', '@primeuix/themes']
+  },
   optimizeDeps: {
     include: [
       'vue',
@@ -27,6 +30,7 @@ export default defineConfig({
       'primevue/config',
       'primevue/confirmationservice',
       'primevue/confirmdialog',
+      'primevue/datepicker',
       'primevue/datatable',
       'primevue/dialog',
       'primevue/drawer',
@@ -36,6 +40,10 @@ export default defineConfig({
       'primevue/inputnumber',
       'primevue/inputswitch',
       'primevue/inputtext',
+      'primevue/accordion',
+      'primevue/accordionpanel',
+      'primevue/accordionheader',
+      'primevue/accordioncontent',
       'primevue/menu',
       'primevue/message',
       'primevue/paginator',

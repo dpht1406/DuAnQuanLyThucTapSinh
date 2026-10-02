@@ -3,7 +3,7 @@ using FluentValidation;
 namespace StudentInternshipMgmt.Application.Features.Students;
 
 // Số điện thoại VN: đúng 10 chữ số, bắt đầu bằng 0.
-internal static class StudentValidationRules
+public static class StudentValidationRules
 {
     public const string PhoneRegex = @"^0\d{9}$";
 }

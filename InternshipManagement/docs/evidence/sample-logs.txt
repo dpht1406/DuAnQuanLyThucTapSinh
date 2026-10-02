@@ -1,0 +1,4 @@
+Information: Placement request created: RequestId 1, StudentId 1, CompanyId 10, JobPositionId 100
+Warning: Placement request rejected: PendingRequestExists; StudentId 1, CompanyId 10, JobPositionId 100
+
+Hai dòng được formatter của ILogger tạo ra trong test CreateRequestAsync_logs_safe_fields_for_success_and_rejection. Test đã kiểm tra các dòng không chứa email, SĐT, URL CV hoặc lời giới thiệu.

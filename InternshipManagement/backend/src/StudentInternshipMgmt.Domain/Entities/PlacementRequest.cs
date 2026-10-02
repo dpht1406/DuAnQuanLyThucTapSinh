@@ -14,6 +14,14 @@ public class PlacementRequest : BaseEntity
     public int? JobPositionId { get; set; }
     public JobPosition? JobPosition { get; set; }
 
+    public string? ApplicantFullName { get; set; }
+    public string? ApplicantEmail { get; set; }
+    public string? ApplicantPhone { get; set; }
+    public string? ApplicantSchool { get; set; }
+    public string? ApplicantMajor { get; set; }
+    public string? CvUrl { get; set; }
+    public string? CoverLetter { get; set; }
+
     public RequestStatus Status { get; set; } = RequestStatus.Pending;
     public string? Note { get; set; }
     public string? RejectReason { get; set; }

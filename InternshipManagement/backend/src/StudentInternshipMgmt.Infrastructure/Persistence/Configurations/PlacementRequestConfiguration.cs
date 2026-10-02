@@ -20,6 +20,27 @@ public class PlacementRequestConfiguration : IEntityTypeConfiguration<PlacementR
         builder.Property(pr => pr.Note)
             .HasMaxLength(1000);
 
+        builder.Property(pr => pr.ApplicantFullName)
+            .HasMaxLength(100);
+
+        builder.Property(pr => pr.ApplicantEmail)
+            .HasMaxLength(254);
+
+        builder.Property(pr => pr.ApplicantPhone)
+            .HasMaxLength(10);
+
+        builder.Property(pr => pr.ApplicantSchool)
+            .HasMaxLength(150);
+
+        builder.Property(pr => pr.ApplicantMajor)
+            .HasMaxLength(150);
+
+        builder.Property(pr => pr.CvUrl)
+            .HasMaxLength(500);
+
+        builder.Property(pr => pr.CoverLetter)
+            .HasMaxLength(2000);
+
         builder.Property(pr => pr.RejectReason)
             .HasMaxLength(1000);
 
