@@ -14,6 +14,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import { approveRequest, getPlacementRequests, rejectRequest } from '../../api/placement-requests.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateSafeText } from '../../utils/emailValidation.js'
 
 const filter = reactive({ Status: null, PageNumber: 1, PageSize: 10 })
 const requests = ref([])
@@ -119,6 +120,11 @@ async function submitReject() {
   rejectError.value = ''
   if (!rejectReason.value.trim()) {
     rejectError.value = 'Lý do từ chối không được để trống.'
+    return
+  }
+  const inputError = validateSafeText(rejectReason.value, 1000, true)
+  if (inputError) {
+    rejectError.value = inputError
     return
   }
 
@@ -234,7 +240,7 @@ onMounted(fetchRequests)
     <form class="reject-form" @submit.prevent="submitReject">
       <div class="form-field">
         <label for="reject-reason">Lý do từ chối</label>
-        <Textarea id="reject-reason" v-model="rejectReason" rows="5" :disabled="rejecting" auto-resize />
+        <Textarea id="reject-reason" v-model="rejectReason" rows="5" maxlength="1000" :disabled="rejecting" auto-resize />
       </div>
       <div class="dialog-actions">
         <Button type="button" label="Hủy" severity="secondary" text :disabled="rejecting" @click="closeRejectDialog" />

@@ -1,3 +1,5 @@
+import { validateEmailAddress, validateSafeText } from './emailValidation.js'
+
 export const LIMITS = {
   fullName: [2, 100],
   school: [2, 150],
@@ -52,12 +54,27 @@ export function validateApplication(form) {
   const cvUrl = trimmed(form?.cvUrl)
   const coverLetter = trimmed(form?.coverLetter)
 
+  const stringChecks = [
+    ['applicantFullName', form?.applicantFullName, LIMITS.fullName[1], false],
+    ['applicantPhone', form?.applicantPhone, 10, false],
+    ['applicantSchool', form?.applicantSchool, LIMITS.school[1], false],
+    ['applicantMajor', form?.applicantMajor, LIMITS.major[1], false],
+    ['cvUrl', form?.cvUrl, LIMITS.cvUrl, false],
+    ['coverLetter', form?.coverLetter, LIMITS.coverLetter[1], true]
+  ]
+  for (const [field, value, maximumLength, allowLineBreaks] of stringChecks) {
+    const error = validateSafeText(value, maximumLength, allowLineBreaks)
+    if (error) errors[field] = error
+  }
+
   if (!fullName) errors.applicantFullName = 'Họ tên là bắt buộc.'
   else if (!hasLength(fullName, LIMITS.fullName)) errors.applicantFullName = 'Họ tên phải từ 2 đến 100 ký tự.'
 
   if (!email) errors.applicantEmail = 'Email ứng viên là bắt buộc.'
-  else if (email.length > LIMITS.email) errors.applicantEmail = 'Email ứng viên không được vượt quá 254 ký tự.'
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.applicantEmail = 'Email ứng viên không đúng định dạng.'
+  else {
+    const emailError = validateEmailAddress(form?.applicantEmail, LIMITS.email)
+    if (emailError) errors.applicantEmail = emailError
+  }
 
   if (!phone) errors.applicantPhone = 'Số điện thoại ứng viên là bắt buộc.'
   else if (!/^0\d{9}$/.test(phone)) errors.applicantPhone = 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0.'

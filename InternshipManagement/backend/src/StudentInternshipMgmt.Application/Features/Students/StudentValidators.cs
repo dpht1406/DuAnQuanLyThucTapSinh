@@ -1,4 +1,5 @@
 using FluentValidation;
+using StudentInternshipMgmt.Application.Common;
 
 namespace StudentInternshipMgmt.Application.Features.Students;
 
@@ -25,8 +26,10 @@ public class CreateStudentDtoValidator : AbstractValidator<CreateStudentDto>
             .NotEmpty().WithMessage("ClassName là bắt buộc.");
 
         RuleFor(x => x.Email)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Email là bắt buộc.")
-            .EmailAddress().WithMessage("Email không đúng định dạng.");
+            .Must(EmailAddressValidator.IsValid)
+            .WithMessage(x => EmailAddressValidator.GetErrorMessage(x.Email));
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty().WithMessage("PhoneNumber là bắt buộc.")
@@ -49,8 +52,10 @@ public class UpdateStudentDtoValidator : AbstractValidator<UpdateStudentDto>
             .NotEmpty().WithMessage("ClassName là bắt buộc.");
 
         RuleFor(x => x.Email)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Email là bắt buộc.")
-            .EmailAddress().WithMessage("Email không đúng định dạng.");
+            .Must(EmailAddressValidator.IsValid)
+            .WithMessage(x => EmailAddressValidator.GetErrorMessage(x.Email));
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty().WithMessage("PhoneNumber là bắt buộc.")

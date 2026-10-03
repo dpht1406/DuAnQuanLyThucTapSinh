@@ -10,6 +10,7 @@ import { useToast } from 'primevue/usetoast'
 import { assignCompanyToStudent, changeStudentStatus } from '../../api/students.js'
 import { getCompanies, getCompanyById } from '../../api/companies.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateSafeText } from '../../utils/emailValidation.js'
 import { STATUS_LABELS, STATUS_OPTIONS, STATUS_SEVERITY } from '../../utils/studentStatus.js'
 
 const props = defineProps({
@@ -101,6 +102,13 @@ async function submitStatusChange() {
     statusError.value = 'Vui lòng gán doanh nghiệp trước khi chuyển trạng thái.'
     return
   }
+  for (const value of [note.value, rejectReason.value]) {
+    const inputError = validateSafeText(value, 1000, true)
+    if (inputError) {
+      statusError.value = inputError
+      return
+    }
+  }
   if (isBackward.value && !note.value.trim()) {
     statusError.value = 'Phải nhập ghi chú khi lùi trạng thái.'
     return
@@ -125,6 +133,11 @@ async function submitStatusChange() {
 
 async function submitAssignment() {
   assignmentError.value = ''
+  const inputError = validateSafeText(assignmentNote.value, 1000, true)
+  if (inputError) {
+    assignmentError.value = inputError
+    return
+  }
   if (companyId.value == null) {
     assignmentError.value = 'Vui lòng chọn doanh nghiệp.'
     return
@@ -183,11 +196,11 @@ async function submitAssignment() {
         </Message>
         <div class="form-field">
           <label for="status-note">Ghi chú{{ isBackward ? ' (bắt buộc khi lùi)' : '' }}</label>
-          <Textarea id="status-note" v-model="note" rows="3" :disabled="saving" />
+          <Textarea id="status-note" v-model="note" rows="3" maxlength="1000" :disabled="saving" />
         </div>
         <div v-if="isBackward" class="form-field">
           <label for="status-reject-reason">Lý do từ chối</label>
-          <Textarea id="status-reject-reason" v-model="rejectReason" rows="2" :disabled="saving" />
+          <Textarea id="status-reject-reason" v-model="rejectReason" rows="2" maxlength="1000" :disabled="saving" />
         </div>
         <div class="dialog-actions">
           <Button type="button" label="Đóng" severity="secondary" text :disabled="saving" @click="closeDialog" />
@@ -228,7 +241,7 @@ async function submitAssignment() {
         </div>
         <div class="form-field">
           <label for="assignment-note">Ghi chú gán doanh nghiệp</label>
-          <Textarea id="assignment-note" v-model="assignmentNote" rows="2" :disabled="saving" />
+          <Textarea id="assignment-note" v-model="assignmentNote" rows="2" maxlength="1000" :disabled="saving" />
         </div>
         <div class="dialog-actions">
           <Button label="Gán doanh nghiệp" icon="pi pi-building" :loading="saving" :disabled="companyOptions.length === 0" @click="submitAssignment" />

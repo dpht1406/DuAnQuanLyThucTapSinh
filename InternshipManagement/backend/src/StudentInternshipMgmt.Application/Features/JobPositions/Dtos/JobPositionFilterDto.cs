@@ -5,6 +5,7 @@ namespace StudentInternshipMgmt.Application.Features.JobPositions.Dtos;
 public class JobPositionFilterDto : PaginationParams
 {
     // Tìm gần đúng theo Title (Contains, không phân biệt hoa/thường).
+    [SafeString(200)]
     public string? Search { get; set; }
 
     // Lọc theo công ty.
@@ -13,7 +14,9 @@ public class JobPositionFilterDto : PaginationParams
     // Lọc theo trạng thái còn tuyển hay không.
     public bool? IsOpen { get; set; }
 
+    [SafeString(20)]
     public string? Availability { get; set; }
 
+    [SafeString(30)]
     public string? Sort { get; set; }
 }

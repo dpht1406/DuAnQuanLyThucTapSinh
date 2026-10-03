@@ -277,6 +277,7 @@ onBeforeUnmount(() => {
                 v-model="searchInput"
                 placeholder="MSSV hoặc họ tên"
                 class="w-full"
+                maxlength="150"
                 :disabled="loadingStudents"
               />
             </div>

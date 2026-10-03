@@ -702,7 +702,7 @@ public class StudentService : IStudentService
         {
             var row = rows[r];
             for (int c = 0; c < row.Length; c++)
-                ws.Cell(r + 2, c + 1).Value = row[c];
+                ws.Cell(r + 2, c + 1).Value = SpreadsheetSafety.EscapeFormula(row[c]);
         }
 
         ws.Columns().AdjustToContents();
@@ -716,20 +716,12 @@ public class StudentService : IStudentService
     private static byte[] BuildExportCsv(List<string[]> rows)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(string.Join(",", ExportHeaders.Select(EscapeCsv)));
+        sb.AppendLine(string.Join(",", ExportHeaders.Select(SpreadsheetSafety.EscapeCsvField)));
         foreach (var row in rows)
-            sb.AppendLine(string.Join(",", row.Select(EscapeCsv)));
+            sb.AppendLine(string.Join(",", row.Select(SpreadsheetSafety.EscapeCsvField)));
 
         // UTF-8 có BOM để Excel mở tiếng Việt không lỗi font.
         return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
-    }
-
-    private static string EscapeCsv(string value)
-    {
-        value ??= string.Empty;
-        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
-            return $"\"{value.Replace("\"", "\"\"")}\"";
-        return value;
     }
 
     // ---------- mapping tay Entity -> DTO ----------

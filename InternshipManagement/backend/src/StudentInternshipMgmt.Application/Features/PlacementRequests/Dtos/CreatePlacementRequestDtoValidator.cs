@@ -1,4 +1,5 @@
 using FluentValidation;
+using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Students;
 
 namespace StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
@@ -31,8 +32,8 @@ public class CreatePlacementRequestDtoValidator : AbstractValidator<CreatePlacem
             .WithMessage("Email ứng viên là bắt buộc.")
             .Must(value => value!.Trim().Length <= 254)
             .WithMessage("Email ứng viên không được vượt quá 254 ký tự.")
-            .Must(IsValidEmail)
-            .WithMessage("Email ứng viên không đúng định dạng.");
+            .Must(EmailAddressValidator.IsValid)
+            .WithMessage(request => EmailAddressValidator.GetErrorMessage(request.ApplicantEmail));
 
         RuleFor(request => request.ApplicantPhone)
             .Cascade(CascadeMode.Stop)
@@ -91,10 +92,4 @@ public class CreatePlacementRequestDtoValidator : AbstractValidator<CreatePlacem
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
-    private static bool IsValidEmail(string? value)
-    {
-        return value is not null
-            && System.Text.RegularExpressions.Regex.IsMatch(
-                value.Trim(), @"^[^\s@]+@[^\s@]+\.[^\s@]+$");
-    }
 }

@@ -15,6 +15,7 @@ import { createStudent, deleteStudent, getStudents, updateStudent } from '../../
 import { getCompanies } from '../../api/companies.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import StudentStatusDialog from '../../components/students/StudentStatusDialog.vue'
+import { validateEmailAddress, validateSafeText } from '../../utils/emailValidation.js'
 import {
   STATUS_OPTIONS,
   STATUS_LABELS,
@@ -116,8 +117,41 @@ function closeStudentDialog() {
 }
 
 async function submitStudent() {
-  saving.value = true
   dialogErrorMessage.value = ''
+  const requiredFields = [
+    ['MSSV', studentForm.StudentCode],
+    ['Họ tên', studentForm.FullName],
+    ['Email', studentForm.Email],
+    ['Số điện thoại', studentForm.PhoneNumber],
+    ['Ngành', studentForm.Major],
+    ['Lớp', studentForm.ClassName]
+  ]
+  const missingField = requiredFields.find(([, value]) => !String(value ?? '').trim())
+  if (missingField) {
+    dialogErrorMessage.value = `${missingField[0]} không được để trống.`
+    return
+  }
+
+  const limits = {
+    StudentCode: 20,
+    FullName: 150,
+    PhoneNumber: 20,
+    Major: 150,
+    ClassName: 50
+  }
+  for (const [field, maximumLength] of Object.entries(limits)) {
+    const validationError = validateSafeText(studentForm[field], maximumLength)
+    if (validationError) {
+      dialogErrorMessage.value = validationError
+      return
+    }
+  }
+  const emailError = validateEmailAddress(studentForm.Email, 150)
+  if (emailError) {
+    dialogErrorMessage.value = emailError
+    return
+  }
+  saving.value = true
 
   try {
     if (dialogMode.value === 'create') {
@@ -249,6 +283,7 @@ onBeforeUnmount(() => {
             v-model="searchInput"
             placeholder="MSSV hoặc họ tên"
             class="w-full"
+            maxlength="150"
             :disabled="loading"
           />
         </div>
@@ -383,35 +418,36 @@ onBeforeUnmount(() => {
         <Message v-if="dialogErrorMessage" severity="error" :closable="false">
           {{ dialogErrorMessage }}
         </Message>
-        <form class="student-form" @submit.prevent="submitStudent">
+        <form class="student-form" novalidate @submit.prevent="submitStudent">
           <div class="form-field">
             <label for="student-code">MSSV</label>
             <InputText
               id="student-code"
               v-model="studentForm.StudentCode"
+              maxlength="20"
               :disabled="dialogMode === 'edit' || saving"
               required
             />
           </div>
           <div class="form-field">
             <label for="student-full-name">Họ tên</label>
-            <InputText id="student-full-name" v-model="studentForm.FullName" :disabled="saving" required />
+            <InputText id="student-full-name" v-model="studentForm.FullName" maxlength="150" :disabled="saving" required />
           </div>
           <div class="form-field">
             <label for="student-email">Email</label>
-            <InputText id="student-email" v-model="studentForm.Email" :disabled="saving" required />
+            <InputText id="student-email" v-model="studentForm.Email" type="email" maxlength="150" :disabled="saving" required />
           </div>
           <div class="form-field">
             <label for="student-phone">Số điện thoại</label>
-            <InputText id="student-phone" v-model="studentForm.PhoneNumber" :disabled="saving" required />
+            <InputText id="student-phone" v-model="studentForm.PhoneNumber" maxlength="20" :disabled="saving" required />
           </div>
           <div class="form-field">
             <label for="student-major">Ngành</label>
-            <InputText id="student-major" v-model="studentForm.Major" :disabled="saving" required />
+            <InputText id="student-major" v-model="studentForm.Major" maxlength="150" :disabled="saving" required />
           </div>
           <div class="form-field">
             <label for="student-class">Lớp</label>
-            <InputText id="student-class" v-model="studentForm.ClassName" :disabled="saving" required />
+            <InputText id="student-class" v-model="studentForm.ClassName" maxlength="50" :disabled="saving" required />
           </div>
           <div class="dialog-actions">
             <Button type="button" label="Hủy" severity="secondary" text :disabled="saving" @click="closeStudentDialog" />

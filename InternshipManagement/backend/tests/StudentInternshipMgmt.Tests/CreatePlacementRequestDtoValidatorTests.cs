@@ -85,7 +85,8 @@ public class CreatePlacementRequestDtoValidatorTests
         yield return [nameof(CreatePlacementRequestDto.ApplicantSchool), new string('A', 150)];
         yield return [nameof(CreatePlacementRequestDto.ApplicantMajor), "AB"];
         yield return [nameof(CreatePlacementRequestDto.ApplicantMajor), new string('A', 150)];
-        yield return [nameof(CreatePlacementRequestDto.ApplicantEmail), $"{new string('a', 242)}@example.com"];
+        yield return [nameof(CreatePlacementRequestDto.ApplicantEmail),
+            $"{new string('a', 64)}@{new string('b', 63)}.{new string('c', 63)}.{new string('d', 61)}"];
         yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "0901234567"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "http://x.com/cv"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://drive.google.com/file/d/abc/view"];

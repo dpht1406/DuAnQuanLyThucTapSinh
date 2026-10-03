@@ -106,17 +106,10 @@ public class StudentsController : ControllerBase
         var sb = new StringBuilder();
         sb.AppendLine("Username,PlainPassword");
         foreach (var acc in dto.Accounts)
-            sb.AppendLine($"{EscapeCsv(acc.StudentCode)},{EscapeCsv(acc.PlainPassword)}");
+            sb.AppendLine($"{SpreadsheetSafety.EscapeCsvField(acc.StudentCode)},{SpreadsheetSafety.EscapeCsvField(acc.PlainPassword)}");
 
         var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
         return File(bytes, "text/csv", $"accounts_{DateTime.UtcNow:yyyyMMddHHmmss}.csv");
-    }
-
-    private static string EscapeCsv(string value)
-    {
-        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
-            return $"\"{value.Replace("\"", "\"\"")}\"";
-        return value;
     }
 
     // GET /api/students/export?format=csv|xlsx&Search=&Status=&CompanyId=

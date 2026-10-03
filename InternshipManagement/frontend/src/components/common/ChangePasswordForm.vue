@@ -5,6 +5,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { useAuthStore } from '../../stores/auth.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateSafeText } from '../../utils/emailValidation.js'
 
 const emit = defineEmits(['success'])
 const authStore = useAuthStore()
@@ -18,6 +19,10 @@ const canSubmit = computed(() => currentPassword.value !== '' && newPassword.val
 
 function validateForm() {
   if (!canSubmit.value) return 'Vui lòng nhập đầy đủ thông tin.'
+  for (const value of [currentPassword.value, newPassword.value, confirmPassword.value]) {
+    const inputError = validateSafeText(value, 300)
+    if (inputError) return inputError
+  }
   if (newPassword.value.length < 6) return 'Mật khẩu mới phải có ít nhất 6 ký tự.'
   if (newPassword.value === currentPassword.value) return 'Mật khẩu mới phải khác mật khẩu hiện tại.'
   if (newPassword.value !== confirmPassword.value) return 'Xác nhận mật khẩu mới không khớp.'
@@ -49,15 +54,15 @@ async function onSubmit() {
     <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
     <div class="field">
       <label for="current-password">Mật khẩu hiện tại</label>
-      <Password id="current-password" v-model="currentPassword" :feedback="false" toggle-mask autocomplete="current-password" input-class="w-full" class="w-full" :disabled="loading" />
+      <Password id="current-password" v-model="currentPassword" :feedback="false" toggle-mask autocomplete="current-password" :pt="{ input: { maxlength: 300 } }" input-class="w-full" class="w-full" :disabled="loading" />
     </div>
     <div class="field">
       <label for="new-password">Mật khẩu mới</label>
-      <Password id="new-password" v-model="newPassword" :feedback="false" toggle-mask autocomplete="new-password" input-class="w-full" class="w-full" :disabled="loading" />
+      <Password id="new-password" v-model="newPassword" :feedback="false" toggle-mask autocomplete="new-password" :pt="{ input: { maxlength: 300 } }" input-class="w-full" class="w-full" :disabled="loading" />
     </div>
     <div class="field">
       <label for="confirm-password">Xác nhận mật khẩu mới</label>
-      <Password id="confirm-password" v-model="confirmPassword" :feedback="false" toggle-mask autocomplete="new-password" input-class="w-full" class="w-full" :disabled="loading" />
+      <Password id="confirm-password" v-model="confirmPassword" :feedback="false" toggle-mask autocomplete="new-password" :pt="{ input: { maxlength: 300 } }" input-class="w-full" class="w-full" :disabled="loading" />
     </div>
     <Button type="submit" label="Đổi mật khẩu" class="w-full" :loading="loading" :disabled="!canSubmit" />
   </form>

@@ -13,6 +13,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import { changeMyStatus, getMyProfile, getMyStatusHistory } from '../../api/me.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateSafeText } from '../../utils/emailValidation.js'
 import {
   STATUS_LABELS,
   STATUS_OPTIONS,
@@ -123,6 +124,11 @@ function closeBackDialog() {
 
 async function submitBack() {
   backError.value = ''
+  const inputError = validateSafeText(backNote.value, 1000, true)
+  if (inputError) {
+    backError.value = inputError
+    return
+  }
   if (!backNote.value.trim()) {
     backError.value = 'Lý do không được để trống.'
     return
@@ -272,7 +278,7 @@ onMounted(loadProfile)
     <Dialog v-model:visible="backDialogVisible" modal header="Lý do chuyển trạng thái" :closable="!actionLoading" :style="{ width: 'min(32rem, 90vw)' }" @hide="closeBackDialog">
       <div class="dialog-field">
         <label for="back-note">Ghi chú <span class="required-mark">*</span></label>
-        <Textarea id="back-note" v-model="backNote" rows="5" auto-resize :disabled="actionLoading" />
+        <Textarea id="back-note" v-model="backNote" rows="5" maxlength="1000" auto-resize :disabled="actionLoading" />
         <small v-if="backError" class="dialog-error">{{ backError }}</small>
       </div>
       <template #footer>

@@ -1,3 +1,5 @@
+using StudentInternshipMgmt.Application.Common;
+
 namespace StudentInternshipMgmt.Application.Features.Students;
 
 public class CreateAccountsRequestDto
@@ -9,7 +11,9 @@ public class CreateAccountsRequestDto
 // export ngay sau đó) — không được lưu lại plain text ở DB hay bất kỳ đâu khác.
 public class CreatedAccountDto
 {
+    [SafeString(20)]
     public string StudentCode { get; set; } = default!;
+    [SafeString(300)]
     public string PlainPassword { get; set; } = default!;
 }
 

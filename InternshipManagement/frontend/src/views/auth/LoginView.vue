@@ -9,6 +9,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { useAuthStore } from '../../stores/auth.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateSafeText } from '../../utils/emailValidation.js'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -27,6 +28,13 @@ const canSubmit = computed(
 
 async function onSubmit() {
   if (!canSubmit.value) return
+
+  const usernameError = validateSafeText(username.value, 100)
+  const passwordError = validateSafeText(password.value, 300)
+  if (usernameError || passwordError) {
+    errorMessage.value = usernameError || passwordError
+    return
+  }
 
   errorMessage.value = ''
   loading.value = true
@@ -83,6 +91,7 @@ async function onSubmit() {
               <InputText
                 id="username"
                 v-model="username"
+                maxlength="100"
                 fluid
                 autocomplete="username"
                 placeholder="Nhập tên đăng nhập"
@@ -98,6 +107,7 @@ async function onSubmit() {
               <InputText
                 id="password"
                 v-model="password"
+                maxlength="300"
                 fluid
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="current-password"

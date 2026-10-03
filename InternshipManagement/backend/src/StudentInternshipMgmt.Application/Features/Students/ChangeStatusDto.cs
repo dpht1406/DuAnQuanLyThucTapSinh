@@ -1,11 +1,14 @@
 using StudentInternshipMgmt.Domain.Enums;
+using StudentInternshipMgmt.Application.Common;
 
 namespace StudentInternshipMgmt.Application.Features.Students;
 
 public class ChangeStatusDto
 {
     public StudentStatus NewStatus { get; set; }
+    [SafeString(1000, allowLineBreaks: true)]
     public string? Note { get; set; }
+    [SafeString(1000, allowLineBreaks: true)]
     public string? RejectReason { get; set; }
 }
 

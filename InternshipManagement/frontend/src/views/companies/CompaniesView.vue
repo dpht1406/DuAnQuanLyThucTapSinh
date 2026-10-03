@@ -27,6 +27,7 @@ import { useAuthStore } from '../../stores/auth.js'
 import { createCompany, deleteCompany, getCompanies, getCompanyById, getIndustries, updateCompany } from '../../api/companies.js'
 import { createJobPosition, deleteJobPosition, getJobPositions, toggleOpenJobPosition, updateJobPosition } from '../../api/job-positions.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+import { validateEmailAddress, validateSafeText } from '../../utils/emailValidation.js'
 import dayjs from '../../utils/dayjs.js'
 import { formatDeadline } from '../../utils/jobPosition.js'
 
@@ -130,14 +131,31 @@ function validateForm() {
   const missing = requiredFields.find(([, value]) => !String(value ?? '').trim())
   if (missing) { dialogErrorMessage.value = `${missing[0]} không được để trống.`; return false }
   if (dialogType.value === 'company') {
+    const companyLimits = [
+      ['name', 200], ['address', 300], ['industry', 150], ['contactPerson', 150],
+      ['contactPhone', 20], ['contactEmail', 150], ['contactPosition', 100]
+    ]
+    for (const [field, maximumLength] of companyLimits) {
+      const inputError = validateSafeText(values[field] ?? '', maximumLength)
+      if (inputError) { dialogErrorMessage.value = inputError; return false }
+    }
     const phone = String(values.contactPhone ?? '').trim()
     const email = String(values.contactEmail ?? '').trim()
     const position = String(values.contactPosition ?? '').trim()
     if (phone.length > 20) { dialogErrorMessage.value = 'Số điện thoại người tuyển dụng không được quá 20 ký tự.'; return false }
     if (phone && !/^0\d{9}$/.test(phone)) { dialogErrorMessage.value = 'Số điện thoại người tuyển dụng phải gồm 10 chữ số và bắt đầu bằng số 0.'; return false }
-    if (email.length > 150) { dialogErrorMessage.value = 'Email người tuyển dụng không được quá 150 ký tự.'; return false }
-    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { dialogErrorMessage.value = 'Email người tuyển dụng không đúng định dạng.'; return false }
+    const emailError = email ? validateEmailAddress(values.contactEmail, 150) : null
+    if (emailError) { dialogErrorMessage.value = emailError; return false }
     if (position.length > 100) { dialogErrorMessage.value = 'Chức vụ người tuyển dụng không được quá 100 ký tự.'; return false }
+  }
+  if (dialogType.value === 'job') {
+    const jobLimits = [
+      ['title', 200], ['department', 100], ['location', 300], ['description', 2000]
+    ]
+    for (const [field, maximumLength] of jobLimits) {
+      const inputError = validateSafeText(values[field] ?? '', maximumLength, field === 'description')
+      if (inputError) { dialogErrorMessage.value = inputError; return false }
+    }
   }
   if (dialogType.value === 'job' && (!Number.isInteger(values.quantity) || values.quantity < 1)) { dialogErrorMessage.value = 'Số lượng phải lớn hơn hoặc bằng 1.'; return false }
   if (dialogType.value === 'job' && String(values.department ?? '').trim().length > 100) { dialogErrorMessage.value = 'Phòng ban không được quá 100 ký tự.'; return false }
@@ -235,8 +253,8 @@ onBeforeUnmount(() => {
       <Button v-if="authStore.isAdmin" class="desktop-add-company" label="Thêm doanh nghiệp" icon="pi pi-plus" @click="openCreateCompany" />
     </header>
     <div class="companies-toolbar">
-      <div class="toolbar-field toolbar-search"><label for="company-search">Tìm kiếm</label><IconField><InputIcon class="pi pi-search" /><InputText id="company-search" v-model="searchInput" placeholder="Tên doanh nghiệp" class="w-full" /></IconField></div>
-      <div class="toolbar-field toolbar-industry"><label for="company-industry">Ngành</label><AutoComplete id="company-industry" v-model="industryInput" :suggestions="industrySuggestions" placeholder="Lọc theo ngành" class="w-full" input-class="w-full" @complete="searchIndustry" /></div>
+      <div class="toolbar-field toolbar-search"><label for="company-search">Tìm kiếm</label><IconField><InputIcon class="pi pi-search" /><InputText id="company-search" v-model="searchInput" maxlength="200" placeholder="Tên doanh nghiệp" class="w-full" /></IconField></div>
+      <div class="toolbar-field toolbar-industry"><label for="company-industry">Ngành</label><AutoComplete id="company-industry" v-model="industryInput" :suggestions="industrySuggestions" placeholder="Lọc theo ngành" class="w-full" input-class="w-full" :input-props="{ maxlength: 150 }" @complete="searchIndustry" /></div>
       <SelectButton v-model="viewMode" class="view-mode-control" :options="viewModeOptions" option-value="value" aria-label="Chế độ hiển thị">
         <template #option="{ option }"><i :class="option.icon" :aria-label="option.label" :title="option.label" /></template>
       </SelectButton>
@@ -313,9 +331,9 @@ onBeforeUnmount(() => {
 
   <Dialog v-model:visible="dialogVisible" modal class="app-fullscreen-dialog" :header="dialogType === 'company' ? (dialogMode === 'create' ? 'Thêm doanh nghiệp' : 'Sửa doanh nghiệp') : (dialogMode === 'create' ? 'Thêm vị trí' : 'Sửa vị trí')" :closable="!saving" :style="{ width: 'min(34rem, calc(100vw - 2rem))' }">
     <Message v-if="dialogErrorMessage" severity="error" :closable="false">{{ dialogErrorMessage }}</Message>
-    <form class="entity-form" @submit.prevent="submitDialog">
-      <template v-if="dialogType === 'company'"><div class="form-field"><label for="company-name">Tên doanh nghiệp</label><InputText id="company-name" v-model="companyForm.name" :disabled="saving" /></div><div class="form-field"><label for="company-address">Địa chỉ</label><InputText id="company-address" v-model="companyForm.address" :disabled="saving" /></div><div class="form-field"><label for="company-industry-form">Ngành</label><InputText id="company-industry-form" v-model="companyForm.industry" :disabled="saving" /></div><div class="form-field"><label for="company-contact">Người liên hệ (tên)</label><InputText id="company-contact" v-model="companyForm.contactPerson" :disabled="saving" /></div><div class="form-field"><label for="company-contact-phone">Số điện thoại</label><InputText id="company-contact-phone" v-model="companyForm.contactPhone" :disabled="saving" /></div><div class="form-field"><label for="company-contact-email">Email</label><InputText id="company-contact-email" v-model="companyForm.contactEmail" :disabled="saving" /></div><div class="form-field"><label for="company-contact-position">Chức vụ</label><InputText id="company-contact-position" v-model="companyForm.contactPosition" :disabled="saving" /></div></template>
-      <template v-else><div class="form-field"><label for="job-title">Tên vị trí</label><InputText id="job-title" v-model="jobForm.title" :disabled="saving" /></div><div class="form-field"><label for="job-quantity">Số lượng</label><InputNumber id="job-quantity" v-model="jobForm.quantity" :min="1" :use-grouping="false" :disabled="saving" /></div><div class="form-field"><label for="job-description">Mô tả</label><Textarea id="job-description" v-model="jobForm.description" rows="4" :disabled="saving" /></div><div class="form-checkbox"><Checkbox v-model="jobForm.isOpen" input-id="job-is-open" binary :disabled="saving" /><label for="job-is-open">Đang tuyển</label></div></template>
+    <form class="entity-form" novalidate @submit.prevent="submitDialog">
+      <template v-if="dialogType === 'company'"><div class="form-field"><label for="company-name">Tên doanh nghiệp</label><InputText id="company-name" v-model="companyForm.name" maxlength="200" :disabled="saving" /></div><div class="form-field"><label for="company-address">Địa chỉ</label><InputText id="company-address" v-model="companyForm.address" maxlength="300" :disabled="saving" /></div><div class="form-field"><label for="company-industry-form">Ngành</label><InputText id="company-industry-form" v-model="companyForm.industry" maxlength="150" :disabled="saving" /></div><div class="form-field"><label for="company-contact">Người liên hệ (tên)</label><InputText id="company-contact" v-model="companyForm.contactPerson" maxlength="150" :disabled="saving" /></div><div class="form-field"><label for="company-contact-phone">Số điện thoại</label><InputText id="company-contact-phone" v-model="companyForm.contactPhone" maxlength="20" :disabled="saving" /></div><div class="form-field"><label for="company-contact-email">Email</label><InputText id="company-contact-email" v-model="companyForm.contactEmail" type="email" maxlength="150" :disabled="saving" /></div><div class="form-field"><label for="company-contact-position">Chức vụ</label><InputText id="company-contact-position" v-model="companyForm.contactPosition" maxlength="100" :disabled="saving" /></div></template>
+      <template v-else><div class="form-field"><label for="job-title">Tên vị trí</label><InputText id="job-title" v-model="jobForm.title" maxlength="200" :disabled="saving" /></div><div class="form-field"><label for="job-quantity">Số lượng</label><InputNumber id="job-quantity" v-model="jobForm.quantity" :min="1" :use-grouping="false" :disabled="saving" /></div><div class="form-field"><label for="job-description">Mô tả</label><Textarea id="job-description" v-model="jobForm.description" rows="4" maxlength="2000" :disabled="saving" /></div><div class="form-checkbox"><Checkbox v-model="jobForm.isOpen" input-id="job-is-open" binary :disabled="saving" /><label for="job-is-open">Đang tuyển</label></div></template>
       <template v-if="dialogType === 'job'"><div class="form-field"><label for="job-department">Phòng ban</label><InputText id="job-department" v-model="jobForm.department" maxlength="100" :disabled="saving" /></div><div class="form-field"><label for="job-location">Địa điểm</label><InputText id="job-location" v-model="jobForm.location" maxlength="300" placeholder="Để trống để dùng địa chỉ công ty" :disabled="saving" /></div><div class="form-field"><label for="job-deadline">Hạn nộp hồ sơ</label><DatePicker id="job-deadline" v-model="jobForm.deadline" date-format="dd/mm/yy" show-button-bar :min-date="dialogMode === 'create' ? new Date() : undefined" :disabled="saving" /></div></template>
       <div class="dialog-actions"><Button type="button" label="Hủy" severity="secondary" text :disabled="saving" @click="closeDialog" /><Button type="submit" label="Lưu" icon="pi pi-check" :loading="saving" /></div>
     </form>

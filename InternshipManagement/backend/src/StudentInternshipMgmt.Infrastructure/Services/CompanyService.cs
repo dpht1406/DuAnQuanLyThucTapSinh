@@ -4,7 +4,6 @@ using StudentInternshipMgmt.Application.Features.Companies;
 using StudentInternshipMgmt.Application.Features.Companies.Dtos;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Infrastructure.Persistence;
-using System.Text.RegularExpressions;
 
 namespace StudentInternshipMgmt.Infrastructure.Services;
 
@@ -20,10 +19,8 @@ public class CompanyService : ICompanyService
     private const int ContactEmailMaxLength = 150;
     private const int ContactPositionMaxLength = 100;
 
-    private static readonly Regex EmailRegex = new(
-        @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
-    private static readonly Regex PhoneRegex = new(
-        @"^0\d{9}$", RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex PhoneRegex = new(
+        @"^0\d{9}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     private readonly AppDbContext _db;
 
@@ -228,8 +225,8 @@ public class CompanyService : ICompanyService
 
         if (contactEmail is not null && contactEmail.Length > ContactEmailMaxLength)
             return $"Email người tuyển dụng không được quá {ContactEmailMaxLength} ký tự.";
-        if (contactEmail is not null && !EmailRegex.IsMatch(contactEmail))
-            return "Email người tuyển dụng không đúng định dạng.";
+        if (contactEmail is not null && !EmailAddressValidator.TryValidate(contactEmail, out var emailError))
+            return emailError;
 
         if (contactPosition is not null && contactPosition.Length > ContactPositionMaxLength)
             return $"Chức vụ người tuyển dụng không được quá {ContactPositionMaxLength} ký tự.";

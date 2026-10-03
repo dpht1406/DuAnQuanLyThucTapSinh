@@ -1,9 +1,11 @@
 using StudentInternshipMgmt.Domain.Enums;
+using StudentInternshipMgmt.Application.Common;
 
 namespace StudentInternshipMgmt.Application.Features.Students;
 
 public class StudentFilterDto
 {
+    [SafeString(150)]
     public string? Search { get; set; }          // theo StudentCode hoặc FullName, contains, ko phân biệt hoa thường
     public StudentStatus? Status { get; set; }
     public int? CompanyId { get; set; }

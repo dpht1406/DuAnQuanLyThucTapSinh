@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
   <div class="page-container job-positions-page">
     <header class="positions-heading"><div><h1 class="page-title">Vị trí thực tập</h1><p class="page-subtitle">Tìm vị trí phù hợp và gửi yêu cầu thực tập.</p></div></header>
     <div class="positions-toolbar">
-      <div class="toolbar-field"><label for="position-search">Tìm kiếm</label><IconField><InputIcon class="pi pi-search" /><InputText id="position-search" v-model="searchInput" placeholder="Tên vị trí, công ty hoặc phòng ban" /></IconField></div>
+      <div class="toolbar-field"><label for="position-search">Tìm kiếm</label><IconField><InputIcon class="pi pi-search" /><InputText id="position-search" v-model="searchInput" maxlength="200" placeholder="Tên vị trí, công ty hoặc phòng ban" /></IconField></div>
       <div class="toolbar-field toolbar-filter"><label for="position-availability">Trạng thái</label><Select id="position-availability" v-model="availability" :options="filters" option-label="label" option-value="value" placeholder="Tất cả" /></div>
     </div>
     <Message v-if="error" severity="error" :closable="false" class="positions-message"><div class="error-content"><span>{{ error }}</span><Button label="Thử lại" icon="pi pi-refresh" text @click="fetchPositions" /></div></Message>
