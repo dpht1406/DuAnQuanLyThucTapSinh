@@ -24,7 +24,7 @@ import Tag from 'primevue/tag'
 import Textarea from 'primevue/textarea'
 import { useConfirm } from 'primevue/useconfirm'
 import { useAuthStore } from '../../stores/auth.js'
-import { createCompany, deleteCompany, getCompanies, getCompanyById, getIndustries, updateCompany } from '../../api/companies.js'
+import { deleteCompany, getCompanies, getCompanyById, getIndustries, updateCompany } from '../../api/companies.js'
 import { createJobPosition, deleteJobPosition, getJobPositions, toggleOpenJobPosition, updateJobPosition } from '../../api/job-positions.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import { validateEmailAddress, validateSafeText } from '../../utils/emailValidation.js'
@@ -97,11 +97,6 @@ function errorText(err, fallback = 'Có lỗi xảy ra, vui lòng thử lại.')
 function resetCompanyForm() { Object.assign(companyForm, { name: '', address: '', industry: '', contactPerson: '', contactPhone: '', contactEmail: '', contactPosition: '' }) }
 function resetJobForm(companyId = null) { Object.assign(jobForm, { companyId, title: '', department: '', location: '', deadline: null, quantity: 1, description: '', isOpen: true }) }
 
-function openCreateCompany() {
-  resetCompanyForm(); dialogType.value = 'company'; dialogMode.value = 'create'; editingId.value = null
-  dialogErrorMessage.value = ''; dialogVisible.value = true
-}
-
 async function openEditCompany(company) {
   dialogType.value = 'company'; dialogMode.value = 'edit'; editingId.value = company.id; dialogErrorMessage.value = ''
   try {
@@ -169,8 +164,7 @@ async function submitDialog() {
   saving.value = true
   try {
     if (dialogType.value === 'company') {
-      if (dialogMode.value === 'create') await createCompany({ ...companyForm })
-      else await updateCompany(editingId.value, { ...companyForm })
+      await updateCompany(editingId.value, { ...companyForm })
       dialogVisible.value = false; await fetchCompanies()
     } else if (dialogMode.value === 'create') {
       await createJobPosition({ ...jobForm, deadline: jobForm.deadline ? dayjs(jobForm.deadline).format('YYYY-MM-DD') : null }); dialogVisible.value = false; await loadJobs(jobForm.companyId)
@@ -250,7 +244,7 @@ onBeforeUnmount(() => {
   <div class="page-container">
     <header class="companies-heading">
       <div><h1 class="page-title">Doanh nghiệp</h1><p class="page-subtitle">Khám phá đơn vị tuyển dụng và các vị trí thực tập.</p></div>
-      <Button v-if="authStore.isAdmin" class="desktop-add-company" label="Thêm doanh nghiệp" icon="pi pi-plus" @click="openCreateCompany" />
+      <Button v-if="authStore.isAdmin" class="desktop-add-company" label="Thêm doanh nghiệp" icon="pi pi-plus" @click="router.push({ name: 'company-create' })" />
     </header>
     <div class="companies-toolbar">
       <div class="toolbar-field toolbar-search"><label for="company-search">Tìm kiếm</label><IconField><InputIcon class="pi pi-search" /><InputText id="company-search" v-model="searchInput" maxlength="200" placeholder="Tên doanh nghiệp" class="w-full" /></IconField></div>
@@ -293,7 +287,7 @@ onBeforeUnmount(() => {
       </template>
     </DataTable>
 
-    <Button v-if="authStore.isAdmin" class="mobile-add-company" icon="pi pi-plus" rounded aria-label="Thêm doanh nghiệp" @click="openCreateCompany" />
+    <Button v-if="authStore.isAdmin" class="mobile-add-company" icon="pi pi-plus" rounded aria-label="Thêm doanh nghiệp" @click="router.push({ name: 'company-create' })" />
     <Menu ref="companyMenuRef" :model="companyMenuItems" popup />
     <Drawer v-model:visible="jobsDrawerVisible" :position="isMobile ? 'bottom' : 'right'" class="company-jobs-drawer" :style="isMobile ? { height: '85dvh' } : { width: 'min(520px, 100vw)' }">
       <template v-if="selectedCompany">

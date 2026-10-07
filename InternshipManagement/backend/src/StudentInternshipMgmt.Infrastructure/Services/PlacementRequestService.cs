@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
@@ -13,11 +14,13 @@ public class PlacementRequestService : IPlacementRequestService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<PlacementRequestService> _logger;
+    private readonly IConfiguration _configuration;
 
-    public PlacementRequestService(AppDbContext db, ILogger<PlacementRequestService> logger)
+    public PlacementRequestService(AppDbContext db, ILogger<PlacementRequestService> logger, IConfiguration configuration)
     {
         _db = db;
         _logger = logger;
+        _configuration = configuration;
     }
 
     public async Task<(bool Success, string? Error, PlacementRequestDto? Data)> CreateRequestAsync(int studentId, CreatePlacementRequestDto dto)
@@ -35,12 +38,14 @@ public class PlacementRequestService : IPlacementRequestService
             return Reject("StudentNotFound", "Không tìm thấy sinh viên.");
 
         if (student.Status != StudentStatus.NoCompany)
-            return Reject("StudentAlreadyHasCompany", "Chỉ có thể tạo yêu cầu khi chưa có doanh nghiệp.");
+            return Reject("StudentAlreadyHasCompany", "Sinh viên đã có doanh nghiệp hoặc đang được Admin xử lý; vui lòng liên hệ Admin.");
 
-        var hasPending = await _db.PlacementRequests
-            .AnyAsync(r => r.StudentId == studentId && r.Status == RequestStatus.Pending);
-        if (hasPending)
-            return Reject("PendingRequestExists", "Bạn đã có một yêu cầu đang chờ duyệt.");
+        var maxOpenApplications = _configuration.GetValue<int?>("MaxOpenApplicationsPerStudent") ?? 5;
+        var openRequestCount = await _db.PlacementRequests.CountAsync(r =>
+            r.StudentId == studentId
+            && (r.Status == RequestStatus.Pending || r.Status == RequestStatus.InterviewInvited));
+        if (openRequestCount >= maxOpenApplications)
+            return Reject("OpenLimitReached", $"Bạn chỉ được có tối đa {maxOpenApplications} đơn đang mở cùng lúc.");
 
         var company = await _db.Companies.FirstOrDefaultAsync(c => c.Id == dto.CompanyId);
         if (company is null)
@@ -63,6 +68,16 @@ public class PlacementRequestService : IPlacementRequestService
                 return Reject("JobPositionExpired", "Vị trí này đã hết hạn nhận hồ sơ.");
         }
 
+        var hasDuplicateOpenRequest = await _db.PlacementRequests.AnyAsync(r =>
+            r.StudentId == studentId
+            && r.CompanyId == dto.CompanyId
+            && r.JobPositionId == dto.JobPositionId
+            && (r.Status == RequestStatus.Pending || r.Status == RequestStatus.InterviewInvited));
+        if (hasDuplicateOpenRequest)
+            return Reject("DuplicateOpenRequest", "Bạn đã có đơn đang mở cho doanh nghiệp và vị trí này.");
+
+        var createdAt = DateTime.UtcNow;
+        var dueAt = createdAt.AddDays(_configuration.GetValue<int?>("ApplicationResponseDueDays") ?? 7);
         var request = new PlacementRequest
         {
             StudentId = studentId,
@@ -77,7 +92,8 @@ public class PlacementRequestService : IPlacementRequestService
             CoverLetter = CleanString(dto.CoverLetter, preserveLineBreaks: true),
             Status = RequestStatus.Pending,
             Note = CleanString(dto.Note),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = createdAt,
+            DueAt = dueAt
         };
 
         _db.PlacementRequests.Add(request);
@@ -108,6 +124,14 @@ public class PlacementRequestService : IPlacementRequestService
             Note = request.Note,
             RejectReason = request.RejectReason,
             CreatedAt = request.CreatedAt,
+            DueAt = request.DueAt,
+            InterviewAt = request.InterviewAt,
+            InterviewLocation = request.InterviewLocation,
+            InterviewNote = request.InterviewNote,
+            ResultNote = request.ResultNote,
+            StudentReportedInterviewAt = request.StudentReportedInterviewAt,
+            StudentInterviewNote = request.StudentInterviewNote,
+            ResultActorType = request.ResultActorType,
             ReviewedBy = request.ReviewedBy,
             ReviewedByUsername = null,
             ReviewedAt = request.ReviewedAt
@@ -151,6 +175,14 @@ public class PlacementRequestService : IPlacementRequestService
                 Note = r.Note,
                 RejectReason = r.RejectReason,
                 CreatedAt = r.CreatedAt,
+                DueAt = r.DueAt,
+                InterviewAt = r.InterviewAt,
+                InterviewLocation = r.InterviewLocation,
+                InterviewNote = r.InterviewNote,
+                ResultNote = r.ResultNote,
+                StudentReportedInterviewAt = r.StudentReportedInterviewAt,
+                StudentInterviewNote = r.StudentInterviewNote,
+                ResultActorType = r.ResultActorType,
                 ReviewedBy = r.ReviewedBy,
                 ReviewedByUsername = r.ReviewedByUser != null ? r.ReviewedByUser.Username : null,
                 ReviewedAt = r.ReviewedAt
@@ -185,6 +217,14 @@ public class PlacementRequestService : IPlacementRequestService
                 Note = r.Note,
                 RejectReason = r.RejectReason,
                 CreatedAt = r.CreatedAt,
+                DueAt = r.DueAt,
+                InterviewAt = r.InterviewAt,
+                InterviewLocation = r.InterviewLocation,
+                InterviewNote = r.InterviewNote,
+                ResultNote = r.ResultNote,
+                StudentReportedInterviewAt = r.StudentReportedInterviewAt,
+                StudentInterviewNote = r.StudentInterviewNote,
+                ResultActorType = r.ResultActorType,
                 ReviewedBy = r.ReviewedBy,
                 ReviewedByUsername = r.ReviewedByUser != null ? r.ReviewedByUser.Username : null,
                 ReviewedAt = r.ReviewedAt
@@ -201,6 +241,30 @@ public class PlacementRequestService : IPlacementRequestService
             .Where(character => !char.IsControl(character)
                 || preserveLineBreaks && character is '\r' or '\n')
             .ToArray());
+    }
+
+    public async Task<(bool Success, string? Error, bool NotFound)> ReportInterviewedAsync(
+        int studentId,
+        int requestId,
+        ReportInterviewDto dto)
+    {
+        var request = await _db.PlacementRequests
+            .FirstOrDefaultAsync(r => r.Id == requestId && r.StudentId == studentId);
+
+        if (request is null)
+            return (false, "Không tìm thấy yêu cầu.", true);
+
+        if (request.Status != RequestStatus.InterviewInvited)
+            return (false, "Chỉ có thể báo đã phỏng vấn khi đơn ở trạng thái được mời phỏng vấn.", false);
+
+        if (request.StudentReportedInterviewAt.HasValue)
+            return (false, "Bạn đã báo đã phỏng vấn cho đơn này rồi.", false);
+
+        request.StudentReportedInterviewAt = DateTime.UtcNow;
+        request.StudentInterviewNote = CleanString(dto.Note, preserveLineBreaks: true);
+        await _db.SaveChangesAsync();
+
+        return (true, null, false);
     }
 
     public async Task<(bool Success, string? Error, bool NotFound)> ApproveRequestAsync(int requestId, int adminUserId)

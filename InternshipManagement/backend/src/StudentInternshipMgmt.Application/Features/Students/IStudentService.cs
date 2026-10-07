@@ -23,7 +23,7 @@ public interface IStudentService
 
     Task<ImportResultDto> ImportStudentsAsync(Stream fileStream, string fileName);
 
-    Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId, bool isAdmin);
+    Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId);
 
     Task<List<StatusHistoryDto>?> GetStatusHistoryAsync(int studentId);
 

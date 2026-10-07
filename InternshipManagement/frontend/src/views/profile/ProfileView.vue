@@ -1,19 +1,13 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import dayjs from 'dayjs'
-import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
-import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import Tag from 'primevue/tag'
-import Textarea from 'primevue/textarea'
-import { useConfirm } from 'primevue/useconfirm'
-import { useToast } from 'primevue/usetoast'
-import { changeMyStatus, getMyProfile, getMyStatusHistory } from '../../api/me.js'
+import { getMyProfile, getMyStatusHistory } from '../../api/me.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
-import { validateSafeText } from '../../utils/emailValidation.js'
 import {
   STATUS_LABELS,
   STATUS_OPTIONS,
@@ -24,32 +18,8 @@ const profile = ref(null)
 const statusHistory = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
-const actionLoading = ref(false)
-const backDialogVisible = ref(false)
-const backNote = ref('')
-const backError = ref('')
-const confirm = useConfirm()
-let toast = null
-try { toast = useToast() } catch { }
 
 const statusOptionsByValue = new Map(STATUS_OPTIONS.map((option) => [option.value, option]))
-
-const statusActions = computed(() => {
-  const status = profile.value?.status
-  if (status === 1) {
-    return {
-      forward: { status: 2, label: 'Xác nhận đã phỏng vấn' },
-      backward: { status: 0, label: 'Báo doanh nghiệp không phù hợp / rớt phỏng vấn' }
-    }
-  }
-  if (status === 2) {
-    return { backward: { status: 1, label: 'Quay lại trạng thái đã giới thiệu' } }
-  }
-  if (status === 3) {
-    return { forward: { status: 4, label: 'Xác nhận đã đi thực tập' } }
-  }
-  return {}
-})
 
 const noActionMessage = computed(() => {
   if (profile.value?.status === 0) return 'Vào mục Doanh nghiệp để tạo yêu cầu chọn doanh nghiệp.'
@@ -76,10 +46,6 @@ function formatDate(value) {
   return value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '—'
 }
 
-function notifySuccess(detail) {
-  try { toast?.add({ severity: 'success', summary: 'Thành công', detail, life: 3000 }) } catch { }
-}
-
 async function loadProfile() {
   loading.value = true
   errorMessage.value = ''
@@ -96,60 +62,6 @@ async function loadProfile() {
     statusHistory.value = []
   } finally {
     loading.value = false
-  }
-}
-
-function confirmForward(action) {
-  confirm.require({
-    message: `Bạn có chắc muốn chuyển sang trạng thái "${statusLabel(action.status)}"?`,
-    header: 'Xác nhận đổi trạng thái',
-    icon: 'pi pi-question-circle',
-    rejectLabel: 'Hủy',
-    acceptLabel: 'Xác nhận',
-    rejectClass: 'p-button-secondary p-button-text',
-    acceptClass: 'p-button-primary',
-    accept: () => submitStatusChange(action.status, null)
-  })
-}
-
-function openBackDialog() {
-  backNote.value = ''
-  backError.value = ''
-  backDialogVisible.value = true
-}
-
-function closeBackDialog() {
-  if (!actionLoading.value) backDialogVisible.value = false
-}
-
-async function submitBack() {
-  backError.value = ''
-  const inputError = validateSafeText(backNote.value, 1000, true)
-  if (inputError) {
-    backError.value = inputError
-    return
-  }
-  if (!backNote.value.trim()) {
-    backError.value = 'Lý do không được để trống.'
-    return
-  }
-  await submitStatusChange(statusActions.value.backward.status, backNote.value.trim(), true)
-}
-
-async function submitStatusChange(newStatus, note, closeDialog = false) {
-  actionLoading.value = true
-  errorMessage.value = ''
-  try {
-    await changeMyStatus({ newStatus, note, rejectReason: null })
-    if (closeDialog) backDialogVisible.value = false
-    notifySuccess(`Đã chuyển sang trạng thái ${statusLabel(newStatus)}.`)
-    await loadProfile()
-  } catch (err) {
-    const message = extractErrorMessage(err, 'Không thể đổi trạng thái, vui lòng thử lại.')
-    if (closeDialog) backError.value = message
-    else errorMessage.value = message
-  } finally {
-    actionLoading.value = false
   }
 }
 
@@ -188,36 +100,7 @@ onMounted(loadProfile)
         <template #content>
           <section class="next-step-content">
             <p class="next-step-label">BƯỚC TIẾP THEO</p>
-            <template v-if="profile.status === 1">
-              <h2>Xác nhận sau khi bạn phỏng vấn xong</h2>
-              <p class="next-step-description">Bạn đã được giới thiệu đến {{ emptyDisplay(profile.companyName) }}. Khi phỏng vấn xong, hãy xác nhận để tiếp tục.</p>
-            </template>
-            <template v-else-if="profile.status === 2">
-              <h2>Đang chờ kết quả phỏng vấn</h2>
-              <p class="next-step-description">Nếu doanh nghiệp không phù hợp, bạn có thể quay lại trạng thái đã giới thiệu.</p>
-            </template>
-            <template v-else-if="profile.status === 3">
-              <h2>Xác nhận khi bạn bắt đầu thực tập</h2>
-              <p class="next-step-description">Khi đã đi thực tập, hãy xác nhận để cập nhật tiến trình.</p>
-            </template>
-            <div v-if="statusActions.forward || statusActions.backward" class="status-actions">
-              <Button
-                v-if="statusActions.forward"
-                :label="statusActions.forward.label"
-                icon="pi pi-arrow-right"
-                :loading="actionLoading"
-                @click="confirmForward(statusActions.forward)"
-              />
-              <Button
-                v-if="statusActions.backward"
-                :label="statusActions.backward.label"
-                icon="pi pi-undo"
-                severity="secondary"
-                outlined
-                :disabled="actionLoading"
-                @click="openBackDialog"
-              />
-            </div>
+            <p v-if="[1, 2, 3].includes(profile.status)" class="next-step-description">Trạng thái này do doanh nghiệp hoặc Admin cập nhật.</p>
             <p v-else-if="noActionMessage" class="status-note">{{ noActionMessage }}</p>
           </section>
         </template>
@@ -275,17 +158,6 @@ onMounted(loadProfile)
       </Card>
     </template>
 
-    <Dialog v-model:visible="backDialogVisible" modal header="Lý do chuyển trạng thái" :closable="!actionLoading" :style="{ width: 'min(32rem, 90vw)' }" @hide="closeBackDialog">
-      <div class="dialog-field">
-        <label for="back-note">Ghi chú <span class="required-mark">*</span></label>
-        <Textarea id="back-note" v-model="backNote" rows="5" maxlength="1000" auto-resize :disabled="actionLoading" />
-        <small v-if="backError" class="dialog-error">{{ backError }}</small>
-      </div>
-      <template #footer>
-        <Button label="Hủy" severity="secondary" text :disabled="actionLoading" @click="closeBackDialog" />
-        <Button label="Xác nhận" icon="pi pi-check" :loading="actionLoading" @click="submitBack" />
-      </template>
-    </Dialog>
   </div>
 </template>
 
@@ -302,10 +174,7 @@ onMounted(loadProfile)
 .next-step-card { background: var(--primary-tint); border-color: transparent; }
 .next-step-content { min-width: 0; }
 .next-step-label { margin: 0 0 .65rem; color: var(--primary); font-size: var(--text-caption); font-weight: 700; }
-.next-step-content h2 { margin: 0; color: var(--text-h); font-size: 1.15rem; }
 .next-step-description { margin: .45rem 0 0; color: var(--text); line-height: 1.55; overflow-wrap: anywhere; }
-.status-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.25rem; }
-.status-actions :deep(.p-button) { min-height: 42px; }
 .status-note { display: block; margin: .75rem 0 0; color: var(--text); }
 .profile-details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem 1.5rem; margin: 0; }
 .profile-details > div { display: grid; min-width: 0; gap: .3rem; }
@@ -322,15 +191,10 @@ onMounted(loadProfile)
 .history-mobile-entry time, .history-mobile-entry span { color: var(--text); }
 .history-mobile-entry p { margin: 0; }
 .history-empty { color: var(--text); }
-.dialog-field { display: grid; gap: .5rem; }
-.dialog-field textarea { width: 100%; }
-.required-mark, .dialog-error { color: var(--red-500); }
 @media (max-width: 767px) {
   .profile-avatar { flex-basis: 52px; width: 52px; height: 52px; }
   .profile-heading-content :deep(.p-tag), .next-step-label { font-size: 14px; }
   .profile-details { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-  .status-actions { flex-direction: column; }
-  .status-actions :deep(.p-button) { width: 100%; min-height: 44px; }
   .history-desktop { display: none; }
   .history-mobile-list { display: grid; }
 }

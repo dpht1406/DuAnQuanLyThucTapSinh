@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:5018
+@studentToken = REPLACE_WITH_STUDENT_BEARER_TOKEN
+@requestId = 1
+
+### Student reports an interview for an invited placement request
+POST {{baseUrl}}/api/me/placement-requests/{{requestId}}/report-interviewed
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "note": "Đã tham gia phỏng vấn."
+}

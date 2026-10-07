@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Domain.Entities;
@@ -12,7 +13,7 @@ namespace StudentInternshipMgmt.Infrastructure.Tests;
 public class StudentStatusHistoryTests
 {
     [Fact]
-    public async Task ChangeStatusAsync_preserves_company_in_history_when_student_reports_rejection()
+    public async Task Admin_status_change_preserves_company_in_history_when_returning_to_no_company()
     {
         await using var dbContext = CreateDbContext();
         var company = new Company
@@ -43,7 +44,7 @@ public class StudentStatusHistoryTests
             Id = 42,
             Username = "student-user",
             PasswordHash = "hash",
-            Role = UserRole.User,
+            Role = UserRole.Admin,
             Student = student,
             CreatedAt = DateTime.UtcNow
         };
@@ -55,8 +56,7 @@ public class StudentStatusHistoryTests
         var result = await service.ChangeStatusAsync(
             student.Id,
             new ChangeStatusDto { NewStatus = StudentStatus.NoCompany, Note = "Không phù hợp" },
-            user.Id,
-            isAdmin: false);
+            user.Id);
         var history = await service.GetStatusHistoryAsync(student.Id);
 
         result.Success.Should().BeTrue();
@@ -64,7 +64,7 @@ public class StudentStatusHistoryTests
         history![0].CompanyId.Should().Be(company.Id);
         history[0].CompanyName.Should().Be(company.Name);
         history[0].Note.Should().Be("Không phù hợp");
-        (await dbContext.StatusHistories.SingleAsync()).ChangedByType.Should().Be(ActorType.Student);
+        (await dbContext.StatusHistories.SingleAsync()).ChangedByType.Should().Be(ActorType.Admin);
     }
 
     [Fact]
@@ -87,7 +87,10 @@ public class StudentStatusHistoryTests
         dbContext.AddRange(company, student, request);
         await dbContext.SaveChangesAsync();
 
-        var service = new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance);
+        var service = new PlacementRequestService(
+            dbContext,
+            NullLogger<PlacementRequestService>.Instance,
+            new ConfigurationBuilder().AddInMemoryCollection().Build());
         var result = await service.ApproveRequestAsync(request.Id, adminUserId: 53);
 
         result.Success.Should().BeTrue();
@@ -107,8 +110,7 @@ public class StudentStatusHistoryTests
         var result = await service.ChangeStatusAsync(
             student.Id,
             new ChangeStatusDto { NewStatus = StudentStatus.Interviewed },
-            admin.Id,
-            isAdmin: true);
+            admin.Id);
 
         result.Success.Should().BeTrue();
         (await dbContext.StatusHistories.SingleAsync()).ChangedByType.Should().Be(ActorType.Admin);
@@ -132,6 +134,33 @@ public class StudentStatusHistoryTests
 
         result.Success.Should().BeTrue();
         (await dbContext.StatusHistories.SingleAsync()).ChangedByType.Should().Be(ActorType.Admin);
+    }
+
+    [Fact]
+    public async Task UpdateStudentAsync_returns_updated_timestamp_in_student_dto()
+    {
+        await using var dbContext = CreateDbContext();
+        var student = CreateStudent(81, companyId: null, StudentStatus.NoCompany);
+        student.UpdatedAt = DateTime.UtcNow.AddDays(-1);
+        dbContext.Students.Add(student);
+        await dbContext.SaveChangesAsync();
+        var oldUpdatedAt = student.UpdatedAt;
+        var service = new StudentService(dbContext, NullLogger<StudentService>.Instance);
+
+        var updateResult = await service.UpdateStudentAsync(student.Id, new UpdateStudentDto
+        {
+            FullName = "Sinh viên đã cập nhật",
+            Email = student.Email,
+            PhoneNumber = student.PhoneNumber,
+            Major = student.Major,
+            ClassName = student.ClassName
+        });
+        var updatedStudent = await service.GetStudentByIdAsync(student.Id);
+
+        updateResult.Success.Should().BeTrue();
+        updatedStudent.Should().NotBeNull();
+        updatedStudent!.UpdatedAt.Should().NotBe(default);
+        updatedStudent.UpdatedAt.Should().BeAfter(oldUpdatedAt);
     }
 
     [Fact]

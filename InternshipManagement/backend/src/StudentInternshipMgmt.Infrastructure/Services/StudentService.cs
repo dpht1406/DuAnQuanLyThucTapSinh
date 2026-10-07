@@ -409,7 +409,7 @@ public class StudentService : IStudentService
 
     // ---------- 5. Đổi trạng thái ----------
 
-    public async Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId, bool isAdmin)
+    public async Task<(bool Success, string? Error)> ChangeStatusAsync(int studentId, ChangeStatusDto dto, int changedByUserId)
     {
         if (!Enum.IsDefined(typeof(StudentStatus), dto.NewStatus))
             return (false, "NewStatus không hợp lệ.");
@@ -433,33 +433,8 @@ public class StudentService : IStudentService
         // "lùi" = giá trị enum đích nhỏ hơn giá trị hiện tại (xem thứ tự khai báo StudentStatus)
         var isBackward = (int)toStatus < (int)fromStatus;
 
-        if (!isAdmin)
-        {
-            // Sinh viên chỉ được đi đúng 1 bước, đúng theo bộ chuyển đổi cho phép ở mục 5.3 PROJECT_CONTEXT.
-            var allowedForward =
-                (fromStatus == StudentStatus.Introduced && toStatus == StudentStatus.Interviewed) ||
-                (fromStatus == StudentStatus.Accepted && toStatus == StudentStatus.Interning);
-
-            var allowedBackward =
-                (fromStatus == StudentStatus.Introduced && toStatus == StudentStatus.NoCompany) ||
-                (fromStatus == StudentStatus.Interviewed && toStatus == StudentStatus.Introduced);
-
-            if (!allowedForward && !allowedBackward)
-                return (false, "Bạn không có quyền chuyển sang trạng thái này.");
-        }
-
         if (isBackward && string.IsNullOrWhiteSpace(dto.Note))
             return (false, "Phải nhập Note (lý do) khi lùi trạng thái.");
-
-        var shouldCreateNotification = !isAdmin && isBackward;
-        string? previousCompanyName = null;
-        if (shouldCreateNotification && previousCompanyId.HasValue)
-        {
-            previousCompanyName = await _db.Companies
-                .Where(company => company.Id == previousCompanyId.Value)
-                .Select(company => company.Name)
-                .FirstOrDefaultAsync();
-        }
 
         student.Status = toStatus;
         student.UpdatedAt = DateTime.UtcNow;
@@ -487,41 +462,8 @@ public class StudentService : IStudentService
             Note = noteToSave,
             ChangedAt = DateTime.UtcNow,
             ChangedBy = changedByUserId,
-            ChangedByType = isAdmin ? ActorType.Admin : ActorType.Student
+            ChangedByType = ActorType.Admin
         });
-
-        if (shouldCreateNotification)
-        {
-            var notificationType = toStatus == StudentStatus.NoCompany
-                ? NotificationType.StudentReportedRejection
-                : NotificationType.StudentRevertedStage;
-            var title = toStatus == StudentStatus.NoCompany
-                ? "Sinh viên báo rớt doanh nghiệp"
-                : "Sinh viên quay lại giai đoạn trước";
-            var companyName = previousCompanyName ?? "doanh nghiệp không xác định";
-            var messagePrefix = toStatus == StudentStatus.NoCompany
-                ? $"Sinh viên {student.FullName} ({student.StudentCode}) báo rớt doanh nghiệp {companyName}."
-                : $"Sinh viên {student.FullName} ({student.StudentCode}) quay lại giai đoạn đã giới thiệu tại doanh nghiệp {companyName}.";
-            var notificationReason = string.IsNullOrWhiteSpace(dto.Note) ? null : dto.Note.Trim();
-            var reasonPrefix = string.IsNullOrEmpty(notificationReason) ? string.Empty : " Lý do: ";
-            var availableReasonLength = Math.Max(0, 1000 - messagePrefix.Length - reasonPrefix.Length);
-            var message = messagePrefix + (string.IsNullOrEmpty(notificationReason)
-                ? string.Empty
-                : reasonPrefix + notificationReason[..Math.Min(notificationReason.Length, availableReasonLength)]);
-
-            _db.Notifications.Add(new Notification
-            {
-                Type = notificationType,
-                Title = title,
-                Message = message,
-                StudentId = student.Id,
-                CompanyId = previousCompanyId,
-                CompanyName = previousCompanyName,
-                Reason = notificationReason is null ? null : notificationReason[..Math.Min(notificationReason.Length, 1000)],
-                IsRead = false,
-                CreatedAt = DateTime.UtcNow
-            });
-        }
 
         await _db.SaveChangesAsync();
         return (true, null);
@@ -741,6 +683,7 @@ public class StudentService : IStudentService
         JobPositionId = s.JobPositionId,
         JobPositionTitle = s.JobPosition != null ? s.JobPosition.Title : null,
         HasAccount = s.User != null,
-        CreatedAt = s.CreatedAt
+        CreatedAt = s.CreatedAt,
+        UpdatedAt = s.UpdatedAt
     };
 }

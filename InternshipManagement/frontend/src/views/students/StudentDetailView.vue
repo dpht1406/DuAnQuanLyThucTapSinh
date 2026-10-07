@@ -139,6 +139,13 @@ watch(() => route.params.id, loadStudentDetails, { immediate: true })
             </div>
             <div class="detail-actions">
               <Button
+                label="Sửa thông tin"
+                icon="pi pi-pencil"
+                severity="secondary"
+                outlined
+                @click="router.push({ name: 'student-edit', params: { id: student.id }, query: { from: 'detail' } })"
+              />
+              <Button
                 v-if="student.hasAccount === true"
                 label="Đặt lại mật khẩu"
                 icon="pi pi-key"

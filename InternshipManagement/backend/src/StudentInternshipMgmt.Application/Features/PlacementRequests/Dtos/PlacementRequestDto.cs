@@ -28,6 +28,14 @@ public class PlacementRequestDto
     public string? Note { get; set; }
     public string? RejectReason { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime? DueAt { get; set; }
+    public DateTime? InterviewAt { get; set; }
+    public string? InterviewLocation { get; set; }
+    public string? InterviewNote { get; set; }
+    public string? ResultNote { get; set; }
+    public DateTime? StudentReportedInterviewAt { get; set; }
+    public string? StudentInterviewNote { get; set; }
+    public ActorType? ResultActorType { get; set; }
 
     public int? ReviewedBy { get; set; }
     public string? ReviewedByUsername { get; set; }

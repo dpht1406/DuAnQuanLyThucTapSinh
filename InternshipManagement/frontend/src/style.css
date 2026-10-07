@@ -347,6 +347,6 @@ body {
   }
 }
 
-.main-content:has(.apply-page) {
+.main-content:has(.apply-page, .student-create-page, .company-create-page) {
   background: var(--apply-canvas);
 }

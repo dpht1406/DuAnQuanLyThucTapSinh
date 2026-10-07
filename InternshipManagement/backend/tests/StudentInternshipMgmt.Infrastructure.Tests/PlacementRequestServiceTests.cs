@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
@@ -50,7 +51,7 @@ public class PlacementRequestServiceTests
         dto.CvUrl = " https://example.com/cv.pdf ";
         dto.CoverLetter = "  Tôi mong muốn được tham gia thực tập.  ";
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await CreateService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeTrue();
         var request = await dbContext.PlacementRequests.SingleAsync();
@@ -87,7 +88,7 @@ public class PlacementRequestServiceTests
         var dto = CreateValidDto(fixture.Company.Id, fixture.Position.Id);
         dto.ApplicantEmail = "new.contact@example.com";
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await CreateService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeTrue();
         (await dbContext.PlacementRequests.SingleAsync()).ApplicantEmail.Should().Be("new.contact@example.com");
@@ -114,7 +115,7 @@ public class PlacementRequestServiceTests
             default: throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
         }
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(fixture.Student.Id, dto);
+        var result = await CreateService(dbContext).CreateRequestAsync(fixture.Student.Id, dto);
 
         result.Success.Should().BeFalse();
         result.Error.Should().Be(expectedError);
@@ -122,7 +123,74 @@ public class PlacementRequestServiceTests
     }
 
     [Fact]
-    public async Task CreateRequestAsync_rejects_student_with_pending_request()
+    public async Task CreateRequestAsync_allows_multiple_requests_for_different_companies_and_sets_default_due_date()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var service = CreateService(dbContext);
+
+        var first = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+        var second = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.OtherCompany.Id, jobPositionId: null));
+        var requests = await dbContext.PlacementRequests.OrderBy(request => request.Id).ToListAsync();
+
+        first.Success.Should().BeTrue();
+        second.Success.Should().BeTrue();
+        requests.Should().HaveCount(2);
+        requests.Should().OnlyContain(request => request.Status == RequestStatus.Pending);
+        requests.Should().OnlyContain(request => request.DueAt == request.CreatedAt.AddDays(7));
+        first.Data!.DueAt.Should().Be(first.Data.CreatedAt.AddDays(7));
+        second.Data!.DueAt.Should().Be(second.Data.CreatedAt.AddDays(7));
+        (await dbContext.Students.SingleAsync()).Status.Should().Be(StudentStatus.NoCompany);
+    }
+
+    [Theory]
+    [InlineData(5)]
+    [InlineData(2)]
+    public async Task CreateRequestAsync_rejects_when_open_request_limit_is_reached(int limit)
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var openStatuses = new[] { RequestStatus.Pending, RequestStatus.InterviewInvited };
+        for (var index = 0; index < limit; index++)
+        {
+            dbContext.PlacementRequests.Add(new PlacementRequest
+            {
+                StudentId = fixture.Student.Id,
+                Student = fixture.Student,
+                CompanyId = fixture.OtherCompany.Id,
+                Company = fixture.OtherCompany,
+                Status = openStatuses[index % openStatuses.Length],
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+        await dbContext.SaveChangesAsync();
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["MaxOpenApplicationsPerStudent"] = limit.ToString()
+            })
+            .Build();
+        var service = new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance, configuration);
+
+        var result = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+
+        result.Success.Should().BeFalse();
+        result.Error.Should().Contain(limit.ToString());
+        result.Error.Should().Contain("đơn đang mở");
+        (await dbContext.PlacementRequests.CountAsync()).Should().Be(limit);
+    }
+
+    [Theory]
+    [InlineData(RequestStatus.Pending)]
+    [InlineData(RequestStatus.InterviewInvited)]
+    public async Task CreateRequestAsync_rejects_duplicate_open_company_and_position(RequestStatus status)
     {
         await using var dbContext = CreateDbContext();
         var fixture = await SeedBaseAsync(dbContext);
@@ -134,18 +202,71 @@ public class PlacementRequestServiceTests
             Company = fixture.Company,
             JobPositionId = fixture.Position.Id,
             JobPosition = fixture.Position,
+            Status = status,
+            CreatedAt = DateTime.UtcNow
+        });
+        await dbContext.SaveChangesAsync();
+
+        var result = await CreateService(dbContext).CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+
+        result.Success.Should().BeFalse();
+        result.Error.Should().Be("Bạn đã có đơn đang mở cho doanh nghiệp và vị trí này.");
+        (await dbContext.PlacementRequests.CountAsync()).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task CreateRequestAsync_compares_null_job_position_when_checking_duplicates()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        dbContext.PlacementRequests.Add(new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            JobPositionId = null,
             Status = RequestStatus.Pending,
             CreatedAt = DateTime.UtcNow
         });
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(
+        var result = await CreateService(dbContext).CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, jobPositionId: null));
+
+        result.Success.Should().BeFalse();
+        result.Error.Should().Be("Bạn đã có đơn đang mở cho doanh nghiệp và vị trí này.");
+    }
+
+    [Theory]
+    [InlineData(RequestStatus.Rejected)]
+    [InlineData(RequestStatus.Expired)]
+    public async Task CreateRequestAsync_allows_resubmission_after_closed_request(RequestStatus status)
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        dbContext.PlacementRequests.Add(new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            JobPositionId = fixture.Position.Id,
+            JobPosition = fixture.Position,
+            Status = status,
+            CreatedAt = DateTime.UtcNow
+        });
+        await dbContext.SaveChangesAsync();
+
+        var result = await CreateService(dbContext).CreateRequestAsync(
             fixture.Student.Id,
             CreateValidDto(fixture.Company.Id, fixture.Position.Id));
 
-        result.Success.Should().BeFalse();
-        result.Error.Should().Be("Bạn đã có một yêu cầu đang chờ duyệt.");
-        (await dbContext.PlacementRequests.CountAsync()).Should().Be(1);
+        result.Success.Should().BeTrue();
+        (await dbContext.PlacementRequests.CountAsync()).Should().Be(2);
     }
 
     [Fact]
@@ -156,12 +277,12 @@ public class PlacementRequestServiceTests
         fixture.Student.Status = StudentStatus.Introduced;
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).CreateRequestAsync(
+        var result = await CreateService(dbContext).CreateRequestAsync(
             fixture.Student.Id,
             CreateValidDto(fixture.Company.Id, fixture.Position.Id));
 
         result.Success.Should().BeFalse();
-        result.Error.Should().Be("Chỉ có thể tạo yêu cầu khi chưa có doanh nghiệp.");
+        result.Error.Should().Contain("liên hệ Admin");
     }
 
     [Fact]
@@ -180,7 +301,7 @@ public class PlacementRequestServiceTests
         });
         await dbContext.SaveChangesAsync();
 
-        var result = await new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance).GetMyRequestsAsync(fixture.Student.Id);
+        var result = await CreateService(dbContext).GetMyRequestsAsync(fixture.Student.Id);
 
         result.Should().ContainSingle();
         result[0].ApplicantFullName.Should().BeNull();
@@ -193,12 +314,57 @@ public class PlacementRequestServiceTests
     }
 
     [Fact]
+    public async Task GetRequestsAsync_projects_new_internal_workflow_fields_except_confirmation_source()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var request = new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            Status = RequestStatus.InterviewInvited,
+            CreatedAt = DateTime.UtcNow,
+            DueAt = DateTime.UtcNow.AddDays(3),
+            InterviewAt = DateTime.UtcNow.AddDays(2),
+            InterviewLocation = "Phòng phỏng vấn",
+            InterviewNote = "Mang CV",
+            ResultNote = "Đang chờ",
+            StudentReportedInterviewAt = DateTime.UtcNow,
+            StudentInterviewNote = "Đã tham gia",
+            ResultActorType = ActorType.Admin,
+            ConfirmationSource = "internal"
+        };
+        dbContext.PlacementRequests.Add(request);
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateService(dbContext);
+        var allRequests = await service.GetRequestsAsync(new PlacementRequestFilterDto());
+        var dto = allRequests.Items.Should().ContainSingle().Subject;
+        var myDto = (await service.GetMyRequestsAsync(fixture.Student.Id)).Should().ContainSingle().Subject;
+
+        foreach (var mappedDto in new[] { dto, myDto })
+        {
+            mappedDto.DueAt.Should().Be(request.DueAt);
+            mappedDto.InterviewAt.Should().Be(request.InterviewAt);
+            mappedDto.InterviewLocation.Should().Be(request.InterviewLocation);
+            mappedDto.InterviewNote.Should().Be(request.InterviewNote);
+            mappedDto.ResultNote.Should().Be(request.ResultNote);
+            mappedDto.StudentReportedInterviewAt.Should().Be(request.StudentReportedInterviewAt);
+            mappedDto.StudentInterviewNote.Should().Be(request.StudentInterviewNote);
+            mappedDto.ResultActorType.Should().Be(ActorType.Admin);
+        }
+        typeof(PlacementRequestDto).GetProperty(nameof(PlacementRequest.ConfirmationSource)).Should().BeNull();
+    }
+
+    [Fact]
     public async Task CreateRequestAsync_logs_safe_fields_for_success_and_rejection()
     {
         await using var dbContext = CreateDbContext();
         var fixture = await SeedBaseAsync(dbContext);
         var logger = new CapturingLogger();
-        var service = new PlacementRequestService(dbContext, logger);
+        var service = new PlacementRequestService(dbContext, logger, CreateConfiguration());
         var dto = CreateValidDto(fixture.Company.Id, fixture.Position.Id);
         dto.ApplicantEmail = "private.applicant@example.com";
         dto.ApplicantPhone = "0912345678";
@@ -213,7 +379,7 @@ public class PlacementRequestServiceTests
         var informationLine = logger.Entries.Single(entry => entry.Level == LogLevel.Information).Message;
         var warningLine = logger.Entries.Single(entry => entry.Level == LogLevel.Warning).Message;
         informationLine.Should().Be("Placement request created: RequestId 1, StudentId 1, CompanyId 10, JobPositionId 100");
-        warningLine.Should().Be("Placement request rejected: PendingRequestExists; StudentId 1, CompanyId 10, JobPositionId 100");
+        warningLine.Should().Be("Placement request rejected: DuplicateOpenRequest; StudentId 1, CompanyId 10, JobPositionId 100");
         new[] { informationLine, warningLine }.Should().NotContain(message =>
             message.Contains(dto.ApplicantEmail, StringComparison.Ordinal)
             || message.Contains(dto.ApplicantPhone, StringComparison.Ordinal)
@@ -223,7 +389,122 @@ public class PlacementRequestServiceTests
         _output.WriteLine($"Warning: {warningLine}");
     }
 
-    private static CreatePlacementRequestDto CreateValidDto(int companyId, int jobPositionId) => new()
+    [Fact]
+    public async Task ReportInterviewedAsync_records_report_once_without_changing_status_or_history()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var request = new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            Status = RequestStatus.InterviewInvited,
+            CreatedAt = DateTime.UtcNow
+        };
+        dbContext.PlacementRequests.Add(request);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+        var originalStudentStatus = fixture.Student.Status;
+
+        var result = await service.ReportInterviewedAsync(
+            fixture.Student.Id,
+            request.Id,
+            new ReportInterviewDto { Note = "  Đã phỏng vấn\r\ntrao đổi kỹ thuật  " });
+        var secondResult = await service.ReportInterviewedAsync(
+            fixture.Student.Id,
+            request.Id,
+            new ReportInterviewDto { Note = "Lần hai" });
+
+        result.Success.Should().BeTrue();
+        result.NotFound.Should().BeFalse();
+        secondResult.Success.Should().BeFalse();
+        secondResult.Error.Should().Be("Bạn đã báo đã phỏng vấn cho đơn này rồi.");
+        request.StudentReportedInterviewAt.Should().NotBeNull();
+        request.StudentInterviewNote.Should().Be("Đã phỏng vấn\r\ntrao đổi kỹ thuật");
+        request.Status.Should().Be(RequestStatus.InterviewInvited);
+        fixture.Student.Status.Should().Be(originalStudentStatus);
+        (await dbContext.StatusHistories.CountAsync()).Should().Be(0);
+        (await dbContext.Notifications.CountAsync()).Should().Be(0);
+    }
+
+    [Fact]
+    public async Task ReportInterviewedAsync_rejects_pending_request()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var request = new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            Status = RequestStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+        dbContext.PlacementRequests.Add(request);
+        await dbContext.SaveChangesAsync();
+
+        var result = await CreateService(dbContext).ReportInterviewedAsync(
+            fixture.Student.Id,
+            request.Id,
+            new ReportInterviewDto());
+
+        result.Success.Should().BeFalse();
+        result.NotFound.Should().BeFalse();
+        result.Error.Should().Contain("trạng thái được mời phỏng vấn");
+        request.StudentReportedInterviewAt.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ReportInterviewedAsync_hides_request_owned_by_another_student()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var request = new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            Status = RequestStatus.InterviewInvited,
+            CreatedAt = DateTime.UtcNow
+        };
+        var otherStudent = new Student
+        {
+            Id = 2,
+            StudentCode = "SV0002",
+            FullName = "Sinh viên khác",
+            Major = "Ngành",
+            ClassName = "SE01",
+            Email = "other@example.com",
+            PhoneNumber = "0922222222",
+            Status = StudentStatus.NoCompany,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        dbContext.AddRange(request, otherStudent);
+        await dbContext.SaveChangesAsync();
+
+        var result = await CreateService(dbContext).ReportInterviewedAsync(
+            otherStudent.Id,
+            request.Id,
+            new ReportInterviewDto());
+
+        result.Success.Should().BeFalse();
+        result.NotFound.Should().BeTrue();
+        result.Error.Should().Be("Không tìm thấy yêu cầu.");
+        request.StudentReportedInterviewAt.Should().BeNull();
+    }
+
+    private static PlacementRequestService CreateService(AppDbContext dbContext) =>
+        new(dbContext, NullLogger<PlacementRequestService>.Instance, CreateConfiguration());
+
+    private static IConfiguration CreateConfiguration() =>
+        new ConfigurationBuilder().AddInMemoryCollection().Build();
+
+    private static CreatePlacementRequestDto CreateValidDto(int companyId, int? jobPositionId) => new()
     {
         CompanyId = companyId,
         JobPositionId = jobPositionId,

@@ -11,7 +11,3 @@ export function getMyProfile() {
 export function getMyStatusHistory() {
   return axiosClient.get('/me/status-history').then((res) => res.data.data)
 }
-
-export function changeMyStatus(dto) {
-  return axiosClient.post('/me/change-status', dto)
-}

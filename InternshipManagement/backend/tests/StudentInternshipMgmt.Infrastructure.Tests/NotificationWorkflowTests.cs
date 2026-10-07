@@ -14,47 +14,6 @@ namespace StudentInternshipMgmt.Infrastructure.Tests;
 public class NotificationWorkflowTests
 {
     [Fact]
-    public async Task Student_rejection_creates_notification_with_company_snapshot_and_reason()
-    {
-        var seeded = await CreateSeededContext(StudentStatus.Introduced);
-        await using var dbContext = seeded.DbContext;
-        var service = new StudentService(dbContext, NullLogger<StudentService>.Instance);
-
-        var result = await service.ChangeStatusAsync(
-            seeded.Student.Id,
-            new ChangeStatusDto { NewStatus = StudentStatus.NoCompany, Note = "Không phù hợp" },
-            seeded.User.Id,
-            isAdmin: false);
-        var notification = await dbContext.Notifications.SingleAsync();
-
-        result.Success.Should().BeTrue();
-        notification.Type.Should().Be(NotificationType.StudentReportedRejection);
-        notification.CompanyId.Should().Be(seeded.Company.Id);
-        notification.CompanyName.Should().Be(seeded.Company.Name);
-        notification.Reason.Should().Be("Không phù hợp");
-        notification.Message.Should().Contain(seeded.Student.FullName);
-        notification.Message.Should().Contain(seeded.Company.Name);
-        notification.Message.Should().Contain("Không phù hợp");
-    }
-
-    [Fact]
-    public async Task Student_reverting_to_introduced_creates_reverted_stage_notification()
-    {
-        var seeded = await CreateSeededContext(StudentStatus.Interviewed);
-        await using var dbContext = seeded.DbContext;
-        var service = new StudentService(dbContext, NullLogger<StudentService>.Instance);
-
-        var result = await service.ChangeStatusAsync(
-            seeded.Student.Id,
-            new ChangeStatusDto { NewStatus = StudentStatus.Introduced, Note = "Cần trao đổi lại" },
-            seeded.User.Id,
-            isAdmin: false);
-
-        result.Success.Should().BeTrue();
-        (await dbContext.Notifications.SingleAsync()).Type.Should().Be(NotificationType.StudentRevertedStage);
-    }
-
-    [Fact]
     public async Task Admin_status_change_does_not_create_notification()
     {
         var seeded = await CreateSeededContext(StudentStatus.Interviewed, UserRole.Admin);
@@ -64,8 +23,7 @@ public class NotificationWorkflowTests
         var result = await service.ChangeStatusAsync(
             seeded.Student.Id,
             new ChangeStatusDto { NewStatus = StudentStatus.Introduced, Note = "Điều chỉnh hồ sơ" },
-            seeded.User.Id,
-            isAdmin: true);
+            seeded.User.Id);
 
         result.Success.Should().BeTrue();
         (await dbContext.Notifications.CountAsync()).Should().Be(0);
@@ -74,15 +32,14 @@ public class NotificationWorkflowTests
     [Fact]
     public async Task Failed_backward_change_does_not_create_notification()
     {
-        var seeded = await CreateSeededContext(StudentStatus.Introduced);
+        var seeded = await CreateSeededContext(StudentStatus.Introduced, UserRole.Admin);
         await using var dbContext = seeded.DbContext;
         var service = new StudentService(dbContext, NullLogger<StudentService>.Instance);
 
         var result = await service.ChangeStatusAsync(
             seeded.Student.Id,
             new ChangeStatusDto { NewStatus = StudentStatus.NoCompany },
-            seeded.User.Id,
-            isAdmin: false);
+            seeded.User.Id);
 
         result.Success.Should().BeFalse();
         (await dbContext.Notifications.CountAsync()).Should().Be(0);
@@ -92,14 +49,20 @@ public class NotificationWorkflowTests
     [Fact]
     public async Task Recent_rejection_includes_new_account_and_excludes_pending_request()
     {
-        var seeded = await CreateSeededContext(StudentStatus.Introduced);
+        var seeded = await CreateSeededContext(StudentStatus.NoCompany);
         await using var dbContext = seeded.DbContext;
-        var studentService = new StudentService(dbContext, NullLogger<StudentService>.Instance);
-        await studentService.ChangeStatusAsync(
-            seeded.Student.Id,
-            new ChangeStatusDto { NewStatus = StudentStatus.NoCompany, Note = "Không phù hợp" },
-            seeded.User.Id,
-            isAdmin: false);
+        dbContext.StatusHistories.Add(new StatusHistory
+        {
+            StudentId = seeded.Student.Id,
+            FromStatus = StudentStatus.Introduced,
+            ToStatus = StudentStatus.NoCompany,
+            CompanyId = seeded.Company.Id,
+            Note = "Không phù hợp",
+            ChangedAt = DateTime.UtcNow,
+            ChangedBy = seeded.User.Id,
+            ChangedByType = ActorType.Student
+        });
+        await dbContext.SaveChangesAsync();
         var dashboardService = new DashboardService(
             dbContext,
             new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>

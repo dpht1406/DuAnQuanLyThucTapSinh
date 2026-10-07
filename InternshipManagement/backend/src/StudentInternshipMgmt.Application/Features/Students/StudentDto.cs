@@ -20,4 +20,5 @@ public class StudentDto
 
     public bool HasAccount { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

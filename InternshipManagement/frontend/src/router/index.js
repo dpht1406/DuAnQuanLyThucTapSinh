@@ -50,10 +50,22 @@ const routes = [
         meta: { requiresAuth: true, roles: ['Admin'] }
       },
       {
+        path: 'students/new',
+        name: 'students-new',
+        component: () => import('../views/students/StudentCreateView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'], hideMobileChrome: true }
+      },
+      {
         path: 'students/:id(\\d+)',
         name: 'student-detail',
         component: () => import('../views/students/StudentDetailView.vue'),
         meta: { requiresAuth: true, roles: ['Admin'] }
+      },
+      {
+        path: 'students/:id(\\d+)/edit',
+        name: 'student-edit',
+        component: () => import('../views/students/StudentEditView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'], hideMobileChrome: true }
       },
       {
         path: 'about',
@@ -66,6 +78,12 @@ const routes = [
         name: 'companies',
         component: () => import('../views/companies/CompaniesView.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: 'companies/new',
+        name: 'company-create',
+        component: () => import('../views/companies/CompanyCreateView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'], hideMobileChrome: true }
       },
       {
         path: 'job-positions',

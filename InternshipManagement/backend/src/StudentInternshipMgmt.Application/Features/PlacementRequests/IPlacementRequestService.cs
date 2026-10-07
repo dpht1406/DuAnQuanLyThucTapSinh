@@ -11,6 +11,8 @@ public interface IPlacementRequestService
 
     Task<List<PlacementRequestDto>> GetMyRequestsAsync(int studentId);
 
+    Task<(bool Success, string? Error, bool NotFound)> ReportInterviewedAsync(int studentId, int requestId, ReportInterviewDto dto);
+
     Task<(bool Success, string? Error, bool NotFound)> ApproveRequestAsync(int requestId, int adminUserId);
 
     Task<(bool Success, string? Error, bool NotFound)> RejectRequestAsync(int requestId, RejectPlacementRequestDto dto, int adminUserId);

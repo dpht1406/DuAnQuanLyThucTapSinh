@@ -3,7 +3,6 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
-import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
 import DataTable from 'primevue/datatable'
@@ -11,11 +10,10 @@ import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import Message from 'primevue/message'
 import { useConfirm } from 'primevue/useconfirm'
-import { createStudent, deleteStudent, getStudents, updateStudent } from '../../api/students.js'
+import { deleteStudent, getStudents } from '../../api/students.js'
 import { getCompanies } from '../../api/companies.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import StudentStatusDialog from '../../components/students/StudentStatusDialog.vue'
-import { validateEmailAddress, validateSafeText } from '../../utils/emailValidation.js'
 import {
   STATUS_OPTIONS,
   STATUS_LABELS,
@@ -36,19 +34,6 @@ const totalRecords = ref(0)
 const loading = ref(false)
 const errorMessage = ref('')
 const companyOptions = ref([])
-const dialogVisible = ref(false)
-const dialogMode = ref('create')
-const editingId = ref(null)
-const saving = ref(false)
-const dialogErrorMessage = ref('')
-const studentForm = reactive({
-  StudentCode: '',
-  FullName: '',
-  Email: '',
-  PhoneNumber: '',
-  Major: '',
-  ClassName: ''
-})
 
 const confirm = useConfirm()
 const route = useRoute()
@@ -72,36 +57,6 @@ function emptyDisplay(value) {
   return value == null || value === '' ? '—' : value
 }
 
-function resetStudentForm() {
-  studentForm.StudentCode = ''
-  studentForm.FullName = ''
-  studentForm.Email = ''
-  studentForm.PhoneNumber = ''
-  studentForm.Major = ''
-  studentForm.ClassName = ''
-}
-
-function openCreateDialog() {
-  resetStudentForm()
-  dialogMode.value = 'create'
-  editingId.value = null
-  dialogErrorMessage.value = ''
-  dialogVisible.value = true
-}
-
-function openEditDialog(student) {
-  studentForm.StudentCode = student.studentCode ?? ''
-  studentForm.FullName = student.fullName ?? ''
-  studentForm.Email = student.email ?? ''
-  studentForm.PhoneNumber = student.phoneNumber ?? ''
-  studentForm.Major = student.major ?? ''
-  studentForm.ClassName = student.className ?? ''
-  dialogMode.value = 'edit'
-  editingId.value = student.id
-  dialogErrorMessage.value = ''
-  dialogVisible.value = true
-}
-
 function openStatusDialog(student) {
   selectedStatusStudent.value = student
   statusDialogVisible.value = true
@@ -109,65 +64,6 @@ function openStatusDialog(student) {
 
 function openStudentDetails(student) {
   router.push({ name: 'student-detail', params: { id: student.id } })
-}
-
-function closeStudentDialog() {
-  if (saving.value) return
-  dialogVisible.value = false
-}
-
-async function submitStudent() {
-  dialogErrorMessage.value = ''
-  const requiredFields = [
-    ['MSSV', studentForm.StudentCode],
-    ['Họ tên', studentForm.FullName],
-    ['Email', studentForm.Email],
-    ['Số điện thoại', studentForm.PhoneNumber],
-    ['Ngành', studentForm.Major],
-    ['Lớp', studentForm.ClassName]
-  ]
-  const missingField = requiredFields.find(([, value]) => !String(value ?? '').trim())
-  if (missingField) {
-    dialogErrorMessage.value = `${missingField[0]} không được để trống.`
-    return
-  }
-
-  const limits = {
-    StudentCode: 20,
-    FullName: 150,
-    PhoneNumber: 20,
-    Major: 150,
-    ClassName: 50
-  }
-  for (const [field, maximumLength] of Object.entries(limits)) {
-    const validationError = validateSafeText(studentForm[field], maximumLength)
-    if (validationError) {
-      dialogErrorMessage.value = validationError
-      return
-    }
-  }
-  const emailError = validateEmailAddress(studentForm.Email, 150)
-  if (emailError) {
-    dialogErrorMessage.value = emailError
-    return
-  }
-  saving.value = true
-
-  try {
-    if (dialogMode.value === 'create') {
-      await createStudent({ ...studentForm })
-    } else {
-      const { StudentCode, ...updateDto } = studentForm
-      await updateStudent(editingId.value, updateDto)
-    }
-    dialogVisible.value = false
-    resetStudentForm()
-    await fetchStudents()
-  } catch (err) {
-    dialogErrorMessage.value = extractErrorMessage(err)
-  } finally {
-    saving.value = false
-  }
 }
 
 function confirmDelete(student) {
@@ -317,7 +213,7 @@ onBeforeUnmount(() => {
           label="Thêm mới"
           icon="pi pi-plus"
           class="toolbar-create"
-          @click="openCreateDialog"
+          @click="router.push({ name: 'students-new' })"
         />
       </div>
 
@@ -385,8 +281,9 @@ onBeforeUnmount(() => {
                 severity="secondary"
                 text
                 rounded
-                aria-label="Sửa"
-                @click="openEditDialog(data)"
+                aria-label="Sửa thông tin"
+                title="Sửa thông tin"
+                @click="router.push({ name: 'student-edit', params: { id: data.id }, query: { from: 'list' } })"
               />
               <Button
                 icon="pi pi-trash"
@@ -406,55 +303,6 @@ onBeforeUnmount(() => {
         :student="selectedStatusStudent"
         @changed="fetchStudents"
       />
-
-      <Dialog
-        v-model:visible="dialogVisible"
-        modal
-        :header="dialogMode === 'create' ? 'Thêm sinh viên' : 'Sửa sinh viên'"
-        :closable="!saving"
-        :style="{ width: 'min(32rem, calc(100vw - 2rem))' }"
-        @hide="resetStudentForm"
-      >
-        <Message v-if="dialogErrorMessage" severity="error" :closable="false">
-          {{ dialogErrorMessage }}
-        </Message>
-        <form class="student-form" novalidate @submit.prevent="submitStudent">
-          <div class="form-field">
-            <label for="student-code">MSSV</label>
-            <InputText
-              id="student-code"
-              v-model="studentForm.StudentCode"
-              maxlength="20"
-              :disabled="dialogMode === 'edit' || saving"
-              required
-            />
-          </div>
-          <div class="form-field">
-            <label for="student-full-name">Họ tên</label>
-            <InputText id="student-full-name" v-model="studentForm.FullName" maxlength="150" :disabled="saving" required />
-          </div>
-          <div class="form-field">
-            <label for="student-email">Email</label>
-            <InputText id="student-email" v-model="studentForm.Email" type="email" maxlength="150" :disabled="saving" required />
-          </div>
-          <div class="form-field">
-            <label for="student-phone">Số điện thoại</label>
-            <InputText id="student-phone" v-model="studentForm.PhoneNumber" maxlength="20" :disabled="saving" required />
-          </div>
-          <div class="form-field">
-            <label for="student-major">Ngành</label>
-            <InputText id="student-major" v-model="studentForm.Major" maxlength="150" :disabled="saving" required />
-          </div>
-          <div class="form-field">
-            <label for="student-class">Lớp</label>
-            <InputText id="student-class" v-model="studentForm.ClassName" maxlength="50" :disabled="saving" required />
-          </div>
-          <div class="dialog-actions">
-            <Button type="button" label="Hủy" severity="secondary" text :disabled="saving" @click="closeStudentDialog" />
-            <Button type="submit" label="Lưu" icon="pi pi-check" :loading="saving" />
-          </div>
-        </form>
-      </Dialog>
     </template>
   </Card>
   </div>
@@ -502,32 +350,9 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
-.action-buttons,
-.dialog-actions {
+.action-buttons {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-}
-
-.student-form {
-  display: grid;
-  gap: 1rem;
-  margin-top: 0.25rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.form-field label {
-  font-size: 0.875rem;
-  color: var(--text-h);
-}
-
-.dialog-actions {
-  justify-content: flex-end;
-  margin-top: 0.25rem;
 }
 </style>

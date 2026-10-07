@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using StudentInternshipMgmt.Application.Features.JobPositions.Dtos;
 using StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
@@ -168,7 +169,10 @@ public class JobPositionListTests
         dbContext.JobPositions.Add(position);
         dbContext.Students.Add(student);
         await dbContext.SaveChangesAsync();
-        var service = new PlacementRequestService(dbContext, NullLogger<PlacementRequestService>.Instance);
+        var service = new PlacementRequestService(
+            dbContext,
+            NullLogger<PlacementRequestService>.Instance,
+            new ConfigurationBuilder().AddInMemoryCollection().Build());
 
         var result = await service.CreateRequestAsync(1, new CreatePlacementRequestDto { CompanyId = 1, JobPositionId = 1 });
 
