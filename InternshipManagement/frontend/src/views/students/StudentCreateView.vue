@@ -8,6 +8,10 @@ import Message from 'primevue/message'
 import { createStudent } from '../../api/students.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import { validateEmailAddress, validateSafeText } from '../../utils/emailValidation.js'
+import FormPage from '../../components/form/FormPage.vue'
+import FormSection from '../../components/form/FormSection.vue'
+import FormField from '../../components/form/FormField.vue'
+import FormActionBar from '../../components/form/FormActionBar.vue'
 
 const router = useRouter()
 const toast = useToast()
@@ -235,436 +239,257 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="page-container student-create-page">
-    <header class="student-create-header">
-      <Button
-        label="Quay lại"
-        icon="pi pi-arrow-left"
-        severity="secondary"
-        text
-        class="back-button"
-        @click="router.push({ name: 'students' })"
-      />
-      <h1 class="page-title">Thêm sinh viên</h1>
-    </header>
+  <FormPage
+    title="Thêm sinh viên"
+    subtitle="Tất cả các trường đều bắt buộc"
+    back-label="Sinh viên"
+    :back-to="{ name: 'students' }"
+    class="student-create-page"
+  >
+    <Message v-if="formError" severity="error" :closable="false" class="form-global-error">
+      {{ formError }}
+    </Message>
 
-    <section class="student-create-card">
-      <Message v-if="formError" severity="error" :closable="false" class="form-global-error">
-        {{ formError }}
-      </Message>
+    <form class="student-create-form" novalidate @submit.prevent="submitForm">
+      <FormSection
+        title="Thông tin cá nhân"
+        description="Thông tin liên hệ cơ bản của sinh viên."
+      >
+        <div class="fields-grid">
+          <FormField
+            label="MSSV"
+            for="student-code-input"
+            :error="fieldErrors.StudentCode"
+          >
+            <InputText
+              id="student-code-input"
+              v-model="form.StudentCode"
+              type="text"
+              maxlength="20"
+              placeholder="Ví dụ: SV2024001"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.StudentCode)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.StudentCode)"
+              :aria-describedby="fieldErrors.StudentCode ? 'student-code-error' : undefined"
+              @blur="validateField('StudentCode')"
+              @input="clearFieldError('StudentCode')"
+              :ref="(el) => setFieldRef('StudentCode', el)"
+            />
+          </FormField>
 
-      <form class="student-create-form" novalidate @submit.prevent="submitForm">
-        <div class="form-section">
-          <div class="form-section-header">
-            <h2>Thông tin cá nhân</h2>
-            <p>Thông tin liên hệ cơ bản của sinh viên.</p>
-          </div>
+          <FormField
+            label="Họ tên"
+            for="full-name-input"
+            :error="fieldErrors.FullName"
+          >
+            <InputText
+              id="full-name-input"
+              v-model="form.FullName"
+              maxlength="100"
+              placeholder="Nhập họ và tên"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.FullName)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.FullName)"
+              :aria-describedby="fieldErrors.FullName ? 'full-name-error' : undefined"
+              @blur="validateField('FullName')"
+              @input="clearFieldError('FullName')"
+              :ref="(el) => setFieldRef('FullName', el)"
+            />
+          </FormField>
 
-          <div class="form-grid">
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.StudentCode) }">
-              <label for="student-code-input">MSSV <span class="required-mark">*</span></label>
-              <InputText
-                id="student-code-input"
-                v-model="form.StudentCode"
-                type="text"
-                maxlength="20"
-                placeholder="Ví dụ: SV2024001"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.StudentCode)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.StudentCode)"
-                :aria-describedby="fieldErrors.StudentCode ? 'student-code-error' : undefined"
-                @blur="validateField('StudentCode')"
-                @input="clearFieldError('StudentCode')"
-                :ref="(el) => setFieldRef('StudentCode', el)"
-              />
-              <small
-                v-if="fieldErrors.StudentCode"
-                id="student-code-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.StudentCode }}
-              </small>
-            </div>
+          <FormField
+            label="Email"
+            for="email-input"
+            :error="fieldErrors.Email"
+          >
+            <InputText
+              id="email-input"
+              v-model="form.Email"
+              type="email"
+              maxlength="150"
+              placeholder="ten@truong.edu.vn"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.Email)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.Email)"
+              :aria-describedby="fieldErrors.Email ? 'email-error' : undefined"
+              @blur="validateField('Email')"
+              @input="clearFieldError('Email')"
+              :ref="(el) => setFieldRef('Email', el)"
+            />
+          </FormField>
 
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.FullName) }">
-              <label for="full-name-input">Họ tên <span class="required-mark">*</span></label>
-              <InputText
-                id="full-name-input"
-                v-model="form.FullName"
-                maxlength="100"
-                placeholder="Nhập họ và tên"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.FullName)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.FullName)"
-                :aria-describedby="fieldErrors.FullName ? 'full-name-error' : undefined"
-                @blur="validateField('FullName')"
-                @input="clearFieldError('FullName')"
-                :ref="(el) => setFieldRef('FullName', el)"
-              />
-              <small
-                v-if="fieldErrors.FullName"
-                id="full-name-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.FullName }}
-              </small>
-            </div>
-
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.Email) }">
-              <label for="email-input">Email <span class="required-mark">*</span></label>
-              <InputText
-                id="email-input"
-                v-model="form.Email"
-                type="email"
-                maxlength="150"
-                placeholder="ten@truong.edu.vn"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.Email)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.Email)"
-                :aria-describedby="fieldErrors.Email ? 'email-error' : undefined"
-                @blur="validateField('Email')"
-                @input="clearFieldError('Email')"
-                :ref="(el) => setFieldRef('Email', el)"
-              />
-              <small
-                v-if="fieldErrors.Email"
-                id="email-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.Email }}
-              </small>
-            </div>
-
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.PhoneNumber) }">
-              <label for="phone-number-input">Số điện thoại <span class="required-mark">*</span></label>
-              <InputText
-                id="phone-number-input"
-                v-model="form.PhoneNumber"
-                type="tel"
-                inputmode="numeric"
-                maxlength="10"
-                placeholder="0912 345 678"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.PhoneNumber)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.PhoneNumber)"
-                :aria-describedby="fieldErrors.PhoneNumber ? 'phone-number-error' : undefined"
-                @blur="validateField('PhoneNumber')"
-                @input="clearFieldError('PhoneNumber')"
-                :ref="(el) => setFieldRef('PhoneNumber', el)"
-              />
-              <small
-                v-if="fieldErrors.PhoneNumber"
-                id="phone-number-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.PhoneNumber }}
-              </small>
-            </div>
-          </div>
+          <FormField
+            label="Số điện thoại"
+            for="phone-number-input"
+            :error="fieldErrors.PhoneNumber"
+          >
+            <InputText
+              id="phone-number-input"
+              v-model="form.PhoneNumber"
+              type="tel"
+              inputmode="numeric"
+              maxlength="10"
+              placeholder="0912 345 678"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.PhoneNumber)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.PhoneNumber)"
+              :aria-describedby="fieldErrors.PhoneNumber ? 'phone-number-error' : undefined"
+              @blur="validateField('PhoneNumber')"
+              @input="clearFieldError('PhoneNumber')"
+              :ref="(el) => setFieldRef('PhoneNumber', el)"
+            />
+          </FormField>
         </div>
+      </FormSection>
 
-        <div class="form-section">
-          <div class="form-section-header">
-            <h2>Thông tin học tập</h2>
-            <p>Ngành và lớp sinh viên đang theo học.</p>
-          </div>
+      <FormSection
+        title="Thông tin học tập"
+        description="Ngành và lớp sinh viên đang theo học."
+      >
+        <div class="fields-grid">
+          <FormField
+            label="Ngành"
+            for="major-input"
+            :error="fieldErrors.Major"
+          >
+            <InputText
+              id="major-input"
+              v-model="form.Major"
+              maxlength="100"
+              placeholder="Ví dụ: Công nghệ thông tin"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.Major)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.Major)"
+              :aria-describedby="fieldErrors.Major ? 'major-error' : undefined"
+              @blur="validateField('Major')"
+              @input="clearFieldError('Major')"
+              :ref="(el) => setFieldRef('Major', el)"
+            />
+          </FormField>
 
-          <div class="form-grid">
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.Major) }">
-              <label for="major-input">Ngành <span class="required-mark">*</span></label>
-              <InputText
-                id="major-input"
-                v-model="form.Major"
-                maxlength="100"
-                placeholder="Ví dụ: Công nghệ thông tin"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.Major)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.Major)"
-                :aria-describedby="fieldErrors.Major ? 'major-error' : undefined"
-                @blur="validateField('Major')"
-                @input="clearFieldError('Major')"
-                :ref="(el) => setFieldRef('Major', el)"
-              />
-              <small
-                v-if="fieldErrors.Major"
-                id="major-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.Major }}
-              </small>
-            </div>
-
-            <div class="form-field" :class="{ 'has-error': Boolean(fieldErrors.ClassName) }">
-              <label for="class-name-input">Lớp <span class="required-mark">*</span></label>
-              <InputText
-                id="class-name-input"
-                v-model="form.ClassName"
-                maxlength="50"
-                placeholder="Ví dụ: CNTT2023A"
-                class="student-input"
-                :invalid="Boolean(fieldErrors.ClassName)"
-                :disabled="saving"
-                :aria-invalid="Boolean(fieldErrors.ClassName)"
-                :aria-describedby="fieldErrors.ClassName ? 'class-name-error' : undefined"
-                @blur="validateField('ClassName')"
-                @input="clearFieldError('ClassName')"
-                :ref="(el) => setFieldRef('ClassName', el)"
-              />
-              <small
-                v-if="fieldErrors.ClassName"
-                id="class-name-error"
-                class="field-error"
-                aria-live="polite"
-              >
-                <i class="pi pi-exclamation-circle" aria-hidden="true" />
-                {{ fieldErrors.ClassName }}
-              </small>
-            </div>
-          </div>
+          <FormField
+            label="Lớp"
+            for="class-name-input"
+            :error="fieldErrors.ClassName"
+          >
+            <InputText
+              id="class-name-input"
+              v-model="form.ClassName"
+              maxlength="50"
+              placeholder="Ví dụ: CNTT2023A"
+              class="student-input"
+              :invalid="Boolean(fieldErrors.ClassName)"
+              :disabled="saving"
+              :aria-invalid="Boolean(fieldErrors.ClassName)"
+              :aria-describedby="fieldErrors.ClassName ? 'class-name-error' : undefined"
+              @blur="validateField('ClassName')"
+              @input="clearFieldError('ClassName')"
+              :ref="(el) => setFieldRef('ClassName', el)"
+            />
+          </FormField>
         </div>
+      </FormSection>
 
-        <div class="form-footer">
-          <span class="required-note"><span class="required-mark">*</span> Trường bắt buộc</span>
-          <div class="form-actions">
-            <Button type="button" label="Hủy" severity="secondary" variant="outlined" :disabled="saving" @click="router.push({ name: 'students' })" />
-            <Button type="submit" label="Lưu sinh viên" icon="pi pi-check" :loading="saving" :disabled="saving" />
-          </div>
-        </div>
-      </form>
-    </section>
-  </div>
+      <FormActionBar>
+        <Button
+          type="button"
+          label="Hủy"
+          class="btn-cancel"
+          :disabled="saving"
+          @click="router.push({ name: 'students' })"
+        />
+        <Button
+          type="submit"
+          label="Lưu sinh viên"
+          class="btn-primary"
+          :loading="saving"
+          :disabled="saving"
+        />
+      </FormActionBar>
+    </form>
+  </FormPage>
 </template>
 
 <style scoped>
-.student-create-page {
-  color: var(--apply-ink);
-}
-
-.student-create-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.student-create-header .page-title {
-  font-size: 28px;
-  line-height: 1.25;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.student-create-card {
-  background: var(--apply-surface);
-  border: 1px solid var(--apply-border);
-  border-radius: 18px;
-  box-shadow: var(--apply-shadow);
-  padding: 1.5rem;
-}
-
 .student-create-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.25rem;
-  border: 1px solid var(--apply-border);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.form-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.form-section-header h2 {
-  margin: 0;
-  color: var(--apply-ink);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.form-section-header p {
-  margin: 0;
-  color: var(--apply-muted);
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem 1.25rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.form-field label {
-  color: var(--apply-ink);
-  font-size: 13.5px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.required-mark {
-  color: var(--apply-error);
-}
-
-.student-input {
-  width: 100%;
-  min-height: 44px;
-  border: 1px solid var(--apply-border);
-  border-radius: 10px;
-  background: var(--apply-surface);
-  color: var(--apply-ink);
-  font-size: 15px;
-  font-weight: 400;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.student-input::placeholder {
-  color: var(--apply-placeholder);
-  font-size: 14px;
-}
-
-.student-input:focus {
-  border-color: var(--apply-primary);
-  box-shadow: var(--apply-focus-ring);
-}
-
-.form-field.has-error .student-input,
-.form-field.has-error .p-inputtext {
-  border-color: var(--apply-error);
-  background: var(--apply-danger-soft);
-}
-
-.form-field.has-error .student-input:focus,
-.form-field.has-error .p-inputtext:focus {
-  border-color: var(--apply-error);
-  box-shadow: var(--apply-error-ring);
-}
-
-.field-error {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0;
-  color: var(--apply-error);
-  font-size: 12.5px;
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.field-error i {
-  font-size: 12px;
-}
-
-.form-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--apply-border);
-}
-
-.required-note {
-  color: var(--apply-muted);
-  font-size: 12.5px;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
 }
 
 .form-global-error {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--ui-radius-sm);
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+:deep(.student-input.p-inputtext),
+.student-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  font-family: var(--ui-font-sans);
+  font-size: 14.5px;
+  color: var(--ui-ink);
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-sm);
+  transition: var(--ui-transition);
+}
+
+:deep(.student-input.p-inputtext::placeholder),
+.student-input::placeholder {
+  color: var(--ui-placeholder);
+  font-size: 14px;
+}
+
+:deep(.student-input.p-inputtext:hover),
+.student-input:hover {
+  border-color: var(--ui-ink);
+}
+
+:deep(.student-input.p-inputtext:focus),
+.student-input:focus {
+  border-color: var(--ui-primary-600);
+  outline: 2px solid var(--ui-primary-600);
+  outline-offset: 1px;
+}
+
+:deep(.student-input.p-inputtext.p-invalid),
+:deep(.student-input.p-inputtext[aria-invalid="true"]),
+.student-input[aria-invalid="true"] {
+  border-color: var(--ui-error);
+  background: var(--ui-error-bg);
+}
+
+:deep(.student-input.p-inputtext.p-invalid:focus),
+:deep(.student-input.p-inputtext[aria-invalid="true"]:focus),
+.student-input[aria-invalid="true"]:focus {
+  border-color: var(--ui-error);
+  outline: 2px solid var(--ui-error);
+  outline-offset: 1px;
 }
 
 @media (max-width: 640px) {
-  .student-create-header {
-    margin-bottom: 1rem;
-  }
-
-  .student-create-header .page-title {
-    font-size: 17px;
-    font-weight: 600;
-  }
-
-  .student-create-card {
-    padding: 1rem;
-    border-radius: 14px;
-  }
-
-  .form-section {
-    padding: 0.875rem;
-  }
-
-  .form-grid {
+  .fields-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .form-section-header h2 {
+  :deep(.student-input.p-inputtext),
+  .student-input {
+    height: 44px;
     font-size: 15px;
-  }
-
-  .form-footer {
-    position: sticky;
-    bottom: 0;
-    z-index: 2;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 0.75rem;
-    padding: 0.75rem 0 0;
-    background: var(--apply-surface);
-    border-top: 1px solid var(--apply-border);
-  }
-
-  .required-note {
-    text-align: left;
-  }
-
-  .form-actions {
-    display: flex;
-    width: 100%;
-    gap: 0.75rem;
-  }
-
-  .form-actions .p-button {
-    flex: 1 1 0;
-    min-height: 44px;
   }
 }
 </style>

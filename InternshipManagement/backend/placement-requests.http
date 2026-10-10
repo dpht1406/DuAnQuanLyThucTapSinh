@@ -10,3 +10,75 @@ Content-Type: application/json
 {
   "note": "Đã tham gia phỏng vấn."
 }
+
+@adminToken = REPLACE_WITH_ADMIN_BEARER_TOKEN
+@adminRequestId = 1
+@acceptedRequestId = 2
+@jobPositionId = 1
+
+### Admin lists student-reported interviews pending confirmation
+GET {{baseUrl}}/api/placement-requests/pending-confirmation
+Authorization: Bearer {{adminToken}}
+
+### Admin confirms Passed (Decision enum: Passed = 0, Failed = 1, DismissReport = 2)
+POST {{baseUrl}}/api/placement-requests/{{adminRequestId}}/admin-confirm-result
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "decision": 0,
+  "confirmationSource": "Đã xác minh với doanh nghiệp",
+  "note": "Sinh viên đạt yêu cầu."
+}
+
+### Admin confirms Failed (Decision enum: Passed = 0, Failed = 1, DismissReport = 2)
+POST {{baseUrl}}/api/placement-requests/{{adminRequestId}}/admin-confirm-result
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "decision": 1,
+  "confirmationSource": "Đã xác minh với doanh nghiệp",
+  "note": "Sinh viên chưa đạt yêu cầu."
+}
+
+### Admin dismisses report (Decision enum: Passed = 0, Failed = 1, DismissReport = 2)
+POST {{baseUrl}}/api/placement-requests/{{adminRequestId}}/admin-confirm-result
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "decision": 2,
+  "confirmationSource": "Đã xác minh với doanh nghiệp",
+  "note": "Báo cáo cần được kiểm tra lại."
+}
+
+### Admin cancels an accepted placement result
+POST {{baseUrl}}/api/placement-requests/{{acceptedRequestId}}/cancel-accepted-result
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "note": "Điều chỉnh kết quả tiếp nhận."
+}
+
+### Dashboard lists overdue pending requests
+GET {{baseUrl}}/api/dashboard/overdue-requests
+Authorization: Bearer {{adminToken}}
+
+### Dashboard lists overdue interview results
+GET {{baseUrl}}/api/dashboard/pending-interview-results
+Authorization: Bearer {{adminToken}}
+
+### Admin approves a pending job position
+POST {{baseUrl}}/api/job-positions/{{jobPositionId}}/approve
+Authorization: Bearer {{adminToken}}
+
+### Admin rejects a pending job position
+POST {{baseUrl}}/api/job-positions/{{jobPositionId}}/reject
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "note": "Vui lòng bổ sung mô tả vị trí."
+}

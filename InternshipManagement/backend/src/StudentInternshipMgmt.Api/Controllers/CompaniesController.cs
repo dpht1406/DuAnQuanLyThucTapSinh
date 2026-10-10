@@ -41,7 +41,7 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ApiResponse<CompanyDetailDto>>> GetCompanyById(int id)
     {
-        var company = await _companyService.GetCompanyByIdAsync(id);
+        var company = await _companyService.GetCompanyByIdAsync(id, onlyApprovedPositions: User.IsInRole("User"));
         if (company is null)
             return NotFound(ApiResponse<CompanyDetailDto>.FailResponse("Không tìm thấy công ty."));
 

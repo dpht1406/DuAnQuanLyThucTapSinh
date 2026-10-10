@@ -3,6 +3,7 @@ using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Companies;
 using StudentInternshipMgmt.Application.Features.Companies.Dtos;
 using StudentInternshipMgmt.Domain.Entities;
+using StudentInternshipMgmt.Domain.Enums;
 using StudentInternshipMgmt.Infrastructure.Persistence;
 
 namespace StudentInternshipMgmt.Infrastructure.Services;
@@ -73,7 +74,25 @@ public class CompanyService : ICompanyService
             .ToListAsync();
     }
 
-    public async Task<CompanyDetailDto?> GetCompanyByIdAsync(int id)
+    public async Task<CompanyDto?> GetMyCompanyAsync(int companyId)
+    {
+        return await _db.Companies
+            .Where(c => c.Id == companyId)
+            .Select(c => new CompanyDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                Industry = c.Industry,
+                ContactPerson = c.ContactPerson,
+                ContactPhone = c.ContactPhone,
+                ContactEmail = c.ContactEmail,
+                ContactPosition = c.ContactPosition
+            })
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<CompanyDetailDto?> GetCompanyByIdAsync(int id, bool onlyApprovedPositions)
     {
         var company = await _db.Companies
             .Include(c => c.JobPositions)
@@ -93,6 +112,7 @@ public class CompanyService : ICompanyService
             ContactEmail = company.ContactEmail,
             ContactPosition = company.ContactPosition,
             JobPositions = company.JobPositions
+                .Where(jp => !onlyApprovedPositions || jp.ApprovalStatus == JobPositionApprovalStatus.Approved)
                 .Select(jp => new JobPositionDto
                 {
                     Id = jp.Id,

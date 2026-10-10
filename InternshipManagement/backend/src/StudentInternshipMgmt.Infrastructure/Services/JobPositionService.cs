@@ -32,7 +32,8 @@ public class JobPositionService : IJobPositionService
 
     public async Task<PagedResult<JobPositionDto>> GetJobPositionsAsync(JobPositionFilterDto filter)
     {
-        var query = BuildFilteredQuery(filter);
+        var query = BuildFilteredQuery(filter)
+            .Where(jp => jp.ApprovalStatus == JobPositionApprovalStatus.Approved);
         var today = DateTime.Today;
 
         return await ApplyOrdering(query, filter.Sort, today)
@@ -56,7 +57,20 @@ public class JobPositionService : IJobPositionService
 
     public async Task<PagedResult<JobPositionAdminDto>> GetJobPositionsAdminAsync(JobPositionFilterDto filter)
     {
-        var query = BuildFilteredQuery(filter);
+        return await ProjectAdminPositions(BuildFilteredQuery(filter), filter);
+    }
+
+    public async Task<PagedResult<JobPositionAdminDto>> GetJobPositionsForCompanyAsync(
+        int companyId, JobPositionFilterDto filter)
+    {
+        var query = BuildFilteredQuery(filter, ignoreClientCompanyId: true)
+            .Where(jp => jp.CompanyId == companyId);
+        return await ProjectAdminPositions(query, filter);
+    }
+
+    private async Task<PagedResult<JobPositionAdminDto>> ProjectAdminPositions(
+        IQueryable<JobPosition> query, JobPositionFilterDto filter)
+    {
         var today = DateTime.Today;
 
         return await ApplyOrdering(query, filter.Sort, today)
@@ -74,6 +88,8 @@ public class JobPositionService : IJobPositionService
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen,
+                ApprovalStatus = jp.ApprovalStatus,
+                ApprovalNote = jp.ApprovalNote,
                 // Students đã có global query filter (!IsDeleted) cấu hình ở
                 // StudentConfiguration, nên không cần lặp lại điều kiện đó ở đây.
                 AcceptedCount = _db.Students.Count(s =>
@@ -89,7 +105,7 @@ public class JobPositionService : IJobPositionService
     {
         var today = DateTime.Today;
         return await _db.JobPositions
-            .Where(jp => jp.Id == id)
+            .Where(jp => jp.Id == id && jp.ApprovalStatus == JobPositionApprovalStatus.Approved)
             .Select(jp => new JobPositionDto
             {
                 Id = jp.Id,
@@ -127,6 +143,8 @@ public class JobPositionService : IJobPositionService
                 Quantity = jp.Quantity,
                 Description = jp.Description,
                 IsOpen = jp.IsOpen,
+                ApprovalStatus = jp.ApprovalStatus,
+                ApprovalNote = jp.ApprovalNote,
                 AcceptedCount = _db.Students.Count(s =>
                     s.JobPositionId == jp.Id &&
                     (s.Status == StudentStatus.Accepted ||
@@ -134,6 +152,12 @@ public class JobPositionService : IJobPositionService
                      s.Status == StudentStatus.Completed))
             })
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<JobPositionAdminDto?> GetJobPositionByIdForCompanyAsync(int companyId, int id)
+    {
+        return await ProjectAdminPosition(_db.JobPositions
+            .Where(jp => jp.Id == id && jp.CompanyId == companyId));
     }
 
     public async Task<(bool Success, string? Error, JobPositionDto? Data)> CreateJobPositionAsync(CreateJobPositionDto dto)
@@ -178,6 +202,37 @@ public class JobPositionService : IJobPositionService
         });
     }
 
+    public async Task<(bool Success, string? Error, JobPositionAdminDto? Data)> CreateJobPositionForCompanyAsync(
+        int companyId, CreateCompanyJobPositionDto dto)
+    {
+        var validationError = ValidateFields(
+            dto.Title, dto.Department, dto.Location, dto.Deadline, dto.Quantity, dto.Description, true);
+        if (validationError is not null)
+            return (false, validationError, null);
+
+        var company = await _db.Companies.FirstOrDefaultAsync(c => c.Id == companyId);
+        if (company is null)
+            return (false, "Không tìm thấy công ty.", null);
+
+        var jobPosition = new JobPosition
+        {
+            CompanyId = companyId,
+            Title = dto.Title.Trim(),
+            Department = (dto.Department ?? string.Empty).Trim(),
+            Location = NormalizeLocation(dto.Location),
+            Deadline = dto.Deadline?.Date,
+            Quantity = dto.Quantity,
+            Description = dto.Description.Trim(),
+            IsOpen = dto.IsOpen,
+            ApprovalStatus = JobPositionApprovalStatus.Draft
+        };
+
+        _db.JobPositions.Add(jobPosition);
+        await _db.SaveChangesAsync();
+
+        return (true, null, MapToAdminDto(jobPosition, company));
+    }
+
     public async Task<(bool Success, string? Error, bool NotFound)> UpdateJobPositionAsync(int id, UpdateJobPositionDto dto)
     {
         var jobPosition = await _db.JobPositions.FirstOrDefaultAsync(jp => jp.Id == id);
@@ -206,12 +261,130 @@ public class JobPositionService : IJobPositionService
         return (true, null, false);
     }
 
+    public async Task<(bool Success, string? Error, bool NotFound, JobPositionAdminDto? Data)>
+        UpdateJobPositionForCompanyAsync(int companyId, int id, UpdateCompanyJobPositionDto dto)
+    {
+        var jobPosition = await _db.JobPositions
+            .FirstOrDefaultAsync(jp => jp.Id == id && jp.CompanyId == companyId);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true, null);
+
+        var validationError = ValidateFields(
+            dto.Title, dto.Department, dto.Location, dto.Deadline, dto.Quantity, dto.Description, false);
+        if (validationError is not null)
+            return (false, validationError, false, null);
+
+        var acceptedCount = await CountAcceptedAsync(id);
+        if (dto.Quantity < acceptedCount)
+            return (false,
+                $"Không thể giảm số lượng tuyển (Quantity) xuống dưới số lượng đã nhận hiện tại ({acceptedCount}).",
+                false,
+                null);
+
+        var title = dto.Title.Trim();
+        var department = (dto.Department ?? string.Empty).Trim();
+        var location = NormalizeLocation(dto.Location);
+        var description = dto.Description.Trim();
+        var needsApprovalAgain = jobPosition.ApprovalStatus == JobPositionApprovalStatus.Approved &&
+            (jobPosition.Title != title ||
+             jobPosition.Department != department ||
+             jobPosition.Location != location ||
+             jobPosition.Description != description);
+
+        jobPosition.Title = title;
+        jobPosition.Department = department;
+        jobPosition.Location = location;
+        jobPosition.Deadline = dto.Deadline?.Date;
+        jobPosition.Quantity = dto.Quantity;
+        jobPosition.Description = description;
+        jobPosition.IsOpen = dto.IsOpen;
+        if (needsApprovalAgain)
+        {
+            jobPosition.ApprovalStatus = JobPositionApprovalStatus.PendingApproval;
+            jobPosition.ApprovalNote = null;
+        }
+
+        await _db.SaveChangesAsync();
+        return (true, null, false, await ProjectAdminPosition(_db.JobPositions.Where(jp => jp.Id == id)));
+    }
+
+    public async Task<(bool Success, string? Error, bool NotFound)> SubmitForApprovalAsync(int companyId, int id)
+    {
+        var jobPosition = await _db.JobPositions
+            .FirstOrDefaultAsync(jp => jp.Id == id && jp.CompanyId == companyId);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true);
+
+        if (jobPosition.ApprovalStatus is not (JobPositionApprovalStatus.Draft or JobPositionApprovalStatus.Rejected))
+            return (false, "Chỉ vị trí ở trạng thái Nháp hoặc Bị từ chối mới được gửi duyệt.", false);
+
+        jobPosition.ApprovalStatus = JobPositionApprovalStatus.PendingApproval;
+        jobPosition.ApprovalNote = null;
+        await _db.SaveChangesAsync();
+        return (true, null, false);
+    }
+
+    public async Task<(bool Success, string? Error, bool NotFound)> ApproveJobPositionAsync(int id)
+    {
+        var jobPosition = await _db.JobPositions.FirstOrDefaultAsync(jp => jp.Id == id);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true);
+
+        if (jobPosition.ApprovalStatus != JobPositionApprovalStatus.PendingApproval)
+            return (false, "Chỉ duyệt được tin đang chờ duyệt.", false);
+
+        jobPosition.ApprovalStatus = JobPositionApprovalStatus.Approved;
+        jobPosition.ApprovalNote = null;
+        await _db.SaveChangesAsync();
+        return (true, null, false);
+    }
+
+    public async Task<(bool Success, string? Error, bool NotFound)> RejectJobPositionAsync(int id, string note)
+    {
+        var jobPosition = await _db.JobPositions.FirstOrDefaultAsync(jp => jp.Id == id);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true);
+
+        if (jobPosition.ApprovalStatus != JobPositionApprovalStatus.PendingApproval)
+            return (false, "Chỉ từ chối được tin đang chờ duyệt.", false);
+
+        var trimmedNote = note?.Trim();
+        if (string.IsNullOrWhiteSpace(trimmedNote))
+            return (false, "Ghi chú từ chối là bắt buộc.", false);
+
+        if (trimmedNote.Length > 1000)
+            return (false, "Ghi chú từ chối không được vượt quá 1000 ký tự.", false);
+
+        jobPosition.ApprovalStatus = JobPositionApprovalStatus.Rejected;
+        jobPosition.ApprovalNote = trimmedNote;
+        await _db.SaveChangesAsync();
+        return (true, null, false);
+    }
+
     public async Task<(bool Success, string? Error, bool NotFound)> DeleteJobPositionAsync(int id)
     {
         var jobPosition = await _db.JobPositions.FirstOrDefaultAsync(jp => jp.Id == id);
         if (jobPosition is null)
             return (false, "Không tìm thấy vị trí tuyển dụng.", true);
 
+        return await DeleteJobPositionEntityAsync(jobPosition);
+    }
+
+    public async Task<(bool Success, string? Error, bool NotFound)> DeleteJobPositionForCompanyAsync(
+        int companyId, int id)
+    {
+        var jobPosition = await _db.JobPositions
+            .FirstOrDefaultAsync(jp => jp.Id == id && jp.CompanyId == companyId);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true);
+
+        return await DeleteJobPositionEntityAsync(jobPosition);
+    }
+
+    private async Task<(bool Success, string? Error, bool NotFound)> DeleteJobPositionEntityAsync(
+        JobPosition jobPosition)
+    {
+        var id = jobPosition.Id;
         // Check chính theo đúng yêu cầu: còn Student nào (chưa xóa mềm, bất kể Status)
         // có JobPositionId = id này. Students đã có global query filter (!IsDeleted)
         // ở StudentConfiguration nên không cần lặp lại điều kiện đó ở đây.
@@ -219,6 +392,12 @@ public class JobPositionService : IJobPositionService
         if (hasActiveStudents)
             return (false,
                 "Không thể xóa vì vẫn còn sinh viên đang gắn với vị trí tuyển dụng này.",
+                false);
+
+        var hasPlacementRequests = await _db.PlacementRequests.AnyAsync(r => r.JobPositionId == id);
+        if (hasPlacementRequests)
+            return (false,
+                "Không thể xóa vì vị trí tuyển dụng này vẫn đang được tham chiếu bởi dữ liệu khác.",
                 false);
 
         _db.JobPositions.Remove(jobPosition);
@@ -256,9 +435,27 @@ public class JobPositionService : IJobPositionService
         return (true, null, false);
     }
 
+    public async Task<(bool Success, string? Error, bool NotFound)> ToggleOpenForCompanyAsync(
+        int companyId, int id, bool? isOpen)
+    {
+        var jobPosition = await _db.JobPositions
+            .FirstOrDefaultAsync(jp => jp.Id == id && jp.CompanyId == companyId);
+        if (jobPosition is null)
+            return (false, "Không tìm thấy vị trí tuyển dụng.", true);
+
+        var shouldOpen = isOpen ?? !jobPosition.IsOpen;
+        if (shouldOpen && jobPosition.ApprovalStatus != JobPositionApprovalStatus.Approved)
+            return (false, "Chỉ có thể bật tuyển khi vị trí đã được duyệt.", false);
+
+        jobPosition.IsOpen = shouldOpen;
+        await _db.SaveChangesAsync();
+        return (true, null, false);
+    }
+
     // ---------- Helpers ----------
 
-    private IQueryable<JobPosition> BuildFilteredQuery(JobPositionFilterDto filter)
+    private IQueryable<JobPosition> BuildFilteredQuery(
+        JobPositionFilterDto filter, bool ignoreClientCompanyId = false)
     {
         var query = _db.JobPositions.AsQueryable();
 
@@ -271,8 +468,11 @@ public class JobPositionService : IJobPositionService
                 jp.Department.ToLower().Contains(search));
         }
 
-        if (filter.CompanyId.HasValue)
+        if (!ignoreClientCompanyId && filter.CompanyId.HasValue)
             query = query.Where(jp => jp.CompanyId == filter.CompanyId.Value);
+
+        if (filter.ApprovalStatus.HasValue)
+            query = query.Where(jp => jp.ApprovalStatus == filter.ApprovalStatus.Value);
 
         if (filter.IsOpen.HasValue)
             query = query.Where(jp => jp.IsOpen == filter.IsOpen.Value);
@@ -307,6 +507,50 @@ public class JobPositionService : IJobPositionService
             s.JobPositionId == jobPositionId &&
             AcceptedStatuses.Contains(s.Status));
     }
+
+    private Task<JobPositionAdminDto?> ProjectAdminPosition(IQueryable<JobPosition> query)
+    {
+        return query.Select(jp => new JobPositionAdminDto
+        {
+            Id = jp.Id,
+            CompanyId = jp.CompanyId,
+            CompanyName = jp.Company.Name,
+            Title = jp.Title,
+            Department = jp.Department,
+            Location = jp.Location,
+            DisplayLocation = jp.Location != null && jp.Location.Trim() != "" ? jp.Location : jp.Company.Address,
+            Deadline = jp.Deadline,
+            IsExpired = jp.Deadline.HasValue && jp.Deadline.Value < DateTime.Today,
+            Quantity = jp.Quantity,
+            Description = jp.Description,
+            IsOpen = jp.IsOpen,
+            AcceptedCount = _db.Students.Count(s =>
+                s.JobPositionId == jp.Id && AcceptedStatuses.Contains(s.Status)),
+            ApprovalStatus = jp.ApprovalStatus,
+            ApprovalNote = jp.ApprovalNote
+        }).FirstOrDefaultAsync();
+    }
+
+    private static JobPositionAdminDto MapToAdminDto(JobPosition jobPosition, Company company) => new()
+    {
+        Id = jobPosition.Id,
+        CompanyId = jobPosition.CompanyId,
+        CompanyName = company.Name,
+        Title = jobPosition.Title,
+        Department = jobPosition.Department,
+        Location = jobPosition.Location,
+        DisplayLocation = string.IsNullOrWhiteSpace(jobPosition.Location) ? company.Address : jobPosition.Location,
+        Deadline = jobPosition.Deadline,
+        IsExpired = jobPosition.Deadline.HasValue && jobPosition.Deadline.Value.Date < DateTime.Today,
+        Quantity = jobPosition.Quantity,
+        Description = jobPosition.Description,
+        IsOpen = jobPosition.IsOpen,
+        ApprovalStatus = jobPosition.ApprovalStatus,
+        ApprovalNote = jobPosition.ApprovalNote
+    };
+
+    private static string? NormalizeLocation(string? location) =>
+        string.IsNullOrWhiteSpace(location) ? null : location.Trim();
 
     private static string? ValidateFields(string title, string department, string? location, DateTime? deadline, int quantity, string description, bool isCreate)
     {

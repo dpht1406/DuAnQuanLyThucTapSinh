@@ -2,12 +2,10 @@ namespace StudentInternshipMgmt.Domain.Enums;
 
 public enum RequestStatus
 {
-    Pending,
-    // luồng cũ, gỡ ở STEP 06
-    [Obsolete("luồng cũ, gỡ ở STEP 06")]
-    Approved,
-    Rejected,
-    InterviewInvited,
-    Accepted,
-    Expired
+    Pending = 0,
+    // 1 was the removed legacy Approved status; do not reuse it because clients or data may still use the numeric value.
+    Rejected = 2,
+    InterviewInvited = 3,
+    Accepted = 4,
+    Expired = 5
 }

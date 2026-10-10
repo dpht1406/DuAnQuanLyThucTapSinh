@@ -1,4 +1,5 @@
 using StudentInternshipMgmt.Domain.Common;
+using StudentInternshipMgmt.Domain.Enums;
 
 namespace StudentInternshipMgmt.Domain.Entities;
 
@@ -14,6 +15,8 @@ public class JobPosition : BaseEntity
     public int Quantity { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsOpen { get; set; }
+    public JobPositionApprovalStatus ApprovalStatus { get; set; } = JobPositionApprovalStatus.Approved;
+    public string? ApprovalNote { get; set; }
 
     public ICollection<Student> Students { get; set; } = new List<Student>();
 }

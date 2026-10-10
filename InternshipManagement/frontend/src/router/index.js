@@ -1,10 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import MainLayout from '../layouts/MainLayout.vue'
-
-function defaultRouteForRole(authStore) {
-  return authStore.isAdmin ? '/dashboard' : '/profile'
-}
+import { defaultRouteForRole } from '../utils/roleRoutes.js'
 
 const routes = [
   {
@@ -20,9 +17,9 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: () => {
+        redirect: (to) => {
           const authStore = useAuthStore()
-          return defaultRouteForRole(authStore)
+          return safeDefaultRoute(authStore, to.path)
         }
       },
       {
@@ -36,6 +33,12 @@ const routes = [
         name: 'dashboard',
         component: () => import('../views/dashboard/DashboardView.vue'),
         meta: { requiresAuth: true, roles: ['Admin'] }
+      },
+      {
+        path: 'company-home',
+        name: 'company-home',
+        component: () => import('../views/company/CompanyHomeView.vue'),
+        meta: { requiresAuth: true, roles: ['Company'] }
       },
       {
         path: 'students',
@@ -129,6 +132,15 @@ const router = createRouter({
   routes
 })
 
+function safeDefaultRoute(authStore, currentPath) {
+  const target = defaultRouteForRole(authStore.user?.role)
+  if (!target || target === currentPath) {
+    authStore.logout()
+    return '/login'
+  }
+  return target
+}
+
 const CHUNK_RELOAD_KEY = 'chunk-reload-once'
 const CHUNK_ERROR_PATTERN = /Failed to fetch dynamically imported module|error loading dynamically imported module|Importing a module script failed/i
 
@@ -179,7 +191,7 @@ router.beforeEach((to, _from, next) => {
   }
 
   if (requiresGuest && authStore.isAuthenticated) {
-    return next(defaultRouteForRole(authStore))
+    return next(safeDefaultRoute(authStore, to.path))
   }
 
   if (requiresAuth && !authStore.isAuthenticated) {
@@ -199,10 +211,9 @@ router.beforeEach((to, _from, next) => {
     authStore.isAuthenticated &&
     Array.isArray(roles) &&
     roles.length > 0 &&
-    authStore.user?.role &&
-    !roles.includes(authStore.user.role)
+    !roles.includes(authStore.user?.role)
   ) {
-    return next(defaultRouteForRole(authStore))
+    return next(safeDefaultRoute(authStore, to.path))
   }
 
   next()

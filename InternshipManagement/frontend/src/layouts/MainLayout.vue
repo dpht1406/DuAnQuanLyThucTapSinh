@@ -19,6 +19,10 @@ const isAdmin = computed(() => {
   const role = Array.isArray(authState.user?.role) ? authState.user.role[0] : authState.user?.role
   return String(role ?? '').trim().toLowerCase() === 'admin' || authState.isAdmin === true
 })
+const isCompany = computed(() => {
+  const role = Array.isArray(authState.user?.role) ? authState.user.role[0] : authState.user?.role
+  return String(role ?? '').trim().toLowerCase() === 'company'
+})
 const authStore = new Proxy(authState, {
   get(target, property) {
     return property === 'isAdmin' ? isAdmin.value : Reflect.get(target, property, target)
@@ -30,9 +34,10 @@ const toast = useToast()
 const hideMobileChrome = computed(() => route.meta?.hideMobileChrome === true)
 const adminMenu = [{ label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' }, { label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí thực tập', icon: 'pi pi-briefcase', route: '/job-positions' }, { label: 'Duyệt yêu cầu', icon: 'pi pi-inbox', route: '/placement-requests' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }]
 const userMenu = [{ label: 'Hồ sơ của tôi', icon: 'pi pi-user', route: '/profile' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí thực tập', icon: 'pi pi-briefcase', route: '/job-positions' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }]
-const menuItems = computed(() => (isAdmin.value ? adminMenu : userMenu))
-const mobileTabs = computed(() => isAdmin.value ? [{ label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí', icon: 'pi pi-briefcase', route: '/job-positions' }, { label: 'Duyệt', icon: 'pi pi-inbox', route: '/placement-requests' }] : [{ label: 'Hồ sơ', icon: 'pi pi-user', route: '/profile' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí', icon: 'pi pi-briefcase', route: '/job-positions' }])
-const mobileMoreItems = computed(() => isAdmin.value ? [{ label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }] : [{ label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }])
+const companyMenu = [{ label: 'Trang chủ', icon: 'pi pi-home', route: '/company-home' }]
+const menuItems = computed(() => (isAdmin.value ? adminMenu : isCompany.value ? companyMenu : userMenu))
+const mobileTabs = computed(() => isAdmin.value ? [{ label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Sinh viên', icon: 'pi pi-users', route: '/students' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí', icon: 'pi pi-briefcase', route: '/job-positions' }, { label: 'Duyệt', icon: 'pi pi-inbox', route: '/placement-requests' }] : isCompany.value ? [{ label: 'Trang chủ', icon: 'pi pi-home', route: '/company-home' }] : [{ label: 'Hồ sơ', icon: 'pi pi-user', route: '/profile' }, { label: 'Doanh nghiệp', icon: 'pi pi-building', route: '/companies' }, { label: 'Vị trí', icon: 'pi pi-briefcase', route: '/job-positions' }])
+const mobileMoreItems = computed(() => isAdmin.value ? [{ label: 'Tạo tài khoản', icon: 'pi pi-user-plus', route: '/students/accounts' }, { label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }] : isCompany.value ? [] : [{ label: 'Giới thiệu', icon: 'pi pi-info-circle', route: '/about' }])
 const pickActiveRoute = (items) => items.filter((i) => route.path === i.route || route.path.startsWith(`${i.route}/`)).sort((a, b) => b.route.length - a.route.length)[0]?.route
 const activeRoute = computed(() => pickActiveRoute(menuItems.value))
 const mobileActiveRoute = computed(() => pickActiveRoute([...mobileTabs.value, ...mobileMoreItems.value]))

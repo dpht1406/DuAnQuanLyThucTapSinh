@@ -4,10 +4,11 @@ import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice'
 import { definePreset } from '@primeuix/themes'
 import Aura from '@primeuix/themes/aura'
-import '@fontsource/inter/400.css'
-import '@fontsource/inter/500.css'
-import '@fontsource/inter/600.css'
-import '@fontsource/inter/700.css'
+import '@fontsource/newsreader/500.css'
+import '@fontsource/newsreader/600.css'
+import '@fontsource/be-vietnam-pro/400.css'
+import '@fontsource/be-vietnam-pro/500.css'
+import '@fontsource/be-vietnam-pro/600.css'
 import 'primeicons/primeicons.css'
 import './style.css'
 import App from './App.vue'
@@ -20,14 +21,43 @@ const app = createApp(App)
 const QlttPreset = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{indigo.50}', 100: '{indigo.100}', 200: '{indigo.200}', 300: '{indigo.300}',
-      400: '{indigo.400}', 500: '#6366F1', 600: '{indigo.600}', 700: '{indigo.700}',
-      800: '{indigo.800}', 900: '{indigo.900}', 950: '{indigo.950}'
+      50: '#EEF6F2',
+      100: '#D6EAE0',
+      200: '#AED5C2',
+      300: '#80BAA1',
+      400: '#4F9A7D',
+      500: '#2E7D63',
+      600: '#1F6650',
+      700: '#19523F',
+      800: '#153F32',
+      900: '#102F26',
+      950: '#081B15'
+    },
+    formField: {
+      borderRadius: '6px'
+    },
+    colorScheme: {
+      light: {
+        surface: {
+          0: '#ffffff',
+          50: '{stone.50}',
+          100: '{stone.100}',
+          200: '{stone.200}',
+          300: '{stone.300}',
+          400: '{stone.400}',
+          500: '{stone.500}',
+          600: '{stone.600}',
+          700: '{stone.700}',
+          800: '{stone.800}',
+          900: '{stone.900}',
+          950: '{stone.950}'
+        }
+      }
     }
   },
   components: {
-    card: { root: { borderRadius: '14px', boxShadow: 'none' } },
-    button: { border: { radius: '8px' } }
+    card: { root: { borderRadius: '10px', boxShadow: 'none' } },
+    button: { root: { borderRadius: '6px' } }
   }
 })
 

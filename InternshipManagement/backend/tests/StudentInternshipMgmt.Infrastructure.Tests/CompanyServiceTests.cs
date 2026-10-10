@@ -100,6 +100,52 @@ public class CompanyServiceTests
         (await dbContext.Companies.AnyAsync(item => item.Id == company.Id)).Should().BeTrue();
     }
 
+    [Fact]
+    public async Task GetCompanyByIdAsync_filters_positions_for_users_but_not_admins()
+    {
+        await using var dbContext = CreateDbContext();
+        var company = new Company
+        {
+            Id = 1,
+            Name = "Công ty thử nghiệm",
+            Address = "Địa chỉ thử nghiệm",
+            Industry = "Công nghệ",
+            ContactPerson = "Người liên hệ",
+            JobPositions =
+            {
+                new JobPosition
+                {
+                    Id = 10,
+                    Title = "Approved",
+                    Department = "Engineering",
+                    Quantity = 1,
+                    Description = "Description",
+                    ApprovalStatus = JobPositionApprovalStatus.Approved
+                },
+                new JobPosition
+                {
+                    Id = 11,
+                    Title = "Draft",
+                    Department = "Engineering",
+                    Quantity = 1,
+                    Description = "Description",
+                    ApprovalStatus = JobPositionApprovalStatus.Draft
+                }
+            }
+        };
+        dbContext.Companies.Add(company);
+        await dbContext.SaveChangesAsync();
+        var service = new CompanyService(dbContext);
+
+        var userView = await service.GetCompanyByIdAsync(company.Id, onlyApprovedPositions: true);
+        var adminView = await service.GetCompanyByIdAsync(company.Id, onlyApprovedPositions: false);
+        var myCompany = await service.GetMyCompanyAsync(company.Id);
+
+        userView!.JobPositions.Select(position => position.Id).Should().Equal(10);
+        adminView!.JobPositions.Select(position => position.Id).Should().BeEquivalentTo(new[] { 10, 11 });
+        myCompany!.Id.Should().Be(company.Id);
+    }
+
     private static CreateCompanyDto CreateDto() => new()
     {
         Name = "Công ty thử nghiệm",

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using StudentInternshipMgmt.Domain.Entities;
+using StudentInternshipMgmt.Domain.Enums;
 using StudentInternshipMgmt.Infrastructure.Persistence.Seed;
 
 namespace StudentInternshipMgmt.Infrastructure.Persistence.Configurations;
@@ -35,6 +36,16 @@ public class JobPositionConfiguration : IEntityTypeConfiguration<JobPosition>
 
         builder.Property(jp => jp.IsOpen)
             .IsRequired();
+
+        builder.Property(jp => jp.ApprovalStatus)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .HasDefaultValue(JobPositionApprovalStatus.Approved)
+            .HasSentinel(JobPositionApprovalStatus.Approved)
+            .IsRequired();
+
+        builder.Property(jp => jp.ApprovalNote)
+            .HasMaxLength(1000);
 
         builder.HasOne(jp => jp.Company)
             .WithMany(c => c.JobPositions)

@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Domain.Entities;
@@ -68,36 +67,6 @@ public class StudentStatusHistoryTests
     }
 
     [Fact]
-    public async Task Request_approval_records_admin_actor_type()
-    {
-        await using var dbContext = CreateDbContext();
-        var company = CreateCompany(50);
-        var student = CreateStudent(51, company.Id, StudentStatus.NoCompany);
-        var request = new PlacementRequest
-        {
-            Id = 52,
-            StudentId = student.Id,
-            Student = student,
-            CompanyId = company.Id,
-            Company = company,
-            Status = RequestStatus.Pending,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        dbContext.AddRange(company, student, request);
-        await dbContext.SaveChangesAsync();
-
-        var service = new PlacementRequestService(
-            dbContext,
-            NullLogger<PlacementRequestService>.Instance,
-            new ConfigurationBuilder().AddInMemoryCollection().Build());
-        var result = await service.ApproveRequestAsync(request.Id, adminUserId: 53);
-
-        result.Success.Should().BeTrue();
-        (await dbContext.StatusHistories.SingleAsync()).ChangedByType.Should().Be(ActorType.Admin);
-    }
-
-    [Fact]
     public async Task Admin_status_change_records_admin_actor_type()
     {
         await using var dbContext = CreateDbContext();
@@ -161,14 +130,6 @@ public class StudentStatusHistoryTests
         updatedStudent.Should().NotBeNull();
         updatedStudent!.UpdatedAt.Should().NotBe(default);
         updatedStudent.UpdatedAt.Should().BeAfter(oldUpdatedAt);
-    }
-
-    [Fact]
-    public void Existing_request_status_numeric_values_are_unchanged()
-    {
-        ((int)RequestStatus.Pending).Should().Be(0);
-        ((int)RequestStatus.Approved).Should().Be(1);
-        ((int)RequestStatus.Rejected).Should().Be(2);
     }
 
     private static AppDbContext CreateDbContext()

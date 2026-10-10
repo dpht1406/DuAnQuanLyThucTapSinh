@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\StudentInternshipMgmt.Api\StudentInternshipMgmt.Api.csproj" />
     <ProjectReference Include="..\..\src\StudentInternshipMgmt.Domain\StudentInternshipMgmt.Domain.csproj" />
     <ProjectReference Include="..\..\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj" />
   </ItemGroup>

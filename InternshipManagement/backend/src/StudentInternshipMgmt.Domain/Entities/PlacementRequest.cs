@@ -38,6 +38,9 @@ public class PlacementRequest : BaseEntity
     public string? ResultNote { get; set; }
     public DateTime? StudentReportedInterviewAt { get; set; }
     public string? StudentInterviewNote { get; set; }
+    public DateTime? StudentReportDismissedAt { get; set; }
+    public string? StudentReportDismissSource { get; set; }
+    public string? StudentReportDismissNote { get; set; }
     public ActorType? ResultActorType { get; set; }
     public string? ConfirmationSource { get; set; }
 }

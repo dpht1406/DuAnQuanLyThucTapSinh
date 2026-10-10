@@ -9,7 +9,9 @@ public interface ICompanyService
 
     Task<List<string>> GetDistinctIndustriesAsync();
 
-    Task<CompanyDetailDto?> GetCompanyByIdAsync(int id);
+    Task<CompanyDto?> GetMyCompanyAsync(int companyId);
+
+    Task<CompanyDetailDto?> GetCompanyByIdAsync(int id, bool onlyApprovedPositions);
 
     Task<(bool Success, string? Error, CompanyDto? Data)> CreateCompanyAsync(CreateCompanyDto dto);
 

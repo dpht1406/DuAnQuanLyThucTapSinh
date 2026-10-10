@@ -9,11 +9,40 @@ public interface IPlacementRequestService
 
     Task<PagedResult<PlacementRequestDto>> GetRequestsAsync(PlacementRequestFilterDto filter);
 
+    Task<PagedResult<CompanyPlacementRequestDto>> GetCompanyRequestsAsync(
+        int companyId,
+        CompanyPlacementRequestFilterDto filter);
+
+    Task<CompanyPlacementRequestDto?> GetCompanyRequestByIdAsync(int companyId, int requestId);
+
+    Task<(bool Success, string? Error, bool NotFound)> InviteCompanyRequestToInterviewAsync(
+        int companyId,
+        int requestId,
+        InviteInterviewDto dto,
+        int companyUserId);
+
+    Task<(bool Success, string? Error, bool NotFound)> RejectCompanyRequestAsync(
+        int companyId,
+        int requestId,
+        CompanyRejectPlacementRequestDto dto,
+        int companyUserId);
+
+    Task<PlacementRequestOperationResult> RecordCompanyResultAsync(
+        int companyId,
+        int requestId,
+        CompanyPlacementResultDto dto,
+        int companyUserId);
+
     Task<List<PlacementRequestDto>> GetMyRequestsAsync(int studentId);
 
     Task<(bool Success, string? Error, bool NotFound)> ReportInterviewedAsync(int studentId, int requestId, ReportInterviewDto dto);
 
-    Task<(bool Success, string? Error, bool NotFound)> ApproveRequestAsync(int requestId, int adminUserId);
+    Task<PagedResult<PlacementRequestDto>> GetPendingConfirmationAsync(PlacementRequestFilterDto filter);
 
-    Task<(bool Success, string? Error, bool NotFound)> RejectRequestAsync(int requestId, RejectPlacementRequestDto dto, int adminUserId);
+    Task<PlacementRequestOperationResult> AdminConfirmResultAsync(
+        int requestId,
+        int adminUserId,
+        AdminPlacementResultDto dto);
+
+    Task<PlacementRequestOperationResult> CancelAcceptedResultAsync(int requestId, int adminUserId, string? note = null);
 }

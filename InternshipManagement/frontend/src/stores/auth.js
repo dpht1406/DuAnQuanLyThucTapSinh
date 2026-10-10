@@ -25,12 +25,14 @@ function buildUserFromPayload(payload) {
 
   const rawUserId = payload.nameid ?? payload.sub ?? null
   const rawStudentId = payload.StudentId ?? null
+  const rawCompanyId = payload.CompanyId ?? null
 
   return {
     userId: rawUserId !== null ? Number(rawUserId) : null,
     username: payload.unique_name ?? null,
     role: role ?? null,
-    studentId: rawStudentId !== null ? Number(rawStudentId) : null
+    studentId: rawStudentId !== null ? Number(rawStudentId) : null,
+    companyId: rawCompanyId !== null ? Number(rawCompanyId) : null
   }
 }
 
@@ -50,6 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
   // ---------- getters ----------
   const isAuthenticated = computed(() => !!accessToken.value)
   const isAdmin = computed(() => user.value?.role === 'Admin')
+  const isCompany = computed(() => user.value?.role === 'Company')
 
   // ---------- actions ----------
 
@@ -118,7 +121,8 @@ export const useAuthStore = defineStore('auth', () => {
         userId: data.userId,
         username: data.username,
         role: data.role,
-        studentId: data.studentId ?? null
+        studentId: data.studentId ?? null,
+        companyId: data.companyId ?? null
       }
       mustChangePassword.value = !!data.mustChangePassword
     } catch (error) {
@@ -184,6 +188,7 @@ export const useAuthStore = defineStore('auth', () => {
     // getters
     isAuthenticated,
     isAdmin,
+    isCompany,
     // actions
     login,
     logout,

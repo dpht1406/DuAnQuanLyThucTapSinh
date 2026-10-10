@@ -101,6 +101,17 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApprovalNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ApprovalStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Approved");
+
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -142,6 +153,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            ApprovalStatus = "Approved",
                             CompanyId = 1,
                             Deadline = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Công nghệ",
@@ -153,6 +165,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
+                            ApprovalStatus = "Approved",
                             CompanyId = 1,
                             Deadline = new DateTime(2026, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Kiểm thử",
@@ -164,6 +177,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
+                            ApprovalStatus = "Approved",
                             CompanyId = 2,
                             Deadline = new DateTime(2026, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Thiết kế",
@@ -175,6 +189,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
+                            ApprovalStatus = "Approved",
                             CompanyId = 3,
                             Department = "Phòng Dữ liệu",
                             Description = "Thuc tap xu ly va truc quan hoa du lieu.",
@@ -185,6 +200,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 1001,
+                            ApprovalStatus = "Approved",
                             CompanyId = 2,
                             Deadline = new DateTime(2026, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Dữ liệu",
@@ -197,6 +213,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 1002,
+                            ApprovalStatus = "Approved",
                             CompanyId = 3,
                             Department = "Phòng Thiết kế",
                             Description = "Tham gia thiết kế trải nghiệm và giao diện sản phẩm số.",
@@ -207,6 +224,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 1003,
+                            ApprovalStatus = "Approved",
                             CompanyId = 1,
                             Deadline = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Kiểm thử",
@@ -218,6 +236,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         new
                         {
                             Id = 1004,
+                            ApprovalStatus = "Approved",
                             CompanyId = 3,
                             Deadline = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "Phòng Công nghệ",
@@ -378,6 +397,17 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StudentInterviewNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("StudentReportDismissedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StudentReportDismissNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("StudentReportDismissSource")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 

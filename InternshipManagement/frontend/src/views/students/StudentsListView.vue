@@ -42,6 +42,19 @@ const statusDialogVisible = ref(false)
 const selectedStatusStudent = ref(null)
 
 let searchDebounceTimer = null
+let latestRequestId = 0
+const isMobile = ref(false)
+let mobileMediaQuery = null
+
+const paginatorTemplate = computed(() => {
+  const template = isMobile.value
+    ? 'PrevPageLink CurrentPageReport NextPageLink'
+    : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+
+  return totalRecords.value > 0
+    ? template
+    : template.replace(' CurrentPageReport', '')
+})
 
 const statusFilterOptions = [
   { label: 'Tất cả trạng thái', value: null },
@@ -55,6 +68,10 @@ const companyFilterOptions = computed(() => [
 
 function emptyDisplay(value) {
   return value == null || value === '' ? '—' : value
+}
+
+function onMobileMediaChange(event) {
+  isMobile.value = event.matches
 }
 
 function openStatusDialog(student) {
@@ -95,14 +112,17 @@ function confirmDelete(student) {
 }
 
 async function fetchStudents() {
+  const requestId = ++latestRequestId
   loading.value = true
   errorMessage.value = ''
 
   try {
-    const result = await getStudents(filter)
+    const result = await getStudents({ ...filter })
+    if (requestId !== latestRequestId) return
     students.value = result.items ?? []
     totalRecords.value = result.totalCount ?? 0
   } catch (err) {
+    if (requestId !== latestRequestId) return
     errorMessage.value =
       err?.response?.data?.message?.trim() ||
       err?.message?.trim() ||
@@ -110,7 +130,7 @@ async function fetchStudents() {
     students.value = []
     totalRecords.value = 0
   } finally {
-    loading.value = false
+    if (requestId === latestRequestId) loading.value = false
   }
 }
 
@@ -146,7 +166,9 @@ function onCompanyChange() {
 watch(searchInput, () => {
   clearTimeout(searchDebounceTimer)
   searchDebounceTimer = setTimeout(() => {
-    filter.Search = searchInput.value
+    const search = searchInput.value.trim()
+    if (search === filter.Search) return
+    filter.Search = search
     filter.PageNumber = 1
     fetchStudents()
   }, 400)
@@ -157,12 +179,17 @@ onMounted(() => {
   if (Number.isInteger(queryStatus) && queryStatus >= 0 && queryStatus <= 5) {
     filter.Status = queryStatus
   }
+  mobileMediaQuery = window.matchMedia('(max-width: 640px)')
+  isMobile.value = mobileMediaQuery.matches
+  mobileMediaQuery.addEventListener('change', onMobileMediaChange)
   loadCompanyOptions()
   fetchStudents()
 })
 
 onBeforeUnmount(() => {
   clearTimeout(searchDebounceTimer)
+  latestRequestId++
+  mobileMediaQuery?.removeEventListener('change', onMobileMediaChange)
 })
 </script>
 
@@ -177,10 +204,9 @@ onBeforeUnmount(() => {
           <InputText
             id="student-search"
             v-model="searchInput"
-            placeholder="MSSV hoặc họ tên"
+            placeholder="Họ tên, MSSV hoặc email"
             class="w-full"
             maxlength="150"
-            :disabled="loading"
           />
         </div>
         <div class="toolbar-field">
@@ -226,6 +252,11 @@ onBeforeUnmount(() => {
         :lazy="true"
         :paginator="true"
         :rows="filter.PageSize"
+        :rows-per-page-options="[10, 20, 50]"
+        :paginator-template="paginatorTemplate"
+        :current-page-report-template="isMobile
+          ? 'Trang {currentPage}/{totalPages} · {totalRecords} sinh viên'
+          : 'Hiển thị {first}–{last} trên {totalRecords} sinh viên'"
         :total-records="totalRecords"
         :loading="loading"
         :first="(filter.PageNumber - 1) * filter.PageSize"
@@ -233,6 +264,15 @@ onBeforeUnmount(() => {
         class="students-table"
         @page="onPage"
       >
+        <template #empty>
+          <div class="students-empty">
+            <template v-if="filter.Search">
+              <p>Không tìm thấy sinh viên phù hợp với '{{ filter.Search }}'</p>
+              <Button label="Xóa tìm kiếm" text @click="searchInput = ''" />
+            </template>
+            <p v-else>Chưa có sinh viên nào</p>
+          </div>
+        </template>
         <Column field="studentCode" header="MSSV" />
         <Column field="fullName" header="Họ tên" />
         <Column field="className" header="Lớp" />
@@ -354,5 +394,19 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .students-table :deep(.p-paginator) {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding-inline: 0.25rem;
+  }
+
+  .students-table :deep(.p-paginator-prev),
+  .students-table :deep(.p-paginator-next) {
+    min-width: 40px;
+    min-height: 40px;
+  }
 }
 </style>

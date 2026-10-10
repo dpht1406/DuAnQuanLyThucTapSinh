@@ -194,6 +194,35 @@ public class JobPositionListTests
         result.Items.Should().ContainSingle();
     }
 
+    [Fact]
+    public async Task User_job_position_reads_hide_unapproved_positions_while_admin_can_see_them()
+    {
+        await using var dbContext = CreateDbContext();
+        var approved = CreatePosition(1, 1);
+        var draft = CreatePosition(2, 1);
+        draft.ApprovalStatus = JobPositionApprovalStatus.Draft;
+        var rejected = CreatePosition(3, 1);
+        rejected.ApprovalStatus = JobPositionApprovalStatus.Rejected;
+        await AddCompanyAndPositionsAsync(dbContext, approved, draft, rejected);
+        var service = new JobPositionService(dbContext);
+
+        var userList = await service.GetJobPositionsAsync(new JobPositionFilterDto { PageSize = 20 });
+        var rejectedFilter = await service.GetJobPositionsAsync(new JobPositionFilterDto
+        {
+            ApprovalStatus = JobPositionApprovalStatus.Rejected,
+            PageSize = 20
+        });
+        var hiddenDetails = await service.GetJobPositionByIdAsync(2);
+        var adminList = await service.GetJobPositionsAdminAsync(new JobPositionFilterDto { PageSize = 20 });
+        var adminDetails = await service.GetJobPositionByIdAdminAsync(2);
+
+        userList.Items.Select(position => position.Id).Should().Equal(1);
+        rejectedFilter.Items.Should().BeEmpty();
+        hiddenDetails.Should().BeNull();
+        adminList.Items.Select(position => position.Id).Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        adminDetails!.ApprovalStatus.Should().Be(JobPositionApprovalStatus.Draft);
+    }
+
     private static JobPosition CreatePosition(int id, int companyId, DateTime? deadline = null, bool isOpen = true, string? companyName = null, string department = "Phòng Công nghệ") => new()
     {
         Id = id,

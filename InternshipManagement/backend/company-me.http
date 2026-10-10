@@ -1,0 +1,116 @@
+@baseUrl = http://localhost:5018
+@companyToken = REPLACE_WITH_COMPANY_BEARER_TOKEN
+@positionId = 1
+@placementRequestId = 1
+@notPassedRequestId = 2
+
+### Get this company's profile
+GET {{baseUrl}}/api/company-me/profile
+Authorization: Bearer {{companyToken}}
+
+### List this company's positions; CompanyId in the query is ignored
+GET {{baseUrl}}/api/company-me/job-positions?CompanyId=2&ApprovalStatus=Draft
+Authorization: Bearer {{companyToken}}
+
+### Get one of this company's positions
+GET {{baseUrl}}/api/company-me/job-positions/{{positionId}}
+Authorization: Bearer {{companyToken}}
+
+### A foreign or missing position returns 404
+GET {{baseUrl}}/api/company-me/job-positions/999999
+Authorization: Bearer {{companyToken}}
+
+### Create a draft position (CompanyId is taken from the token)
+POST {{baseUrl}}/api/company-me/job-positions
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "title": "Thực tập sinh .NET",
+  "department": "Phòng Công nghệ",
+  "location": "TP.HCM",
+  "deadline": "2026-12-31",
+  "quantity": 2,
+  "description": "Hỗ trợ phát triển API với ASP.NET Core.",
+  "isOpen": true
+}
+
+### Update a position
+PUT {{baseUrl}}/api/company-me/job-positions/{{positionId}}
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "title": "Thực tập sinh .NET",
+  "department": "Phòng Công nghệ",
+  "location": "TP.HCM",
+  "deadline": "2026-12-31",
+  "quantity": 2,
+  "description": "Hỗ trợ phát triển API với ASP.NET Core.",
+  "isOpen": true
+}
+
+### Submit a draft or rejected position for approval
+POST {{baseUrl}}/api/company-me/job-positions/{{positionId}}/submit
+Authorization: Bearer {{companyToken}}
+
+### Toggle whether an approved position is open
+PATCH {{baseUrl}}/api/company-me/job-positions/{{positionId}}/toggle-open
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "isOpen": false
+}
+
+### List this company's placement requests
+GET {{baseUrl}}/api/company-me/placement-requests?PageNumber=1&PageSize=10&Status=Pending&JobPositionId={{positionId}}
+Authorization: Bearer {{companyToken}}
+
+### Get one of this company's placement requests
+GET {{baseUrl}}/api/company-me/placement-requests/{{placementRequestId}}
+Authorization: Bearer {{companyToken}}
+
+### Invite a pending placement request to an interview
+POST {{baseUrl}}/api/company-me/placement-requests/{{placementRequestId}}/invite-interview
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "interviewAt": "2026-12-01T09:00:00Z",
+  "interviewLocation": "https://meet.example.com/interview",
+  "interviewNote": "Vui lòng chuẩn bị giới thiệu bản thân."
+}
+
+### Reject a pending or interviewed placement request
+POST {{baseUrl}}/api/company-me/placement-requests/{{placementRequestId}}/reject
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "reason": "Hồ sơ chưa đáp ứng yêu cầu của vị trí."
+}
+
+### Record a passing result and accept the student
+POST {{baseUrl}}/api/company-me/placement-requests/{{placementRequestId}}/result
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "isPassed": true,
+  "note": "Sinh viên đáp ứng yêu cầu của vị trí."
+}
+
+### Record a not-passed result
+POST {{baseUrl}}/api/company-me/placement-requests/{{notPassedRequestId}}/result
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+
+{
+  "isPassed": false,
+  "note": "Kết quả phỏng vấn chưa đạt yêu cầu."
+}
+
+### Delete a position without linked students or references
+DELETE {{baseUrl}}/api/company-me/job-positions/{{positionId}}
+Authorization: Bearer {{companyToken}}

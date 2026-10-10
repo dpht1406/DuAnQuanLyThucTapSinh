@@ -61,13 +61,7 @@ public class StudentService : IStudentService
 
     private static IQueryable<Student> ApplyStudentFilter(IQueryable<Student> query, StudentFilterDto filter)
     {
-        if (!string.IsNullOrWhiteSpace(filter.Search))
-        {
-            var search = filter.Search.Trim().ToLower();
-            query = query.Where(s =>
-                s.StudentCode.ToLower().Contains(search) ||
-                s.FullName.ToLower().Contains(search));
-        }
+        query = ApplyStudentSearch(query, filter.Search);
 
         if (filter.Status.HasValue)
             query = query.Where(s => s.Status == filter.Status.Value);
@@ -79,6 +73,29 @@ public class StudentService : IStudentService
             query = query.Where(s => (s.User != null) == filter.HasAccount.Value);
 
         return query;
+    }
+
+    private static IQueryable<Student> ApplyStudentSearch(IQueryable<Student> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search))
+            return query;
+
+        var escapedSearch = search.Trim().ToLowerInvariant()
+            .Replace("[", "[[]", StringComparison.Ordinal)
+            .Replace("%", "[%]", StringComparison.Ordinal)
+            .Replace("_", "[_]", StringComparison.Ordinal);
+        var pattern = $"%{escapedSearch}%";
+
+        if (search.Contains('@'))
+            return query.Where(s => EF.Functions.Like(
+                EF.Functions.Collate(s.Email, "Vietnamese_CI_AI"), pattern));
+
+        if (search.Any(char.IsDigit))
+            return query.Where(s => EF.Functions.Like(
+                EF.Functions.Collate(s.StudentCode, "Vietnamese_CI_AI"), pattern));
+
+        return query.Where(s => EF.Functions.Like(
+            EF.Functions.Collate(s.FullName, "Vietnamese_CI_AI"), pattern));
     }
 
     public async Task<StudentDto?> GetStudentByIdAsync(int id)
@@ -580,13 +597,7 @@ public class StudentService : IStudentService
             .Include(s => s.User)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(filter.Search))
-        {
-            var search = filter.Search.Trim().ToLower();
-            query = query.Where(s =>
-                s.StudentCode.ToLower().Contains(search) ||
-                s.FullName.ToLower().Contains(search));
-        }
+        query = ApplyStudentSearch(query, filter.Search);
 
         if (filter.Status.HasValue)
             query = query.Where(s => s.Status == filter.Status.Value);

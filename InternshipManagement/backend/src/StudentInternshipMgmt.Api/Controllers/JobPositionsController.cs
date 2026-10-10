@@ -97,6 +97,34 @@ public class JobPositionsController : ControllerBase
         return Ok(ApiResponse<object>.SuccessResponse(null!, "Xóa vị trí tuyển dụng thành công."));
     }
 
+    // POST /api/job-positions/{id}/approve — Admin only.
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:int}/approve")]
+    public async Task<ActionResult<ApiResponse<object>>> ApproveJobPosition(int id)
+    {
+        var (success, error, notFound) = await _jobPositionService.ApproveJobPositionAsync(id);
+        if (!success)
+            return notFound
+                ? NotFound(ApiResponse<object>.FailResponse(error!))
+                : BadRequest(ApiResponse<object>.FailResponse(error!));
+
+        return Ok(ApiResponse<object>.SuccessResponse(null!, "Đã duyệt tin tuyển dụng."));
+    }
+
+    // POST /api/job-positions/{id}/reject — Admin only.
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:int}/reject")]
+    public async Task<ActionResult<ApiResponse<object>>> RejectJobPosition(int id, [FromBody] RejectJobPositionDto dto)
+    {
+        var (success, error, notFound) = await _jobPositionService.RejectJobPositionAsync(id, dto.Note ?? string.Empty);
+        if (!success)
+            return notFound
+                ? NotFound(ApiResponse<object>.FailResponse(error!))
+                : BadRequest(ApiResponse<object>.FailResponse(error!));
+
+        return Ok(ApiResponse<object>.SuccessResponse(null!, "Đã từ chối tin tuyển dụng."));
+    }
+
     // PATCH /api/job-positions/{id}/toggle-open — Admin only.
     // Body tùy chọn { "isOpen": true|false }; nếu không gửi (hoặc gửi null) thì đảo
     // giá trị IsOpen hiện tại. Cho phép đổi bất cứ lúc nào, kể cả khi còn Student gắn vào.

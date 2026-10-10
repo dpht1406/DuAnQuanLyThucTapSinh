@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Dashboard;
+using StudentInternshipMgmt.Application.Features.PlacementRequests.Dtos;
 
 namespace StudentInternshipMgmt.Api.Controllers;
 
@@ -39,5 +40,21 @@ public class DashboardController : ControllerBase
     {
         var result = await _dashboardService.GetRecentRejectionsAsync();
         return Ok(ApiResponse<List<RecentRejectionDto>>.SuccessResponse(result));
+    }
+
+    // GET /api/dashboard/overdue-requests
+    [HttpGet("overdue-requests")]
+    public async Task<ActionResult<ApiResponse<List<PlacementRequestDto>>>> GetOverdueRequests()
+    {
+        var result = await _dashboardService.GetOverdueRequestsAsync();
+        return Ok(ApiResponse<List<PlacementRequestDto>>.SuccessResponse(result));
+    }
+
+    // GET /api/dashboard/pending-interview-results
+    [HttpGet("pending-interview-results")]
+    public async Task<ActionResult<ApiResponse<List<PlacementRequestDto>>>> GetPendingInterviewResults()
+    {
+        var result = await _dashboardService.GetPendingInterviewResultsAsync();
+        return Ok(ApiResponse<List<PlacementRequestDto>>.SuccessResponse(result));
     }
 }

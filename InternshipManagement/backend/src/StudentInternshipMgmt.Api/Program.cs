@@ -64,6 +64,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ICompanyAccountService, CompanyAccountService>();
 builder.Services.AddScoped<IJobPositionService, JobPositionService>();
+builder.Services.AddScoped<IPlacementAcceptanceService, PlacementAcceptanceService>();
 builder.Services.AddScoped<IPlacementRequestService, PlacementRequestService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();

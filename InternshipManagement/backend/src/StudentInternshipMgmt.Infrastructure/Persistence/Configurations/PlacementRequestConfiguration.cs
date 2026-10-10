@@ -59,6 +59,12 @@ public class PlacementRequestConfiguration : IEntityTypeConfiguration<PlacementR
         builder.Property(pr => pr.StudentInterviewNote)
             .HasMaxLength(500);
 
+        builder.Property(pr => pr.StudentReportDismissSource)
+            .HasMaxLength(500);
+
+        builder.Property(pr => pr.StudentReportDismissNote)
+            .HasMaxLength(1000);
+
         builder.Property(pr => pr.ResultActorType)
             .HasConversion<string>()
             .HasMaxLength(20);

@@ -98,6 +98,7 @@ public class PlacementRequestServiceTests
     [Theory]
     [InlineData("closed", "Vị trí này đã ngừng tuyển.")]
     [InlineData("expired", "Vị trí này đã hết hạn nhận hồ sơ.")]
+    [InlineData("not-approved", "Vị trí này chưa được duyệt.")]
     [InlineData("other-company", "Vị trí tuyển dụng không thuộc doanh nghiệp đã chọn.")]
     [InlineData("missing-position", "Không tìm thấy vị trí tuyển dụng.")]
     public async Task CreateRequestAsync_rejects_unavailable_or_mismatched_position(string scenario, string expectedError)
@@ -110,6 +111,7 @@ public class PlacementRequestServiceTests
         {
             case "closed": fixture.Position.IsOpen = false; break;
             case "expired": fixture.Position.Deadline = DateTime.Today.AddDays(-1); break;
+            case "not-approved": fixture.Position.ApprovalStatus = JobPositionApprovalStatus.PendingApproval; break;
             case "other-company": dto.CompanyId = fixture.OtherCompany.Id; break;
             case "missing-position": dto.JobPositionId = 999; break;
             default: throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
@@ -145,6 +147,87 @@ public class PlacementRequestServiceTests
         first.Data!.DueAt.Should().Be(first.Data.CreatedAt.AddDays(7));
         second.Data!.DueAt.Should().Be(second.Data.CreatedAt.AddDays(7));
         (await dbContext.Students.SingleAsync()).Status.Should().Be(StudentStatus.NoCompany);
+    }
+
+    [Theory]
+    [InlineData("0", 5, true)]
+    [InlineData("-2", 5, true)]
+    [InlineData(null, 5, false)]
+    [InlineData("3", 3, false)]
+    public async Task CreateRequestAsync_uses_valid_open_application_limit_or_default(
+        string? configuredValue,
+        int expectedLimit,
+        bool expectsConfigurationWarning)
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        for (var index = 0; index < expectedLimit; index++)
+        {
+            dbContext.PlacementRequests.Add(new PlacementRequest
+            {
+                StudentId = fixture.Student.Id,
+                Student = fixture.Student,
+                CompanyId = fixture.OtherCompany.Id,
+                Company = fixture.OtherCompany,
+                Status = RequestStatus.Pending,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+        await dbContext.SaveChangesAsync();
+
+        var logger = new CapturingLogger();
+        var configurationValues = new Dictionary<string, string?>();
+        if (configuredValue is not null)
+            configurationValues["MaxOpenApplicationsPerStudent"] = configuredValue;
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(configurationValues)
+            .Build();
+        var service = new PlacementRequestService(dbContext, logger, configuration);
+
+        var result = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+
+        result.Success.Should().BeFalse();
+        result.Error.Should().Contain(expectedLimit.ToString());
+        logger.Entries
+            .Where(entry => entry.Level == LogLevel.Warning
+                && entry.Message.Contains("MaxOpenApplicationsPerStudent"))
+            .Should().HaveCount(expectsConfigurationWarning ? 1 : 0);
+    }
+
+    [Theory]
+    [InlineData("0", 7, true)]
+    [InlineData("-2", 7, true)]
+    [InlineData(null, 7, false)]
+    [InlineData("12", 12, false)]
+    public async Task CreateRequestAsync_uses_valid_response_due_days_or_default(
+        string? configuredValue,
+        int expectedDueDays,
+        bool expectsConfigurationWarning)
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var logger = new CapturingLogger();
+        var configurationValues = new Dictionary<string, string?>();
+        if (configuredValue is not null)
+            configurationValues["ApplicationResponseDueDays"] = configuredValue;
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(configurationValues)
+            .Build();
+        var service = new PlacementRequestService(dbContext, logger, configuration);
+
+        var result = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+
+        result.Success.Should().BeTrue();
+        var request = await dbContext.PlacementRequests.SingleAsync();
+        request.DueAt.Should().Be(request.CreatedAt.AddDays(expectedDueDays));
+        logger.Entries
+            .Where(entry => entry.Level == LogLevel.Warning
+                && entry.Message.Contains("ApplicationResponseDueDays"))
+            .Should().HaveCount(expectsConfigurationWarning ? 1 : 0);
     }
 
     [Theory]
