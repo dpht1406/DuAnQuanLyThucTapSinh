@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import MainLayout from '../layouts/MainLayout.vue'
 import { defaultRouteForRole } from '../utils/roleRoutes.js'
+import { getPasswordChangeRedirect } from '../utils/authNavigation.js'
 
 const routes = [
   {
@@ -198,13 +199,13 @@ router.beforeEach((to, _from, next) => {
     return next('/login')
   }
 
-  if (
-    authStore.isAuthenticated &&
-    authStore.mustChangePassword &&
-    to.path !== '/login' &&
-    to.path !== '/change-password'
-  ) {
-    return next('/change-password')
+  const passwordChangeRedirect = getPasswordChangeRedirect(
+    authStore.isAuthenticated,
+    authStore.mustChangePassword,
+    to.path
+  )
+  if (passwordChangeRedirect) {
+    return next(passwordChangeRedirect)
   }
 
   if (
