@@ -1,0 +1,7 @@
+BugId,Title,Severity,StatusBefore,StatusAfter,Commit,TestIds,EvidenceBefore,EvidenceAfter
+BUG-01,Remove exposed JWT key and validate configuration,High,Open,Fixed,5702492,"JwtSettingsValidatorTests; valid JWT login token","docs/evidence/before/static.txt","docs/evidence/after/dotnet-test.txt"
+BUG-02,Require seeded admin password change,High,Open,Fixed,"caad77f;731a417","TC-02-1; authNavigation.test.js; ForceAdminPasswordChange","docs/evidence/before/static.txt; docs/evidence/before/regression-fail.txt","docs/evidence/after/regression-pass.txt; docs/evidence/after/migration-test.txt"
+BUG-03,Remove unused vulnerable AutoMapper dependency,Medium,Open,Fixed,5a0854d,"source grep; solution build","docs/evidence/before/static.txt; docs/evidence/before/dotnet-test.txt","docs/evidence/after/dotnet-test.txt"
+BUG-04,Unify EF Core package versions,Medium,Open,Fixed,9e1da55,"solution restore/build","docs/evidence/before/dotnet-test.txt","docs/evidence/after/dotnet-test.txt"
+BUG-05,Use shared email validator during import,Medium,Open,Fixed,7d84065,"TC-05-1; TC-05-2","docs/evidence/before/regression-fail.txt","docs/evidence/after/regression-pass.txt"
+BUG-07,Enforce upload size and import row limits,High,Open,Fixed,2593a58,"TC-07-1; unsupported-extension; missing-columns; mixed-errors; 413-size","docs/evidence/before/regression-fail.txt","docs/evidence/after/regression-pass.txt"

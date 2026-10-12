@@ -1,0 +1,7 @@
+measurement,mode,file,run,elapsed_ms
+after,service/InMemory,students-large-1000.csv,1,455.93
+after,service/InMemory,students-large-1000.csv,2,42.49
+after,service/InMemory,students-large-1000.csv,3,50.35
+after,service/InMemory,students-large-5000.csv,1,254.75
+after,service/InMemory,students-large-5000.csv,2,307.15
+after,service/InMemory,students-large-5000.csv,3,261.95

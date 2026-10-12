@@ -1,0 +1,53 @@
+COMMAND: dotnet test backend/tests/StudentInternshipMgmt.Infrastructure.Tests/StudentInternshipMgmt.Infrastructure.Tests.csproj --filter FullyQualifiedName~.Regression. --logger "console;verbosity=detailed"
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  StudentInternshipMgmt.Api -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+  StudentInternshipMgmt.Infrastructure.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.08]   Discovering: StudentInternshipMgmt.Infrastructure.Tests
+[xUnit.net 00:00:00.13]   Discovered:  StudentInternshipMgmt.Infrastructure.Tests
+[xUnit.net 00:00:00.14]   Starting:    StudentInternshipMgmt.Infrastructure.Tests
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.SeedDataRegressionTests.Admin_seed_requires_password_change [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportControllerTests.ImportStudents_returns_413_when_file_exceeds_configured_maximum [85 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_reports_csv_missing_required_columns_as_unreadable [94 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_rejects_unsupported_file_extension [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportLimitRegressionTests.TC_07_1_rejects_csv_with_more_than_5000_data_rows_without_saving_students [448 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@localhost") [450 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.con") [15 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a#b@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a..b@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@school.edu.vn") [64 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "x@y.co") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "first.last+tag@outlook.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "user_name@custom-domain.org") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmial.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_imports_valid_rows_and_reports_mixed_file_errors_by_row [438 ms]
+[xUnit.net 00:00:01.63]   Finished:    StudentInternshipMgmt.Infrastructure.Tests
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_1_rejects_popular_gmail_typos_and_invalid_local_part [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportPerformanceMeasurementTests.Measure_sample_csv_imports_with_in_memory_database_three_times_each [1 s]
+  Standard Output Messages:
+ Measurement level: service/InMemory; one fresh database per run.
+ students-large-1000.csv,1,455.93
+ students-large-1000.csv,2,42.49
+ students-large-1000.csv,3,50.35
+ students-large-5000.csv,1,254.75
+ students-large-5000.csv,2,307.15
+ students-large-5000.csv,3,261.95
+
+
+
+Test Run Successful.
+Total tests: 18
+     Passed: 18
+ Total time: 2.1931 Seconds
+EXIT CODE: 0

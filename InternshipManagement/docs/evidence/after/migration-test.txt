@@ -1,0 +1,555 @@
+COMMAND: dotnet ef database update ForceAdminPasswordChange --project src/StudentInternshipMgmt.Infrastructure --startup-project src/StudentInternshipMgmt.Api --connection "Server=localhost;Database=StudentInternshipMgmtDb_Test;Integrated Security=True;TrustServerCertificate=True;" (Jwt:SecretKey supplied through a redacted temporary environment variable)
+Build started...
+Build succeeded.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (329ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [StudentInternshipMgmtDb_Test];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (147ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [StudentInternshipMgmtDb_Test] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [__EFMigrationsHistory] (
+          [MigrationId] nvarchar(150) NOT NULL,
+          [ProductVersion] nvarchar(32) NOT NULL,
+          CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260921094849_InitialCreate'.
+Applying migration '20260921094849_InitialCreate'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Companies] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(200) NOT NULL,
+          [Address] nvarchar(300) NOT NULL,
+          [Industry] nvarchar(150) NOT NULL,
+          [ContactPerson] nvarchar(150) NOT NULL,
+          CONSTRAINT [PK_Companies] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [JobPositions] (
+          [Id] int NOT NULL IDENTITY,
+          [CompanyId] int NOT NULL,
+          [Title] nvarchar(200) NOT NULL,
+          [Quantity] int NOT NULL,
+          [Description] nvarchar(2000) NOT NULL,
+          [IsOpen] bit NOT NULL,
+          CONSTRAINT [PK_JobPositions] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_JobPositions_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Students] (
+          [Id] int NOT NULL IDENTITY,
+          [StudentCode] nvarchar(20) NOT NULL,
+          [FullName] nvarchar(150) NOT NULL,
+          [Major] nvarchar(150) NOT NULL,
+          [ClassName] nvarchar(50) NOT NULL,
+          [Email] nvarchar(150) NOT NULL,
+          [PhoneNumber] nvarchar(20) NOT NULL,
+          [Status] nvarchar(20) NOT NULL,
+          [CompanyId] int NULL,
+          [JobPositionId] int NULL,
+          [IsDeleted] bit NOT NULL DEFAULT CAST(0 AS bit),
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_Students] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Students_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_Students_JobPositions_JobPositionId] FOREIGN KEY ([JobPositionId]) REFERENCES [JobPositions] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Users] (
+          [Id] int NOT NULL IDENTITY,
+          [Username] nvarchar(100) NOT NULL,
+          [PasswordHash] nvarchar(300) NOT NULL,
+          [Role] nvarchar(20) NOT NULL,
+          [IsActive] bit NOT NULL DEFAULT CAST(1 AS bit),
+          [StudentId] int NULL,
+          [MustChangePassword] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_Users] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Users_Students_StudentId] FOREIGN KEY ([StudentId]) REFERENCES [Students] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PlacementRequests] (
+          [Id] int NOT NULL IDENTITY,
+          [StudentId] int NOT NULL,
+          [CompanyId] int NOT NULL,
+          [JobPositionId] int NULL,
+          [Status] nvarchar(20) NOT NULL,
+          [Note] nvarchar(1000) NULL,
+          [RejectReason] nvarchar(1000) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ReviewedBy] int NULL,
+          [ReviewedAt] datetime2 NULL,
+          CONSTRAINT [PK_PlacementRequests] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PlacementRequests_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PlacementRequests_JobPositions_JobPositionId] FOREIGN KEY ([JobPositionId]) REFERENCES [JobPositions] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PlacementRequests_Students_StudentId] FOREIGN KEY ([StudentId]) REFERENCES [Students] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PlacementRequests_Users_ReviewedBy] FOREIGN KEY ([ReviewedBy]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [StatusHistories] (
+          [Id] int NOT NULL IDENTITY,
+          [StudentId] int NOT NULL,
+          [FromStatus] nvarchar(20) NOT NULL,
+          [ToStatus] nvarchar(20) NOT NULL,
+          [CompanyId] int NULL,
+          [Note] nvarchar(1000) NULL,
+          [ChangedAt] datetime2 NOT NULL,
+          [ChangedBy] int NOT NULL,
+          CONSTRAINT [PK_StatusHistories] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_StatusHistories_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_StatusHistories_Students_StudentId] FOREIGN KEY ([StudentId]) REFERENCES [Students] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_StatusHistories_Users_ChangedBy] FOREIGN KEY ([ChangedBy]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Address', N'ContactPerson', N'Industry', N'Name') AND [object_id] = OBJECT_ID(N'[Companies]'))
+          SET IDENTITY_INSERT [Companies] ON;
+      INSERT INTO [Companies] ([Id], [Address], [ContactPerson], [Industry], [Name])
+      VALUES (1, N'123 Nguyen Van Linh, Quan 7, TP.HCM', N'Nguyen Van A', N'Phat trien phan mem', N'Cong ty TNHH Giai phap Phan mem ABC'),
+      (2, N'45 Le Loi, Quan 1, TP.HCM', N'Tran Thi B', N'Cong nghe thong tin', N'Cong ty Co phan Cong nghe XYZ'),
+      (3, N'78 Vo Van Ngan, TP. Thu Duc, TP.HCM', N'Le Van C', N'Dich vu so / Du lieu', N'Cong ty TNHH Dich vu So Delta');
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Address', N'ContactPerson', N'Industry', N'Name') AND [object_id] = OBJECT_ID(N'[Companies]'))
+          SET IDENTITY_INSERT [Companies] OFF;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (22ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CreatedAt', N'IsActive', N'MustChangePassword', N'PasswordHash', N'Role', N'StudentId', N'Username') AND [object_id] = OBJECT_ID(N'[Users]'))
+          SET IDENTITY_INSERT [Users] ON;
+      INSERT INTO [Users] ([Id], [CreatedAt], [IsActive], [MustChangePassword], [PasswordHash], [Role], [StudentId], [Username])
+      VALUES (1, '2026-01-01T00:00:00.0000000Z', CAST(1 AS bit), CAST(0 AS bit), N'*** (redacted seeded password hash)', N'Admin', NULL, N'admin');
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CreatedAt', N'IsActive', N'MustChangePassword', N'PasswordHash', N'Role', N'StudentId', N'Username') AND [object_id] = OBJECT_ID(N'[Users]'))
+          SET IDENTITY_INSERT [Users] OFF;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (30ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CompanyId', N'Description', N'IsOpen', N'Quantity', N'Title') AND [object_id] = OBJECT_ID(N'[JobPositions]'))
+          SET IDENTITY_INSERT [JobPositions] ON;
+      INSERT INTO [JobPositions] ([Id], [CompanyId], [Description], [IsOpen], [Quantity], [Title])
+      VALUES (1, 1, N'Thuc tap phat trien API voi ASP.NET Core va Entity Framework Core.', CAST(1 AS bit), 3, N'Thuc tap sinh Lap trinh vien .NET'),
+      (2, 1, N'Thuc tap kiem thu chuc nang va viet test case.', CAST(1 AS bit), 2, N'Thuc tap sinh Kiem thu phan mem (Tester)'),
+      (3, 2, N'Thuc tap xay dung giao dien nguoi dung voi ReactJS.', CAST(1 AS bit), 2, N'Thuc tap sinh Frontend ReactJS'),
+      (4, 3, N'Thuc tap xu ly va truc quan hoa du lieu.', CAST(0 AS bit), 1, N'Thuc tap sinh Phan tich du lieu');
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CompanyId', N'Description', N'IsOpen', N'Quantity', N'Title') AND [object_id] = OBJECT_ID(N'[JobPositions]'))
+          SET IDENTITY_INSERT [JobPositions] OFF;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (17ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_JobPositions_CompanyId] ON [JobPositions] ([CompanyId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PlacementRequests_CompanyId] ON [PlacementRequests] ([CompanyId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PlacementRequests_JobPositionId] ON [PlacementRequests] ([JobPositionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PlacementRequests_ReviewedBy] ON [PlacementRequests] ([ReviewedBy]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PlacementRequests_StudentId] ON [PlacementRequests] ([StudentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_StatusHistories_ChangedBy] ON [StatusHistories] ([ChangedBy]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_StatusHistories_CompanyId] ON [StatusHistories] ([CompanyId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_StatusHistories_StudentId] ON [StatusHistories] ([StudentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Students_CompanyId] ON [Students] ([CompanyId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Students_JobPositionId] ON [Students] ([JobPositionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Students_StudentCode] ON [Students] ([StudentCode]) WHERE [IsDeleted] = 0;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Users_StudentId] ON [Users] ([StudentId]) WHERE [StudentId] IS NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260921094849_InitialCreate', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260922011859_AddMatchingStudentSoftDeleteFilters'.
+Applying migration '20260922011859_AddMatchingStudentSoftDeleteFilters'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260922011859_AddMatchingStudentSoftDeleteFilters', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260922083356_AddRefreshToken'.
+Applying migration '20260922083356_AddRefreshToken'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [RefreshTokens] (
+          [Id] int NOT NULL IDENTITY,
+          [UserId] int NOT NULL,
+          [Token] nvarchar(512) NOT NULL,
+          [ExpiresAt] datetime2 NOT NULL,
+          [IsRevoked] bit NOT NULL DEFAULT CAST(0 AS bit),
+          [CreatedAt] datetime2 NOT NULL,
+          [RevokedAt] datetime2 NULL,
+          CONSTRAINT [PK_RefreshTokens] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_RefreshTokens_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_RefreshTokens_Token] ON [RefreshTokens] ([Token]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260922083356_AddRefreshToken', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260922102457_CheckCompanyChanges'.
+Applying migration '20260922102457_CheckCompanyChanges'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260922102457_CheckCompanyChanges', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260923032303_AddJobPositionsFeature'.
+Applying migration '20260923032303_AddJobPositionsFeature'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260923032303_AddJobPositionsFeature', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260923041126_AddPlacementRequestFeature'.
+Applying migration '20260923041126_AddPlacementRequestFeature'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260923041126_AddPlacementRequestFeature', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260923043647_UpdateChangeStatusRoleAware'.
+Applying migration '20260923043647_UpdateChangeStatusRoleAware'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260923043647_UpdateChangeStatusRoleAware', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260928072211_AddRecruiterInfoToCompany'.
+Applying migration '20260928072211_AddRecruiterInfoToCompany'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Companies] ADD [ContactEmail] nvarchar(150) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Companies] ADD [ContactPhone] nvarchar(20) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Companies] ADD [ContactPosition] nvarchar(100) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260928072211_AddRecruiterInfoToCompany', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260928075057_AddNotifications'.
+Applying migration '20260928075057_AddNotifications'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Notifications] (
+          [Id] int NOT NULL IDENTITY,
+          [Type] nvarchar(50) NOT NULL,
+          [Title] nvarchar(200) NOT NULL,
+          [Message] nvarchar(1000) NOT NULL,
+          [StudentId] int NULL,
+          [CompanyId] int NULL,
+          [CompanyName] nvarchar(200) NULL,
+          [Reason] nvarchar(1000) NULL,
+          [IsRead] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ReadAt] datetime2 NULL,
+          [ReadBy] int NULL,
+          CONSTRAINT [PK_Notifications] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Notifications_IsRead_CreatedAt] ON [Notifications] ([IsRead], [CreatedAt]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260928075057_AddNotifications', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261001021843_AddJobPositionListFields'.
+Applying migration '20261001021843_AddJobPositionListFields'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [JobPositions] ADD [Deadline] date NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [JobPositions] ADD [Department] nvarchar(100) NOT NULL DEFAULT N'';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [JobPositions] ADD [Location] nvarchar(300) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [Deadline] = '2026-12-31', [Department] = N'Phòng Công nghệ', [Location] = NULL
+      WHERE [Id] = 1;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [Deadline] = '2026-10-04', [Department] = N'Phòng Kiểm thử', [Location] = NULL
+      WHERE [Id] = 2;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [Deadline] = '2026-09-20', [Department] = N'Phòng Thiết kế', [Location] = NULL
+      WHERE [Id] = 3;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [Deadline] = NULL, [Department] = N'Phòng Dữ liệu', [Location] = NULL
+      WHERE [Id] = 4;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (29ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CompanyId', N'Deadline', N'Department', N'Description', N'IsOpen', N'Location', N'Quantity', N'Title') AND [object_id] = OBJECT_ID(N'[JobPositions]'))
+          SET IDENTITY_INSERT [JobPositions] ON;
+      INSERT INTO [JobPositions] ([Id], [CompanyId], [Deadline], [Department], [Description], [IsOpen], [Location], [Quantity], [Title])
+      VALUES (1001, 2, '2026-10-04', N'Phòng Dữ liệu', N'Hỗ trợ làm sạch dữ liệu và xây dựng báo cáo trực quan.', CAST(1 AS bit), N'Tòa nhà Công nghệ, Quận 3, TP.HCM', 2, N'Thực tập sinh Phân tích dữ liệu'),
+      (1002, 3, NULL, N'Phòng Thiết kế', N'Tham gia thiết kế trải nghiệm và giao diện sản phẩm số.', CAST(1 AS bit), NULL, 1, N'Thực tập sinh Thiết kế sản phẩm'),
+      (1003, 1, '2026-12-31', N'Phòng Kiểm thử', N'Viết và thực thi kịch bản kiểm thử cho sản phẩm.', CAST(0 AS bit), NULL, 2, N'Thực tập sinh Kiểm thử phần mềm'),
+      (1004, 3, '2026-12-31', N'Phòng Công nghệ', N'Phát triển dịch vụ web với ASP.NET Core.', CAST(1 AS bit), NULL, 3, N'Thực tập sinh Phát triển .NET');
+      IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'CompanyId', N'Deadline', N'Department', N'Description', N'IsOpen', N'Location', N'Quantity', N'Title') AND [object_id] = OBJECT_ID(N'[JobPositions]'))
+          SET IDENTITY_INSERT [JobPositions] OFF;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261001021843_AddJobPositionListFields', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261001064730_AddCompanyToUsers'.
+Applying migration '20261001064730_AddCompanyToUsers'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Users] ADD [CompanyId] int NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [Users] SET [CompanyId] = NULL
+      WHERE [Id] = 1;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Users_CompanyId] ON [Users] ([CompanyId]) WHERE [CompanyId] IS NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Users] ADD CONSTRAINT [FK_Users_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261001064730_AddCompanyToUsers', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261001093249_ExtendPlacementRequestForCompanyFlow'.
+Applying migration '20261001093249_ExtendPlacementRequestForCompanyFlow'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [StatusHistories] ADD [ChangedByType] nvarchar(20) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ConfirmationSource] nvarchar(500) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [DueAt] datetime2 NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [InterviewAt] datetime2 NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [InterviewLocation] nvarchar(500) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [InterviewNote] nvarchar(1000) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ResultActorType] nvarchar(20) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ResultNote] nvarchar(1000) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [StudentInterviewNote] nvarchar(500) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [StudentReportedInterviewAt] datetime2 NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [sh] SET [ChangedByType] = CASE WHEN [u].[Id] IS NULL THEN N'System' WHEN [u].[Role] = N'Admin' THEN N'Admin' WHEN [u].[Role] = N'User' THEN N'Student' ELSE N'System' END FROM [StatusHistories] AS [sh] LEFT JOIN [Users] AS [u] ON [sh].[ChangedBy] = [u].[Id];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [PlacementRequests] SET [DueAt] = DATEADD(day, 7, SYSUTCDATETIME()) WHERE [Status] = N'Pending';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (60ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @var0 sysname;
+      SELECT @var0 = [d].[name]
+      FROM [sys].[default_constraints] [d]
+      INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+      WHERE ([d].[parent_object_id] = OBJECT_ID(N'[StatusHistories]') AND [c].[name] = N'ChangedByType');
+      IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [StatusHistories] DROP CONSTRAINT [' + @var0 + '];');
+      ALTER TABLE [StatusHistories] ALTER COLUMN [ChangedByType] nvarchar(20) NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261001093249_ExtendPlacementRequestForCompanyFlow', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261002021848_AddApplicationFormFields'.
+Applying migration '20261002021848_AddApplicationFormFields'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ApplicantEmail] nvarchar(254) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ApplicantFullName] nvarchar(100) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ApplicantMajor] nvarchar(150) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ApplicantPhone] nvarchar(10) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [ApplicantSchool] nvarchar(150) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [CoverLetter] nvarchar(2000) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [CvUrl] nvarchar(500) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261002021848_AddApplicationFormFields', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261008080300_AddJobPositionApprovalStatus'.
+Applying migration '20261008080300_AddJobPositionApprovalStatus'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [JobPositions] ADD [ApprovalNote] nvarchar(1000) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [JobPositions] ADD [ApprovalStatus] nvarchar(20) NOT NULL DEFAULT N'Approved';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 1;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 2;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 3;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 4;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 1001;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 1002;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 1003;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [JobPositions] SET [ApprovalNote] = NULL, [ApprovalStatus] = N'Approved'
+      WHERE [Id] = 1004;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261008080300_AddJobPositionApprovalStatus', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261010000000_AddStudentReportDismissal'.
+Applying migration '20261010000000_AddStudentReportDismissal'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [StudentReportDismissedAt] datetime2 NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [StudentReportDismissNote] nvarchar(1000) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PlacementRequests] ADD [StudentReportDismissSource] nvarchar(500) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261010000000_AddStudentReportDismissal', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261010023137_MapLegacyApprovedPlacementRequests'.
+Applying migration '20261010023137_MapLegacyApprovedPlacementRequests'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [pr] SET [Status] = N'Accepted', [ResultActorType] = N'Admin', [ResultNote] = N'Chuyển đổi dữ liệu cũ: đơn đã duyệt theo luồng cũ.', [ConfirmationSource] = N'Chuyển đổi dữ liệu cũ (Approved → Accepted)' FROM [PlacementRequests] AS [pr] INNER JOIN [Students] AS [s] ON [s].[Id] = [pr].[StudentId] WHERE [pr].[Status] = N'Approved' AND [s].[IsDeleted] = 0 AND [s].[CompanyId] = [pr].[CompanyId];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [PlacementRequests] SET [Status] = N'Rejected', [ResultActorType] = N'Admin', [ResultNote] = N'Chuyển đổi dữ liệu cũ: đơn đã duyệt nhưng sinh viên không còn gắn doanh nghiệp.', [ConfirmationSource] = N'Chuyển đổi dữ liệu cũ (Approved → Rejected)' WHERE [Status] = N'Approved';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF EXISTS (SELECT 1 FROM [PlacementRequests] WHERE [Status] = N'Approved') THROW 50001, N'Vẫn còn đơn Approved sau khi chuyển đổi.', 1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261010023137_MapLegacyApprovedPlacementRequests', N'8.0.31');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20261012073419_ForceAdminPasswordChange'.
+Applying migration '20261012073419_ForceAdminPasswordChange'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      UPDATE [Users] SET [MustChangePassword] = CAST(1 AS bit)
+      WHERE [Id] = 1;
+      SELECT @@ROWCOUNT;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20261012073419_ForceAdminPasswordChange', N'8.0.31');
+Done.
+EXIT CODE: 0
+
+C O M M A N D :   s q l c m d   - S   l o c a l h o s t   - E   - d   S t u d e n t I n t e r n s h i p M g m t D b _ T e s t   - Q   " S E T   N O C O U N T   O N ;   S E L E C T   M u s t C h a n g e P a s s w o r d   F R O M   U s e r s   W H E R E   I d   =   1 ; "   - h   - 1   - W  
+ 1  
+ E X I T   C O D E :   0  
+ 
