@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <EntityFrameworkCoreVersion>8.0.31</EntityFrameworkCoreVersion>
+  </PropertyGroup>
+</Project>
