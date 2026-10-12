@@ -1,0 +1,40 @@
+﻿COMMAND: dotnet test backend/InternshipManagement.sln
+  Determining projects to restore...
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\InternshipManagement.sln]
+  All projects are up-to-date for restore.
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj : warning NU1903: Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  StudentInternshipMgmt.Domain -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277: Found conflicts between different versions of "Microsoft.EntityFrameworkCore" that could not be resolved. [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277: There was a conflict between "Microsoft.EntityFrameworkCore, Version=8.0.10.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" and "Microsoft.EntityFrameworkCore, Version=8.0.31.0, Culture=neutral, PublicKeyToken=adb9793829ddae60". [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:     "Microsoft.EntityFrameworkCore, Version=8.0.10.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" was chosen because it was primary and "Microsoft.EntityFrameworkCore, Version=8.0.31.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" was not. [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:     References which depend on "Microsoft.EntityFrameworkCore, Version=8.0.10.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" [C:\Users\PHAT\.nuget\packages\microsoft.entityframeworkcore\8.0.10\lib\net8.0\Microsoft.EntityFrameworkCore.dll]. [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:         C:\Users\PHAT\.nuget\packages\microsoft.entityframeworkcore\8.0.10\lib\net8.0\Microsoft.EntityFrameworkCore.dll [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:           Project file item includes which caused reference "C:\Users\PHAT\.nuget\packages\microsoft.entityframeworkcore\8.0.10\lib\net8.0\Microsoft.EntityFrameworkCore.dll". [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:             C:\Users\PHAT\.nuget\packages\microsoft.entityframeworkcore\8.0.10\lib\net8.0\Microsoft.EntityFrameworkCore.dll [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:     References which depend on or have been unified to "Microsoft.EntityFrameworkCore, Version=8.0.31.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" []. [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:         D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:           Project file item includes which caused reference "D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll". [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Program Files\dotnet\sdk\9.0.308\Microsoft.Common.CurrentVersion.targets(2433,5): warning MSB3277:             D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll [D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+  StudentInternshipMgmt.Infrastructure -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  StudentInternshipMgmt.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+  StudentInternshipMgmt.Api -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  StudentInternshipMgmt.Infrastructure.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.38]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
+
+Passed!  - Failed:     0, Passed:    80, Skipped:     0, Total:    80, Duration: 63 ms - StudentInternshipMgmt.Tests.dll (net8.0)
+  Skipped StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [1 ms]
+
+Passed!  - Failed:     0, Passed:   165, Skipped:     1, Total:   166, Duration: 2 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+EXIT CODE: 0
+

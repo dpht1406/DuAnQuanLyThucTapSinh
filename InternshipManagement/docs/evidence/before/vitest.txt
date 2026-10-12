@@ -1,0 +1,28 @@
+﻿COMMANDS: npm ci; npm test -- --run (second command only if npm ci succeeds)
+
+added 106 packages, and audited 107 packages in 7s
+
+24 packages are looking for funding
+  run `npm fund` for details
+
+1 high severity vulnerability
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+> frontend@0.0.0 test
+> vitest run --run
+
+
+ RUN  v5.0.3 D:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend
+
+
+ Test Files  5 passed (5)
+      Tests  93 passed (93)
+   Start at  14:16:41
+   Duration  797ms (import 69%, transform 26%, tests 3%, worker 2%)
+
+EXIT CODE: 0
+

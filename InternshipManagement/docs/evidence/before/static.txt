@@ -1,0 +1,23 @@
+﻿COMMAND: Sanitized static source extraction; sensitive values are redacted.
+
+--- Jwt section from appsettings.json ---
+Jwt: {
+  Issuer: StudentInternshipMgmt
+  Audience: StudentInternshipMgmt
+  SecretKey: *** (length: 64)
+  AccessTokenExpiryMinutes: 15
+  RefreshTokenExpiryDays: 7
+}
+
+--- SeedData.cs evidence ---
+9: /// and the admin password ***
+18: // Default admin credentials for first login: username "admin", password ***
+20: // changed to a fresh hash if the default password ***
+34: MustChangePassword = false,
+
+--- StudentService.cs EmailRegex declaration ---
+21: private static readonly Regex EmailRegex = new(
+22: @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+COMMAND: rg -n -i AutoMapper backend -g *.cs -g *.csproj
+backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj:7:    <PackageReference Include="AutoMapper" Version="13.0.1" />
+
