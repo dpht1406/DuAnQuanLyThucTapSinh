@@ -27,10 +27,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>() ?? new JwtSettings();
-var jwtSecretKey = string.IsNullOrWhiteSpace(jwtSettings.SecretKey)
-    ? "local-placeholder-only-use-dotnet-user-secrets-for-real-jwt-key"
-    : jwtSettings.SecretKey;
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey));
+JwtSettingsValidator.Validate(jwtSettings);
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

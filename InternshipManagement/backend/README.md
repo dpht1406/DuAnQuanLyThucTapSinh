@@ -20,6 +20,20 @@ dotnet restore
 dotnet build InternshipManagement.sln
 ```
 
+## JWT signing key
+
+The JWT signing key is intentionally not stored in `appsettings.json`. For local
+development, configure a new key with User Secrets:
+
+```powershell
+dotnet user-secrets set "Jwt:SecretKey" "<new-random-key-at-least-32-characters>"
+```
+
+For production, provide the `Jwt__SecretKey` environment variable through the
+deployment secret manager. The application refuses to start when the key is
+missing or shorter than 32 characters. The key previously present in settings
+was exposed and must be rotated; do not reuse it.
+
 Connection string mặc định dùng SQL Server local với Windows Authentication:
 
 ```json
