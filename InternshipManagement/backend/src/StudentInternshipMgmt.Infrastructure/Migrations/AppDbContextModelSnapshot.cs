@@ -656,7 +656,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
-                            MustChangePassword = false,
+                            MustChangePassword = true,
                             PasswordHash = "$2b$11$1zB61f0oX7e98EaZGDvS8OVQumC4VlWWMXlU/yXz7v8q.Pe.dy9QW",
                             Role = "Admin",
                             Username = "admin"
