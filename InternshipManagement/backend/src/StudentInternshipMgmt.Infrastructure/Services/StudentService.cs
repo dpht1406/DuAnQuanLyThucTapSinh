@@ -2,6 +2,7 @@ using ClosedXML.Excel;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Domain.Entities;
@@ -18,13 +19,18 @@ public class StudentService : IStudentService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<StudentService> _logger;
+    private readonly ImportSettings _importSettings;
     private static readonly Regex PhoneRegex = new(
         @"^0\d{9}$", RegexOptions.Compiled);
 
-    public StudentService(AppDbContext db, ILogger<StudentService> logger)
+    public StudentService(
+        AppDbContext db,
+        ILogger<StudentService> logger,
+        IOptions<ImportSettings>? importSettings = null)
     {
         _db = db;
         _logger = logger;
+        _importSettings = importSettings?.Value ?? new ImportSettings();
     }
 
     // ---------- 2. CRUD & tìm kiếm/lọc/xoá mềm ----------
@@ -274,20 +280,39 @@ public class StudentService : IStudentService
     {
         var result = new ImportResultDto();
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        if (extension is not ".xlsx" and not ".csv")
+        {
+            result.Errors.Add(new ImportErrorDto
+            {
+                RowNumber = 0,
+                Reason = "Định dạng file không hợp lệ. Chỉ hỗ trợ .xlsx hoặc .csv."
+            });
+            return result;
+        }
 
         List<ImportRow> rows;
         try
         {
             rows = extension switch
             {
-                ".xlsx" or ".xls" => ReadExcel(fileStream),
+                ".xlsx" => ReadExcel(fileStream),
                 ".csv" => ReadCsv(fileStream),
-                _ => throw new InvalidOperationException("Chỉ hỗ trợ file .xlsx, .xls hoặc .csv.")
+                _ => throw new InvalidOperationException("Định dạng file không hợp lệ.")
             };
         }
         catch (Exception ex)
         {
             result.Errors.Add(new ImportErrorDto { RowNumber = 0, Reason = $"Không đọc được file: {ex.Message}" });
+            return result;
+        }
+
+        if (rows.Count > _importSettings.MaxRows)
+        {
+            result.Errors.Add(new ImportErrorDto
+            {
+                RowNumber = 0,
+                Reason = $"Vượt quá giới hạn {_importSettings.MaxRows.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))} dòng"
+            });
             return result;
         }
 
@@ -405,8 +430,26 @@ public class StudentService : IStudentService
         };
         using var csv = new CsvReader(reader, config);
 
-        csv.Read();
+        if (!csv.Read())
+        {
+            throw new InvalidDataException("CSV rỗng hoặc thiếu tiêu đề.");
+        }
+
         csv.ReadHeader();
+        var headers = csv.HeaderRecord ?? Array.Empty<string>();
+        var requiredHeaders = new[]
+        {
+            "StudentCode", "FullName", "Email", "PhoneNumber", "Major", "ClassName"
+        };
+        var missingHeaders = requiredHeaders
+            .Where(required => !headers.Contains(required, StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+        if (missingHeaders.Length > 0)
+        {
+            throw new InvalidDataException(
+                $"CSV thiếu cột bắt buộc: {string.Join(", ", missingHeaders)}.");
+        }
+
         int rowNumber = 1; // dòng 1 là header, dữ liệu bắt đầu từ dòng 2
         while (csv.Read())
         {

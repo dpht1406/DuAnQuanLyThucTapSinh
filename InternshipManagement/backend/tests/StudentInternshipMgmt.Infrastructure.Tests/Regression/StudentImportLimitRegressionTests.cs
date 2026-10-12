@@ -19,7 +19,8 @@ public class StudentImportLimitRegressionTests
 
         var result = await service.ImportStudentsAsync(csv, "students.csv");
 
-        result.Errors.Should().NotBeEmpty();
+        result.Errors.Should().ContainSingle()
+            .Which.Reason.Should().Be("Vượt quá giới hạn 5.000 dòng");
         result.SuccessCount.Should().Be(0);
         (await dbContext.Students.CountAsync()).Should().Be(0);
     }
