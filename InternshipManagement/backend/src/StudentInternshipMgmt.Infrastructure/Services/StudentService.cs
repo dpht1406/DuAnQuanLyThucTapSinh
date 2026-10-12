@@ -18,8 +18,6 @@ public class StudentService : IStudentService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<StudentService> _logger;
-    private static readonly Regex EmailRegex = new(
-        @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
     private static readonly Regex PhoneRegex = new(
         @"^0\d{9}$", RegexOptions.Compiled);
 
@@ -311,8 +309,11 @@ public class StudentService : IStudentService
             if (string.IsNullOrWhiteSpace(row.Major)) errors.Add("Thiếu Major.");
             if (string.IsNullOrWhiteSpace(row.ClassName)) errors.Add("Thiếu ClassName.");
 
-            if (!string.IsNullOrWhiteSpace(row.Email) && !EmailRegex.IsMatch(row.Email))
-                errors.Add("Email không đúng định dạng.");
+            if (!string.IsNullOrWhiteSpace(row.Email) &&
+                !EmailAddressValidator.TryValidate(row.Email, out _))
+            {
+                errors.Add(EmailAddressValidator.GetErrorMessage(row.Email));
+            }
 
             if (!string.IsNullOrWhiteSpace(row.PhoneNumber) && !PhoneRegex.IsMatch(row.PhoneNumber))
                 errors.Add("PhoneNumber không đúng định dạng (10 số, bắt đầu bằng 0).");

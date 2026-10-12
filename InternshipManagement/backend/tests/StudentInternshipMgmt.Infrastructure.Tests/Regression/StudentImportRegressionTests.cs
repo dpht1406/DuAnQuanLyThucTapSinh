@@ -22,8 +22,10 @@ public class StudentImportRegressionTests
 
         result.SuccessCount.Should().Be(0);
         result.Errors.Should().HaveCount(3);
-        result.Errors.Select(error => error.Reason)
-            .Should().OnlyContain(reason => reason.Contains("Email", StringComparison.OrdinalIgnoreCase));
+        result.Errors.Select(error => error.Reason).Should().Equal(
+            "Email có vẻ gõ sai. Ý bạn là a@gmail.com?",
+            "Email có vẻ gõ sai. Ý bạn là a@gmail.com?",
+            EmailAddressValidator.GetErrorMessage("a#b@gmail.com"));
         (await dbContext.Students.CountAsync()).Should().Be(0);
     }
 
@@ -56,7 +58,7 @@ public class StudentImportRegressionTests
         {
             result.SuccessCount.Should().Be(0);
             result.Errors.Should().ContainSingle()
-                .Which.Reason.Should().Contain("Email");
+                .Which.Reason.Should().Be(EmailAddressValidator.GetErrorMessage(email));
         }
     }
 
