@@ -1,0 +1,4 @@
+﻿Workbook sheets: Tổng quan; Quy tắc & KPI; Test case; Dữ liệu lỗi & lớn; Hiệu năng (trước-sau); Danh sách lỗi Test case rows: 39; populated cells missing in 12 columns: 0 Statuses: Đạt=21; Không đạt=0; Chưa chạy=18 Missing evidence paths: 0 Backend summary cell: 245 passed; 0 failed; 1 skipped (246 total).
+Word COM rendered pages: 8
+Self-assessment heading found on page 8; final page length: 1595 characters.
+Final page contains heading: True

@@ -1,0 +1,3 @@
+﻿Word COM rendered pages: 8
+Self-assessment heading found on page 8; final page length: 1595 characters.
+Final page contains heading: True

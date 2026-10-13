@@ -400,9 +400,6 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime?>("StudentReportDismissedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("StudentReportDismissNote")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -410,6 +407,9 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                     b.Property<string>("StudentReportDismissSource")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("StudentReportDismissedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("StudentReportedInterviewAt")
                         .HasColumnType("datetime2");

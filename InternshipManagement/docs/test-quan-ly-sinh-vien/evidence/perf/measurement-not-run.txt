@@ -1,0 +1,4 @@
+Performance test record - 2026-10-12
+No actual measurements are available. The machine has only StudentInternshipMgmtDb, which was left untouched; StudentInternshipMgmtDb_Test does not exist and no dedicated test connection is configured. The API is not listening on localhost:5018. Each target requested five repeats, but zero operation runs completed. Therefore min/median/max are blank and cannot be compared with thresholds.
+No source-code performance change was made in this continuation. Do not interpret connection availability checks or unit-test duration as endpoint timings.
+Thresholds in the report are group-proposed targets, not measured results.

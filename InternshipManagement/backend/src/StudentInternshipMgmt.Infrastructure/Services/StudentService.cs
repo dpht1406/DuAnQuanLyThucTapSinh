@@ -115,7 +115,32 @@ public class StudentService : IStudentService
 
     public async Task<(bool Success, string? Error, StudentDto? Data)> CreateStudentAsync(CreateStudentDto dto)
     {
-        var codeExists = await _db.Students.AnyAsync(s => s.StudentCode == dto.StudentCode);
+        dto.StudentCode = dto.StudentCode?.Trim();
+        dto.FullName = dto.FullName?.Trim();
+        dto.Email = dto.Email?.Trim();
+        dto.PhoneNumber = dto.PhoneNumber?.Trim();
+        dto.Major = dto.Major?.Trim();
+        dto.ClassName = dto.ClassName?.Trim();
+
+        if (string.IsNullOrWhiteSpace(dto.StudentCode))
+            return (false, "StudentCode là bắt buộc.", null);
+        if (string.IsNullOrWhiteSpace(dto.FullName))
+            return (false, "FullName là bắt buộc.", null);
+        if (string.IsNullOrWhiteSpace(dto.Email))
+            return (false, "Email là bắt buộc.", null);
+        if (!EmailAddressValidator.IsValid(dto.Email))
+            return (false, EmailAddressValidator.GetErrorMessage(dto.Email), null);
+        if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            return (false, "PhoneNumber là bắt buộc.", null);
+        if (!PhoneRegex.IsMatch(dto.PhoneNumber))
+            return (false, "PhoneNumber phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).", null);
+        if (string.IsNullOrWhiteSpace(dto.Major))
+            return (false, "Major là bắt buộc.", null);
+        if (string.IsNullOrWhiteSpace(dto.ClassName))
+            return (false, "ClassName là bắt buộc.", null);
+
+        var normalizedCode = dto.StudentCode;
+        var codeExists = await _db.Students.AnyAsync(s => s.StudentCode != null && s.StudentCode.ToLower() == normalizedCode.ToLower());
         if (codeExists)
             return (false, $"StudentCode '{dto.StudentCode}' đã tồn tại.", null);
 
@@ -141,9 +166,30 @@ public class StudentService : IStudentService
 
     public async Task<(bool Success, string? Error)> UpdateStudentAsync(int id, UpdateStudentDto dto)
     {
+        dto.FullName = dto.FullName?.Trim();
+        dto.Email = dto.Email?.Trim();
+        dto.PhoneNumber = dto.PhoneNumber?.Trim();
+        dto.Major = dto.Major?.Trim();
+        dto.ClassName = dto.ClassName?.Trim();
+
         var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == id);
         if (student is null)
             return (false, "Không tìm thấy sinh viên.");
+
+        if (string.IsNullOrWhiteSpace(dto.FullName))
+            return (false, "FullName là bắt buộc.");
+        if (string.IsNullOrWhiteSpace(dto.Email))
+            return (false, "Email là bắt buộc.");
+        if (!EmailAddressValidator.IsValid(dto.Email))
+            return (false, EmailAddressValidator.GetErrorMessage(dto.Email));
+        if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            return (false, "PhoneNumber là bắt buộc.");
+        if (!PhoneRegex.IsMatch(dto.PhoneNumber))
+            return (false, "PhoneNumber phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).");
+        if (string.IsNullOrWhiteSpace(dto.Major))
+            return (false, "Major là bắt buộc.");
+        if (string.IsNullOrWhiteSpace(dto.ClassName))
+            return (false, "ClassName là bắt buộc.");
 
         // Chỉ sửa thông tin cơ bản — không đụng StudentCode, Status, CompanyId, JobPositionId.
         student.FullName = dto.FullName;
@@ -641,13 +687,7 @@ public class StudentService : IStudentService
             .Include(s => s.User)
             .AsQueryable();
 
-        query = ApplyStudentSearch(query, filter.Search);
-
-        if (filter.Status.HasValue)
-            query = query.Where(s => s.Status == filter.Status.Value);
-
-        if (filter.CompanyId.HasValue)
-            query = query.Where(s => s.CompanyId == filter.CompanyId.Value);
+        query = ApplyStudentFilter(query, filter);
 
         var students = await query
             .OrderBy(s => s.StudentCode)

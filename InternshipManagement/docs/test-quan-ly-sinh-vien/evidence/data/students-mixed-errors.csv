@@ -1,0 +1,10 @@
+﻿StudentCode,FullName,Email,PhoneNumber,Major,ClassName
+TST9001,Nguyễn Ánh,anh@example.edu.vn,0900009001,CNTT,SE01
+TST9002,Thiếu họ tên,tst9002@example.edu.vn,0900009002,CNTT,
+TST9003,Sai email,not-an-email,0900009003,CNTT,SE01
+TST9004,Sai điện thoại,tst9004@example.edu.vn,123456789,CNTT,SE01
+TST9005,Mã trùng lần đầu,tst9005@example.edu.vn,0900009005,CNTT,SE01
+tst9005,Mã trùng khác hoa thường,tst9006@example.edu.vn,0900009006,CNTT,SE01
+TSTDB0001,MSSV cần seed vào DB test,db@example.edu.vn,0900009007,CNTT,SE01
+TST9008,=1+1,safe@example.edu.vn,0900009008,CNTT,SE01
+TST9009,"Trần, ""Bình""",tst9009@example.edu.vn,0900009009,Khoa học dữ liệu,SE02
