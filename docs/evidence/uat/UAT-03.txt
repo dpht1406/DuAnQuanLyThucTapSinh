@@ -1,5 +1,5 @@
-Runner: run-e2e.ps1
-Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+﻿Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_E2E
 Scenario: c. Company Passed and Failed (note required)
-Status: FAIL
-Actual: Create company position expected HTTP 200/201 but got 403: The remote server returned an error: (403) Forbidden.
+Status: PASS
+Actual: Company direct Passed succeeded; Failed without note HTTP 400; Failed with note persisted

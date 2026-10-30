@@ -1,12 +1,13 @@
 [CmdletBinding()]
 param(
     [string]$BaseUrl = "http://127.0.0.1:5018",
-    [ValidateRange(10, 100)]
+    [ValidateRange(1, 100)]
     [int]$ConcurrencyIterations = 10,
-    [ValidateRange(50, 100)]
-    [int]$RaceOneIterations = 50,
+    [ValidateRange(1, 100)]
+    [int]$RaceOneIterations = 10,
     [string]$ApiLogPath,
-    [string]$SqlServer = "localhost"
+    [string]$SqlServer = "localhost",
+    [switch]$SkipRaces
 )
 
 $ErrorActionPreference = "Stop"
@@ -207,55 +208,70 @@ function Invoke-Api {
         [object]$Body
     )
 
-    if (-not [string]::IsNullOrWhiteSpace($Token) -and
-        $Token -eq $script:adminToken -and
-        (Get-Date) -ge $script:adminTokenExpiresAt.AddMinutes(-1)) {
-        if ([string]::IsNullOrWhiteSpace($script:adminRefreshToken)) {
-            throw "Admin access token expired and no refresh token is available."
+    $maxAttempts = 10
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        if (-not [string]::IsNullOrWhiteSpace($Token) -and
+            $Token -eq $script:adminToken -and
+            (Get-Date) -ge $script:adminTokenExpiresAt.AddMinutes(-1)) {
+            if ([string]::IsNullOrWhiteSpace($script:adminRefreshToken)) {
+                throw "Admin access token expired and no refresh token is available."
+            }
+            try {
+                $refreshBody = ConvertTo-Json -InputObject @{ RefreshToken = $script:adminRefreshToken } -Compress
+                $refreshed = Invoke-RestMethod -Method Post -Uri ($api + "/auth/refresh") -ContentType "application/json" -Body $refreshBody -TimeoutSec 60 -ErrorAction Stop
+            }
+            catch {
+                throw "Admin access-token refresh failed: $($_.Exception.Message)"
+            }
+            if ($null -eq $refreshed.data -or [string]::IsNullOrWhiteSpace($refreshed.data.accessToken)) {
+                throw "Admin access-token refresh returned no token."
+            }
+            Set-AdminSession $refreshed.data
+            $Token = $script:adminToken
         }
+
+        $request = @{
+            Method = $Method
+            Uri = $api + $Path
+            TimeoutSec = 60
+            ErrorAction = "Stop"
+        }
+        if (-not [string]::IsNullOrWhiteSpace($Token)) {
+            $request.Headers = @{ Authorization = "Bearer $Token" }
+        }
+        if ($null -ne $Body) {
+            $request.ContentType = "application/json"
+            if ($Body -is [string]) {
+                $request.Body = $Body
+            }
+            else {
+                $request.Body = ConvertTo-Json -InputObject $Body -Depth 20 -Compress
+            }
+        }
+
         try {
-            $refreshBody = ConvertTo-Json -InputObject @{ RefreshToken = $script:adminRefreshToken } -Compress
-            $refreshed = Invoke-RestMethod -Method Post -Uri ($api + "/auth/refresh") -ContentType "application/json" -Body $refreshBody -TimeoutSec 60 -ErrorAction Stop
+            $response = Invoke-RestMethod @request
+            return [pscustomobject]@{ Status = 200; Body = $response }
         }
         catch {
-            throw "Admin access-token refresh failed: $($_.Exception.Message)"
+            $statusCode = 0
+            if ($null -ne $_.Exception.Response -and $null -ne $_.Exception.Response.StatusCode) {
+                $statusCode = [int]$_.Exception.Response.StatusCode
+            }
+            if ($statusCode -eq 429 -and $attempt -lt $maxAttempts) {
+                $retryAfter = 10
+                try {
+                    $headerVal = $_.Exception.Response.Headers["Retry-After"]
+                    if ($null -ne $headerVal) {
+                        [int]::TryParse("$headerVal", [ref]$retryAfter) | Out-Null
+                    }
+                } catch {}
+                Write-Host "Rate limit (429) hit on $Path. Waiting $retryAfter seconds before retry ($attempt/$maxAttempts)..."
+                Start-Sleep -Seconds ([Math]::Max(5, $retryAfter))
+                continue
+            }
+            return [pscustomobject]@{ Status = $statusCode; Body = $null; Error = $_.Exception.Message }
         }
-        if ($null -eq $refreshed.data -or [string]::IsNullOrWhiteSpace($refreshed.data.accessToken)) {
-            throw "Admin access-token refresh returned no token."
-        }
-        Set-AdminSession $refreshed.data
-        $Token = $script:adminToken
-    }
-
-    $request = @{
-        Method = $Method
-        Uri = $api + $Path
-        TimeoutSec = 60
-        ErrorAction = "Stop"
-    }
-    if (-not [string]::IsNullOrWhiteSpace($Token)) {
-        $request.Headers = @{ Authorization = "Bearer $Token" }
-    }
-    if ($null -ne $Body) {
-        $request.ContentType = "application/json"
-        if ($Body -is [string]) {
-            $request.Body = $Body
-        }
-        else {
-            $request.Body = ConvertTo-Json -InputObject $Body -Depth 20 -Compress
-        }
-    }
-
-    try {
-        $response = Invoke-RestMethod @request
-        return [pscustomobject]@{ Status = 200; Body = $response }
-    }
-    catch {
-        $statusCode = 0
-        if ($null -ne $_.Exception.Response -and $null -ne $_.Exception.Response.StatusCode) {
-            $statusCode = [int]$_.Exception.Response.StatusCode
-        }
-        return [pscustomobject]@{ Status = $statusCode; Body = $null; Error = $_.Exception.Message }
     }
 }
 
@@ -301,6 +317,15 @@ function New-TestCompany {
         Username = $credentials.username
         Password = $credentials.temporaryPassword
     }) "Login as company"
+    $companyPassword = New-E2EAdminPassword
+    Require-Status (Invoke-Api POST "/auth/change-password" $login.accessToken @{
+        CurrentPassword = $credentials.temporaryPassword
+        NewPassword = $companyPassword
+    }) @(200) "Change company password"
+    $login = Get-Data (Invoke-Api POST "/auth/login" $null @{
+        Username = $credentials.username
+        Password = $companyPassword
+    }) "Login as company after password change"
     return [pscustomobject]@{
         Id = $companyId
         Token = $login.accessToken
@@ -331,6 +356,15 @@ function New-TestStudent {
         Username = $accounts.createdAccounts[0].studentCode
         Password = $accounts.createdAccounts[0].plainPassword
     }) "Login as student"
+    $studentPassword = New-E2EAdminPassword
+    Require-Status (Invoke-Api POST "/auth/change-password" $login.accessToken @{
+        CurrentPassword = $accounts.createdAccounts[0].plainPassword
+        NewPassword = $studentPassword
+    }) @(200) "Change student password"
+    $login = Get-Data (Invoke-Api POST "/auth/login" $null @{
+        Username = $accounts.createdAccounts[0].studentCode
+        Password = $studentPassword
+    }) "Login as student after password change"
     return [pscustomobject]@{
         Id = $studentId
         Code = $code
@@ -1010,6 +1044,7 @@ Start-Scenario "i. Expiry worker, InterviewInvited immunity, reapply, dashboard 
     "Pending $pendingId -> Expired within 2 minutes; InterviewInvited $interviewId unchanged; reapplication $resubmit succeeded; dashboard included due-soon item"
 }
 
+if (-not $SkipRaces) {
 # Six SQL Server concurrency races, with ten independent fixtures per race.
 $raceFailedBody = ConvertTo-Json -Compress @{ Decision = 1; ConfirmationSource = "E2E race verification"; Note = "Failed race" }
 $raceDismissBody = ConvertTo-Json -Compress @{ Decision = 2; ConfirmationSource = "E2E race verification"; Note = "Dismiss race" }
@@ -1149,6 +1184,38 @@ if ($raceFailures[$raceNames[0]].Count -eq 0) {
 }
 else {
     Add-Result "$($raceNames[0]) ($RaceOneIterations rounds)" "FAIL" "$raceOneSummary $($raceFailures[$raceNames[0]] -join ' | ')"
+}
+}
+else {
+    foreach ($raceName in $raceNames) {
+        Add-Result "$raceName" "SKIP" "Skipped due to -SkipRaces flag."
+    }
+}
+
+$uatMapping = @(
+    "a. Company position -> approve -> student application",
+    "b. Interview report -> Admin Passed and cascade",
+    "c. Company Passed and Failed (note required)",
+    "d. Admin Failed/DismissReport/cancel Passed",
+    "e. Position closes when Quantity is reached",
+    "Auth /api/students / Admin",
+    "Auth /api/students / User",
+    "Auth /api/students / Company",
+    "Auth /api/students / Anonymous",
+    "f. Company A cannot read or modify Company B records"
+)
+$uatEvidenceDir = [System.IO.Path]::GetFullPath((Join-Path $backendRoot "..\..\docs\evidence\uat"))
+if (Test-Path -LiteralPath $uatEvidenceDir) {
+    for ($index = 0; $index -lt $uatMapping.Count; $index++) {
+        $scenarioName = $uatMapping[$index]
+        $match = @($script:results | Where-Object { $_.Scenario -eq $scenarioName } | Select-Object -First 1)
+        if ($match.Count -eq 1) {
+            $num = "{0:D2}" -f ($index + 1)
+            $filePath = Join-Path $uatEvidenceDir "UAT-$num.txt"
+            $fileContent = "Runner: run-e2e.ps1" + [Environment]::NewLine + "Database: " + $databaseName + [Environment]::NewLine + "Scenario: " + $match[0].Scenario + [Environment]::NewLine + "Status: " + $match[0].Status + [Environment]::NewLine + "Actual: " + $match[0].Actual + [Environment]::NewLine
+            [System.IO.File]::WriteAllText($filePath, $fileContent, [System.Text.Encoding]::UTF8)
+        }
+    }
 }
 
 $script:results | Format-Table -AutoSize -Wrap

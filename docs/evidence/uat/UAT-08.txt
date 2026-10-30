@@ -1,5 +1,5 @@
-Runner: run-e2e.ps1
-Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+﻿Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_E2E
 Scenario: Auth /api/students / Company
 Status: PASS
 Actual: HTTP 403

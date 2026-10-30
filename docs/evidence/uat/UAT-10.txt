@@ -1,5 +1,5 @@
-Runner: run-e2e.ps1
-Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+﻿Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_E2E
 Scenario: f. Company A cannot read or modify Company B records
 Status: PASS
 Actual: foreign job/request reads and writes rejected with HTTP 404/403
