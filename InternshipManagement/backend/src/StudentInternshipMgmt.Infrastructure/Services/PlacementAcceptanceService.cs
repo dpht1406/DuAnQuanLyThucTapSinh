@@ -73,11 +73,10 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
         string? note,
         string? confirmationSource)
     {
-        IDbContextTransaction? transaction = null;
-        try
-        {
-            transaction = await _db.Database.BeginTransactionAsync();
+        PlacementRequest? acceptedRequest = null;
 
+        var result = await ExecuteInTransactionAsync(requestId, "Placement acceptance", async transaction =>
+        {
             var requestIds = await _db.PlacementRequests
                 .IgnoreQueryFilters()
                 .AsNoTracking()
@@ -85,8 +84,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 .Select(request => new { request.StudentId, request.JobPositionId, request.CompanyId })
                 .FirstOrDefaultAsync();
 
-            if (requestIds is null
-                || scopeCompanyId.HasValue && requestIds.CompanyId != scopeCompanyId.Value)
+            if (requestIds is null || (scopeCompanyId.HasValue && requestIds.CompanyId != scopeCompanyId.Value))
             {
                 return await RollbackWithResultAsync(
                     transaction,
@@ -94,27 +92,13 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     RequestNotFoundMessage);
             }
 
-            if (_db.Database.IsRelational())
-            {
-                await _db.Database.ExecuteSqlInterpolatedAsync(
-                    $"UPDATE [PlacementRequests] SET [Status] = [Status] WHERE [Id] = {requestId}");
-
-                await _db.Database.ExecuteSqlInterpolatedAsync(
-                    $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {requestIds.StudentId}");
-
-                if (requestIds.JobPositionId.HasValue)
-                {
-                    await _db.Database.ExecuteSqlInterpolatedAsync(
-                        $"UPDATE [JobPositions] SET [IsOpen] = [IsOpen] WHERE [Id] = {requestIds.JobPositionId.Value}");
-                }
-            }
+            await LockRelationalRowsForAcceptanceAsync(requestId, requestIds.StudentId, requestIds.JobPositionId);
 
             var request = await _db.PlacementRequests
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(item => item.Id == requestId);
 
-            if (request is null
-                || scopeCompanyId.HasValue && request.CompanyId != scopeCompanyId.Value)
+            if (request is null || (scopeCompanyId.HasValue && request.CompanyId != scopeCompanyId.Value))
             {
                 return await RollbackWithResultAsync(
                     transaction,
@@ -254,53 +238,27 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
 
             await _db.SaveChangesAsync();
             await transaction.CommitAsync();
-            await _emailNotifier.NotifyResultAsync(request, passed: true, request.ResultNote);
 
+            acceptedRequest = request;
             _logger.LogInformation(
                 "Placement request accepted: RequestId {RequestId}, StudentId {StudentId}, CompanyId {CompanyId}, Actor {Actor}",
                 request.Id, student.Id, company.Id, actor);
+
             return new PlacementRequestOperationResult(PlacementRequestOperationStatus.Success);
-        }
-        catch (Exception exception) when (exception is DbUpdateException or DbException)
-        {
-            _logger.LogError(
-                exception,
-                "Placement acceptance transaction failed: RequestId {RequestId}",
-                requestId);
+        });
 
-            if (transaction is not null)
-            {
-                try
-                {
-                    await transaction.RollbackAsync();
-                }
-                catch (Exception rollbackException) when (rollbackException is DbUpdateException or DbException)
-                {
-                    _logger.LogError(
-                        rollbackException,
-                        "Placement acceptance rollback failed: RequestId {RequestId}",
-                        requestId);
-                }
-            }
-
-            return new PlacementRequestOperationResult(
-                PlacementRequestOperationStatus.Conflict,
-                RetryConflict);
-        }
-        finally
+        if (result.Status == PlacementRequestOperationStatus.Success && acceptedRequest is not null)
         {
-            if (transaction is not null)
-                await transaction.DisposeAsync();
+            await _emailNotifier.NotifyResultAsync(acceptedRequest, passed: true, acceptedRequest.ResultNote);
         }
+
+        return result;
     }
 
     public async Task<PlacementRequestOperationResult> CancelAcceptedAsync(int requestId, int adminUserId, string? note)
     {
-        IDbContextTransaction? transaction = null;
-        try
+        return await ExecuteInTransactionAsync(requestId, "Placement acceptance cancellation", async transaction =>
         {
-            transaction = await _db.Database.BeginTransactionAsync();
-
             if (_db.Database.IsRelational())
             {
                 var requestLock = await _db.PlacementRequests
@@ -318,14 +276,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                         RequestNotFoundMessage);
                 }
 
-                await _db.Database.ExecuteSqlInterpolatedAsync(
-                    $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {requestLock.StudentId}");
-
-                if (requestLock.JobPositionId.HasValue)
-                {
-                    await _db.Database.ExecuteSqlInterpolatedAsync(
-                        $"UPDATE [JobPositions] SET [IsOpen] = [IsOpen] WHERE [Id] = {requestLock.JobPositionId.Value}");
-                }
+                await LockRelationalRowsForCancellationAsync(requestLock.StudentId, requestLock.JobPositionId);
             }
 
             var request = await _db.PlacementRequests
@@ -447,12 +398,26 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 adminUserId);
 
             return new PlacementRequestOperationResult(PlacementRequestOperationStatus.Success);
+        });
+    }
+
+    private async Task<PlacementRequestOperationResult> ExecuteInTransactionAsync(
+        int requestId,
+        string operationName,
+        Func<IDbContextTransaction, Task<PlacementRequestOperationResult>> action)
+    {
+        IDbContextTransaction? transaction = null;
+        try
+        {
+            transaction = await _db.Database.BeginTransactionAsync();
+            return await action(transaction);
         }
         catch (Exception exception) when (exception is DbUpdateException or DbException)
         {
             _logger.LogError(
                 exception,
-                "Placement acceptance cancellation failed: RequestId {RequestId}",
+                "{OperationName} transaction failed: RequestId {RequestId}",
+                operationName,
                 requestId);
 
             if (transaction is not null)
@@ -465,7 +430,8 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 {
                     _logger.LogError(
                         rollbackException,
-                        "Placement acceptance cancellation rollback failed: RequestId {RequestId}",
+                        "{OperationName} rollback failed: RequestId {RequestId}",
+                        operationName,
                         requestId);
                 }
             }
@@ -478,6 +444,39 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
         {
             if (transaction is not null)
                 await transaction.DisposeAsync();
+        }
+    }
+
+    private async Task LockRelationalRowsForAcceptanceAsync(int requestId, int studentId, int? jobPositionId)
+    {
+        if (!_db.Database.IsRelational())
+            return;
+
+        await _db.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE [PlacementRequests] SET [Status] = [Status] WHERE [Id] = {requestId}");
+
+        await _db.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {studentId}");
+
+        if (jobPositionId.HasValue)
+        {
+            await _db.Database.ExecuteSqlInterpolatedAsync(
+                $"UPDATE [JobPositions] SET [IsOpen] = [IsOpen] WHERE [Id] = {jobPositionId.Value}");
+        }
+    }
+
+    private async Task LockRelationalRowsForCancellationAsync(int studentId, int? jobPositionId)
+    {
+        if (!_db.Database.IsRelational())
+            return;
+
+        await _db.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {studentId}");
+
+        if (jobPositionId.HasValue)
+        {
+            await _db.Database.ExecuteSqlInterpolatedAsync(
+                $"UPDATE [JobPositions] SET [IsOpen] = [IsOpen] WHERE [Id] = {jobPositionId.Value}");
         }
     }
 
