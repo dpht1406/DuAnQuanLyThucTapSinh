@@ -1,0 +1,43 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  PlacementAcceptance.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.33)
+[xUnit.net 00:00:00.06]   Discovering: PlacementAcceptance.Tests
+[xUnit.net 00:00:00.08]   Discovered:  PlacementAcceptance.Tests
+[xUnit.net 00:00:00.08]   Starting:    PlacementAcceptance.Tests
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_ReopensJobPosition_WhenClosedAndCapacityAvailable [601 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportDismissed_ReturnsBusinessError [32 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_UnapprovedJobPosition_ReturnsBusinessError [14 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDeleted_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportNotInterviewInvited_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_WithoutJobPosition_SetsNullPositionAndCorrectHistoryNote [45 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NoteExceeds1000Chars_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_AdminActor_WithReportedInterview_Succeeds [8 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_StudentAlreadyAcceptedOrInterning_ReturnsConflict [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenRequestNotAccepted_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_NonExistentRequest_ReturnsNotFound [< 1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_JobPositionCapacityExceeded_ReturnsConflict [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_HappyPath_SucceedsAndRevertsStudentAndRequest [3 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDataMismatch_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AutoClosesJobPosition_WhenQuotaReached [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_DefaultNote_WhenNoteNullOrWhitespace [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AlreadyProcessedRequest_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_CompanyActor_SucceedsAndUpdatesStudentAndSideEffects [8 ms]
+[xUnit.net 00:00:00.85]   Finished:    PlacementAcceptance.Tests
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_WrongScopeCompany_ReturnsNotFound [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NonExistentRequest_ReturnsNotFound [1 ms]
+WARNING: Overwriting results file: D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\TestResults\before.trx
+Results File: D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\TestResults\before.trx
+
+Test Run Successful.
+Total tests: 20
+     Passed: 20
+ Total time: 1.2134 Seconds

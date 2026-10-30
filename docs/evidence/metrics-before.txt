@@ -1,0 +1,28 @@
+﻿=== METRICS BEFORE REFACTOR ===
+File: InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\PlacementAcceptanceService.cs
+Total Lines of Code (LOC): 479
+Number of Methods: 4
+- Constructor (2 overloads): lines 32-50 (19 lines)
+- AcceptAsync: lines 52-279 (228 lines)
+- CancelAcceptedAsync: lines 281-466 (186 lines)
+- RollbackWithResultAsync: lines 468-475 (8 lines)
+- CleanString: lines 477-478 (2 lines)
+
+Longest Method: AcceptAsync (228 lines)
+Second Longest Method: CancelAcceptedAsync (186 lines)
+Max Nesting Depth: 5
+Code Duplications: 5 distinct duplicate logic patterns
+- Pattern 1: Database transaction catch, log, nested rollback and Conflict result return (lines 248-273 & 435-460)
+- Pattern 2: Relational lock updates for Student and JobPosition (lines 86-93 & 305-312)
+- Pattern 3: PlacementRequest existence & scope check duplicated twice in AcceptAsync (lines 72-79 & 100-107) and twice in CancelAcceptedAsync (lines 297-303 & 319-325)
+- Pattern 4: AcceptedStatuses array checking (line 156) vs manual triple-OR enum comparison (lines 413-415)
+- Pattern 5: StatusHistory entity creation and field assignment (lines 196-206 & 391-400)
+
+Magic Strings / Literals:
+- "Không tìm thấy đơn ứng tuyển." repeated 4 times (lines 78, 106, 302, 324)
+- "Không thể hoàn tất, vui lòng thử lại." hardcoded literal at line 459 ignoring constant RetryConflict at line 18
+- "admin-cancel-accepted" magic string at line 388
+- "Admin hủy kết quả tiếp nhận sinh viên." magic string at line 374
+- "Doanh nghiệp nhận sinh viên" magic string at line 231
+- Magic number 1000 for note length limit at line 365
+- Unused parameter 'preserveLineBreaks' in CleanString at line 477
