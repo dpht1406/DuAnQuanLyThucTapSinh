@@ -1,0 +1,32 @@
+# Báo Cáo Kiểm Thử Chấp Nhận Người Dùng (UAT - 10 Kịch Bản Chạy Thật)
+
+## 1. Thông Tin Môi Trường & Chế Độ Thực Thi
+- **Chế độ thực thi**: Chạy backend thật kết nối trực tiếp đến cơ sở dữ liệu Microsoft SQL Server nội bộ trên máy (`Server=localhost;Database=StudentInternshipMgmtDb;Integrated Security=True;TrustServerCertificate=True;`).
+- **Địa chỉ dịch vụ API backend**: `http://127.0.0.1:5018`
+- **Công cụ điều phối kiểm thử**: Kịch bản tự động hóa gửi HTTP Request thực tế và truy vấn trực tiếp SQL Server qua `sqlcmd`.
+- **Thư mục lưu trữ bằng chứng thô**: `docs/evidence/uat/` (chứa đầy đủ các file `UAT-01.txt` đến `UAT-10.txt` với định dạng HTTP request/response và kết quả SQL thô).
+
+---
+
+## 2. Bảng Tổng Hợp 10 Kịch Bản Kiểm Thử Thực Tế
+
+| Mã Kịch Bản | Mục Tiêu | Các Bước Thực Hiện | Kết Quả Mong Đợi | Kết Quả Thực Tế | Đánh Giá | Bằng Chứng Thô |
+|:---:|---|---|---|---|:---:|---|
+| **UAT-01** | Doanh nghiệp chấp nhận đơn ứng tuyển của sinh viên đủ điều kiện (Luồng chính thành công) | Đăng nhập tài khoản doanh nghiệp lấy mã phiên làm việc, gửi yêu cầu đồng ý tiếp nhận kèm ghi chú đánh giá tích cực cho đơn ứng tuyển đang chờ xử lý. | Hệ thống tiếp nhận thành công, ghi nhận sinh viên đạt kết quả và phản hồi thông báo hoàn tất. | Hệ thống xử lý thành công, thông báo đã ghi nhận kết quả Đạt và nhận sinh viên vào thực tập. | **ĐẠT** | [UAT-01.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-01.txt) |
+| **UAT-02** | Xác minh tính toàn vẹn và chính xác của dữ liệu được lưu trong cơ sở dữ liệu sau khi tiếp nhận | Truy vấn trực tiếp các bảng trong SQL Server để kiểm tra trạng thái đơn ứng tuyển, trạng thái sinh viên và lịch sử thay đổi sau khi thực hiện kịch bản UAT-01. | Đơn ứng tuyển chuyển sang Đạt, hồ sơ sinh viên được gắn mã công ty và chuyển sang Đạt, bảng lịch sử lưu đầy đủ mốc thời gian và ghi chú chuyển trạng thái. | Toàn bộ dữ liệu trong bảng đơn ứng tuyển, bảng sinh viên và bảng lịch sử trạng thái đều được cập nhật hoàn toàn khớp với nghiệp vụ. | **ĐẠT** | [UAT-02.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-02.txt) |
+| **UAT-03** | Từ chối yêu cầu đánh giá kết quả khi thiếu dữ liệu bắt buộc (Ghi chú khi đánh trượt) | Đăng nhập tài khoản doanh nghiệp, gửi kết quả đánh giá không đạt cho sinh viên nhưng cố tình để trống phần lý do/ghi chú. | Hệ thống từ chối xử lý và nhắc nhở doanh nghiệp phải nhập ghi chú khi đánh giá sinh viên không đạt. | Hệ thống phát hiện thiếu ghi chú bắt buộc, từ chối yêu cầu và thông báo rõ ghi chú là bắt buộc khi sinh viên không đạt. | **ĐẠT** | [UAT-03.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-03.txt) |
+| **UAT-04** | Xử lý an toàn khi tham số đường dẫn sai định dạng | Gửi yêu cầu hủy tiếp nhận đến hệ thống nhưng mã số đơn trên đường dẫn bị thay thế bằng chuỗi ký tự chữ cái thay vì số nguyên. | Hệ thống từ chối yêu cầu do đường dẫn không hợp lệ, không để xảy ra lỗi nội bộ máy chủ. | Hệ thống chặn đường dẫn không hợp lệ ngay từ tầng định tuyến và phản hồi từ chối an toàn. | **ĐẠT** | [UAT-04.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-04.txt) |
+| **UAT-05** | Thông báo chính xác khi thao tác trên đơn không tồn tại trong hệ thống | Đăng nhập tài khoản quản trị viên, gửi yêu cầu hủy kết quả tiếp nhận cho một mã đơn ứng tuyển hoàn toàn không có trong cơ sở dữ liệu (mã 999999). | Hệ thống thông báo rõ ràng rằng không tìm thấy đơn ứng tuyển để xử lý. | Hệ thống kiểm tra dữ liệu và phản hồi thông báo không tìm thấy đơn ứng tuyển. | **ĐẠT** | [UAT-05.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-05.txt) |
+| **UAT-06** | Ngăn chặn truy cập khi chưa đăng nhập hệ thống | Gửi trực tiếp yêu cầu hủy tiếp nhận sinh viên mà không đính kèm mã phiên làm việc (token xác thực). | Hệ thống chặn thao tác và yêu cầu người dùng phải đăng nhập trước khi thực hiện. | Hệ thống từ chối truy cập và phản hồi trạng thái chưa đăng nhập hợp lệ. | **ĐẠT** | [UAT-06.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-06.txt) |
+| **UAT-07** | Ngăn chặn hành vi vượt quyền khi sinh viên gọi chức năng của quản trị viên | Đăng nhập tài khoản sinh viên, sau đó dùng quyền sinh viên gửi yêu cầu hủy kết quả tiếp nhận thuộc thẩm quyền quản trị viên. | Hệ thống nhận diện sai vai trò, từ chối quyền truy cập của sinh viên. | Hệ thống phát hiện tài khoản không có quyền quản trị viên và chặn đứng yêu cầu. | **ĐẠT** | [UAT-07.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-07.txt) |
+| **UAT-08** | Chặn thao tác hủy tiếp nhận trên đơn ứng tuyển chưa từng được tiếp nhận | Đăng nhập tài khoản quản trị viên, gửi lệnh hủy kết quả tiếp nhận trên một đơn mới nộp đang ở trạng thái chờ duyệt. | Hệ thống nhắc nhở chỉ có thể hủy tiếp nhận khi đơn đang ở trạng thái Đạt. | Hệ thống từ chối xử lý và thông báo chỉ có thể hủy kết quả tiếp nhận khi đơn đang ở trạng thái Đạt. | **ĐẠT** | [UAT-08.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-08.txt) |
+| **UAT-09** | Kiểm soát độ dài trường ghi chú ở trường hợp biên (vượt quá 1000 ký tự) | Đăng nhập tài khoản quản trị viên, gửi lệnh hủy kết quả tiếp nhận với đoạn văn bản ghi chú dài 1005 ký tự (vượt ngưỡng cho phép 1000). | Hệ thống kiểm tra điều kiện biên, chặn không cho lưu và cảnh báo ghi chú vượt quá độ dài tối đa. | Hệ thống từ chối lưu dữ liệu và thông báo ghi chú không được vượt quá 1000 ký tự. | **ĐẠT** | [UAT-09.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-09.txt) |
+| **UAT-10** | Ngăn chặn doanh nghiệp can thiệp vào đơn ứng tuyển của doanh nghiệp khác | Đăng nhập tài khoản của Doanh nghiệp 1, gửi yêu cầu duyệt kết quả cho một đơn ứng tuyển nộp vào vị trí của Doanh nghiệp 2. | Hệ thống phân định phạm vi dữ liệu, không cho phép can thiệp đơn của đơn vị khác và báo không tìm thấy. | Hệ thống bảo vệ dữ liệu doanh nghiệp, từ chối yêu cầu và phản hồi không tìm thấy đơn trong phạm vi quản lý. | **ĐẠT** | [UAT-10.txt](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/evidence/uat/UAT-10.txt) |
+
+---
+
+## 3. Đánh Giá Kết Quả UAT
+- **Tổng số kịch bản thực hiện**: 10
+- **Số kịch bản ĐẠT**: 10/10 (100%)
+- **Số kịch bản KHÔNG ĐẠT**: 0/10 (0%)
+- **Kết luận**: Module sau refactor hoạt động ổn định, bảo toàn toàn bộ logic nghiệp vụ, phân quyền nghiêm ngặt, xử lý tốt các trường hợp biên và ngoại lệ dữ liệu, đồng thời đồng bộ trạng thái chính xác vào CSDL SQL Server thật.
