@@ -18,6 +18,22 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
     private const string RetryConflict = "Không thể hoàn tất, vui lòng thử lại.";
     private const string OtherRequestsResult = "Sinh viên đã được doanh nghiệp khác nhận";
 
+    private const string RequestNotFoundMessage = "Không tìm thấy đơn ứng tuyển.";
+    private const string InterviewReportAlreadyHandledMessage = "Báo cáo phỏng vấn này đã được xử lý.";
+    private const string RequestAlreadyHandledMessage = "Đơn này đã được xử lý.";
+    private const string JobPositionNotApprovedMessage = "Vị trí tuyển dụng chưa được duyệt.";
+    private const string CompanyNotFoundMessage = "Không tìm thấy doanh nghiệp.";
+    private const string OnlyAcceptedCanBeCanceledMessage = "Chỉ có thể hủy kết quả tiếp nhận khi đơn đang ở trạng thái Đạt.";
+    private const string StudentNotFoundMessage = "Không tìm thấy sinh viên.";
+    private const string StudentDeletedMessage = "Sinh viên đã bị xóa, không thể hủy kết quả.";
+    private const string StudentDataMismatchMessage = "Dữ liệu sinh viên không khớp với đơn, không thể hủy tự động.";
+    private const string NoteTooLongMessage = "Ghi chú không được vượt quá 1000 ký tự.";
+    private const string DefaultCancellationNote = "Admin hủy kết quả tiếp nhận sinh viên.";
+
+    private const string AdminCancelConfirmationSource = "admin-cancel-accepted";
+    private const string StudentAcceptedNotificationTitle = "Doanh nghiệp nhận sinh viên";
+    private const int MaxCancellationNoteLength = 1000;
+
     private static readonly StudentStatus[] AcceptedStatuses =
     {
         StudentStatus.Accepted,
@@ -75,7 +91,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.NotFound,
-                    "Không tìm thấy đơn ứng tuyển.");
+                    RequestNotFoundMessage);
             }
 
             if (_db.Database.IsRelational())
@@ -103,7 +119,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.NotFound,
-                    "Không tìm thấy đơn ứng tuyển.");
+                    RequestNotFoundMessage);
             }
 
             if (actor == ActorType.Admin
@@ -114,7 +130,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Báo cáo phỏng vấn này đã được xử lý.");
+                    InterviewReportAlreadyHandledMessage);
             }
 
             if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
@@ -122,7 +138,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Đơn này đã được xử lý.");
+                    RequestAlreadyHandledMessage);
             }
 
             var student = await _db.Students
@@ -149,7 +165,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     return await RollbackWithResultAsync(
                         transaction,
                         PlacementRequestOperationStatus.BusinessError,
-                        "Vị trí tuyển dụng chưa được duyệt.");
+                        JobPositionNotApprovedMessage);
                 }
 
                 acceptedCount = await _db.Students.CountAsync(item =>
@@ -169,7 +185,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Không tìm thấy doanh nghiệp.");
+                    CompanyNotFoundMessage);
             }
             request.Company = company;
 
@@ -228,7 +244,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
             _db.Notifications.Add(new Notification
             {
                 Type = NotificationType.StudentAcceptedByCompany,
-                Title = "Doanh nghiệp nhận sinh viên",
+                Title = StudentAcceptedNotificationTitle,
                 Message = $"{student.FullName} ({student.StudentCode}) đã được {company.Name} nhận{positionDescription}.",
                 StudentId = student.Id,
                 CompanyId = company.Id,
@@ -299,7 +315,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     return await RollbackWithResultAsync(
                         transaction,
                         PlacementRequestOperationStatus.NotFound,
-                        "Không tìm thấy đơn ứng tuyển.");
+                        RequestNotFoundMessage);
                 }
 
                 await _db.Database.ExecuteSqlInterpolatedAsync(
@@ -321,7 +337,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.NotFound,
-                    "Không tìm thấy đơn ứng tuyển.");
+                    RequestNotFoundMessage);
             }
 
             if (request.Status != RequestStatus.Accepted)
@@ -329,7 +345,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Chỉ có thể hủy kết quả tiếp nhận khi đơn đang ở trạng thái Đạt.");
+                    OnlyAcceptedCanBeCanceledMessage);
             }
 
             var student = await _db.Students
@@ -341,7 +357,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.NotFound,
-                    "Không tìm thấy sinh viên.");
+                    StudentNotFoundMessage);
             }
 
             if (student.IsDeleted)
@@ -349,7 +365,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Sinh viên đã bị xóa, không thể hủy kết quả.");
+                    StudentDeletedMessage);
             }
 
             if (student.Status != StudentStatus.Accepted
@@ -359,19 +375,19 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Dữ liệu sinh viên không khớp với đơn, không thể hủy tự động.");
+                    StudentDataMismatchMessage);
             }
 
-            if (note is not null && note.Trim().Length > 1000)
+            if (note is not null && note.Trim().Length > MaxCancellationNoteLength)
             {
                 return await RollbackWithResultAsync(
                     transaction,
                     PlacementRequestOperationStatus.BusinessError,
-                    "Ghi chú không được vượt quá 1000 ký tự.");
+                    NoteTooLongMessage);
             }
 
             var cancellationNote = string.IsNullOrWhiteSpace(note)
-                ? "Admin hủy kết quả tiếp nhận sinh viên."
+                ? DefaultCancellationNote
                 : CleanString(note, preserveLineBreaks: true)!;
 
             var now = DateTime.UtcNow;
@@ -385,7 +401,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
             request.ResultActorType = ActorType.Admin;
             request.ReviewedBy = adminUserId;
             request.ReviewedAt = now;
-            request.ConfirmationSource = "admin-cancel-accepted";
+            request.ConfirmationSource = AdminCancelConfirmationSource;
 
             _db.StatusHistories.Add(new StatusHistory
             {
@@ -456,7 +472,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
 
             return new PlacementRequestOperationResult(
                 PlacementRequestOperationStatus.Conflict,
-                "Không thể hoàn tất, vui lòng thử lại.");
+                RetryConflict);
         }
         finally
         {
@@ -474,6 +490,10 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
         return new PlacementRequestOperationResult(status, error);
     }
 
-    private static string? CleanString(string? value, bool preserveLineBreaks = false) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    private static string? CleanString(string? value, bool preserveLineBreaks = false)
+    {
+        // Parameter preserveLineBreaks is documented as known issue BUG-PRE-01 (see docs/05-bug-log.md)
+        _ = preserveLineBreaks;
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
 }
