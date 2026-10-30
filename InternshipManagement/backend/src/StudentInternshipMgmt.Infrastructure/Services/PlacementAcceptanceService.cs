@@ -77,164 +77,52 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
 
         var result = await ExecuteInTransactionAsync(requestId, "Placement acceptance", async transaction =>
         {
-            var requestIds = await _db.PlacementRequests
-                .IgnoreQueryFilters()
-                .AsNoTracking()
-                .Where(request => request.Id == requestId)
-                .Select(request => new { request.StudentId, request.JobPositionId, request.CompanyId })
-                .FirstOrDefaultAsync();
-
-            if (requestIds is null || (scopeCompanyId.HasValue && requestIds.CompanyId != scopeCompanyId.Value))
+            var requestSummary = await GetRequestSummaryAsync(requestId);
+            if (requestSummary is null || (scopeCompanyId.HasValue && requestSummary.CompanyId != scopeCompanyId.Value))
             {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.NotFound,
-                    RequestNotFoundMessage);
+                return await RollbackWithResultAsync(transaction, PlacementRequestOperationStatus.NotFound, RequestNotFoundMessage);
             }
 
-            await LockRelationalRowsForAcceptanceAsync(requestId, requestIds.StudentId, requestIds.JobPositionId);
+            await LockRelationalRowsForAcceptanceAsync(requestId, requestSummary.StudentId, requestSummary.JobPositionId);
 
-            var request = await _db.PlacementRequests
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(item => item.Id == requestId);
-
+            var request = await GetPlacementRequestByIdAsync(requestId);
             if (request is null || (scopeCompanyId.HasValue && request.CompanyId != scopeCompanyId.Value))
             {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.NotFound,
-                    RequestNotFoundMessage);
+                return await RollbackWithResultAsync(transaction, PlacementRequestOperationStatus.NotFound, RequestNotFoundMessage);
             }
 
-            if (actor == ActorType.Admin
-                && (request.Status != RequestStatus.InterviewInvited
-                    || request.StudentReportedInterviewAt is null
-                    || request.StudentReportDismissedAt is not null))
+            var actorValidationError = ValidateAcceptanceActorPermission(actor, request);
+            if (actorValidationError is not null)
             {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.BusinessError,
-                    InterviewReportAlreadyHandledMessage);
+                return await RollbackWithResultAsync(transaction, PlacementRequestOperationStatus.BusinessError, actorValidationError);
             }
 
-            if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
-            {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.BusinessError,
-                    RequestAlreadyHandledMessage);
-            }
-
-            var student = await _db.Students
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(item => item.Id == request.StudentId);
-
+            var student = await GetStudentByIdAsync(request.StudentId);
             if (student is null || student.IsDeleted || student.Status != StudentStatus.NoCompany)
             {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.Conflict,
-                    StudentConflict);
+                return await RollbackWithResultAsync(transaction, PlacementRequestOperationStatus.Conflict, StudentConflict);
             }
 
-            JobPosition? position = null;
-            var acceptedCount = 0;
-            if (request.JobPositionId.HasValue)
+            var (positionValidationError, position, acceptedCount) = await ValidateJobPositionForAcceptanceAsync(request.JobPositionId);
+            if (positionValidationError is not null)
             {
-                position = await _db.JobPositions
-                    .FirstOrDefaultAsync(item => item.Id == request.JobPositionId.Value);
-
-                if (position is null || position.ApprovalStatus != JobPositionApprovalStatus.Approved)
-                {
-                    return await RollbackWithResultAsync(
-                        transaction,
-                        PlacementRequestOperationStatus.BusinessError,
-                        JobPositionNotApprovedMessage);
-                }
-
-                acceptedCount = await _db.Students.CountAsync(item =>
-                    item.JobPositionId == position.Id && AcceptedStatuses.Contains(item.Status));
-                if (acceptedCount >= position.Quantity)
-                {
-                    return await RollbackWithResultAsync(
-                        transaction,
-                        PlacementRequestOperationStatus.Conflict,
-                        CapacityConflict);
-                }
+                return await RollbackWithResultAsync(transaction, positionValidationError.Value.Status, positionValidationError.Value.Message);
             }
 
             var company = await _db.Companies.FirstOrDefaultAsync(item => item.Id == request.CompanyId);
             if (company is null)
             {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.BusinessError,
-                    CompanyNotFoundMessage);
+                return await RollbackWithResultAsync(transaction, PlacementRequestOperationStatus.BusinessError, CompanyNotFoundMessage);
             }
             request.Company = company;
 
             var now = DateTime.UtcNow;
-            request.Status = RequestStatus.Accepted;
-            request.ResultNote = CleanString(note);
-            request.ResultActorType = actor;
-            request.ReviewedBy = actorUserId;
-            request.ReviewedAt = now;
-            request.ConfirmationSource = confirmationSource;
-
-            student.Status = StudentStatus.Accepted;
-            student.CompanyId = request.CompanyId;
-            student.JobPositionId = request.JobPositionId;
-            student.UpdatedAt = now;
-
-            var historyNote = actor == ActorType.Company
-                ? position is null
-                    ? "Doanh nghiệp xác nhận Đạt"
-                    : $"Doanh nghiệp xác nhận Đạt cho vị trí {position.Title}"
-                : position is null
-                    ? "Admin xác nhận Đạt thay doanh nghiệp"
-                    : $"Admin xác nhận Đạt thay doanh nghiệp cho vị trí {position.Title}";
-            _db.StatusHistories.Add(new StatusHistory
-            {
-                StudentId = student.Id,
-                FromStatus = StudentStatus.NoCompany,
-                ToStatus = StudentStatus.Accepted,
-                CompanyId = request.CompanyId,
-                Note = historyNote,
-                ChangedAt = now,
-                ChangedBy = actorUserId,
-                ChangedByType = actor
-            });
-
-            var otherOpenRequests = await _db.PlacementRequests
-                .IgnoreQueryFilters()
-                .Where(item => item.StudentId == student.Id
-                    && item.Id != request.Id
-                    && (item.Status == RequestStatus.Pending || item.Status == RequestStatus.InterviewInvited))
-                .ToListAsync();
-
-            foreach (var otherRequest in otherOpenRequests)
-            {
-                otherRequest.Status = RequestStatus.Rejected;
-                otherRequest.ResultActorType = ActorType.System;
-                otherRequest.ResultNote = OtherRequestsResult;
-                otherRequest.ReviewedAt = now;
-                otherRequest.ReviewedBy = null;
-            }
-
-            if (position is not null && acceptedCount + 1 == position.Quantity)
-                position.IsOpen = false;
-
-            var positionDescription = position is null ? string.Empty : $" tại vị trí {position.Title}";
-            _db.Notifications.Add(new Notification
-            {
-                Type = NotificationType.StudentAcceptedByCompany,
-                Title = StudentAcceptedNotificationTitle,
-                Message = $"{student.FullName} ({student.StudentCode}) đã được {company.Name} nhận{positionDescription}.",
-                StudentId = student.Id,
-                CompanyId = company.Id,
-                CompanyName = company.Name,
-                CreatedAt = now
-            });
+            ApplyRequestAcceptance(request, note, actor, actorUserId, confirmationSource, now);
+            ApplyStudentAcceptance(student, request.CompanyId, request.JobPositionId, now);
+            AddAcceptanceStatusHistory(student.Id, request.CompanyId, actor, actorUserId, position?.Title, now);
+            await AutoRejectOtherStudentRequestsAsync(student.Id, request.Id, now);
+            CheckAndCloseJobPositionIfFull(position, acceptedCount);
+            CreateAcceptanceNotification(student, company, position?.Title, now);
 
             await _db.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -401,6 +289,8 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
         });
     }
 
+    #region Helper Methods - Queries & Locking
+
     private async Task<PlacementRequestOperationResult> ExecuteInTransactionAsync(
         int requestId,
         string operationName,
@@ -479,6 +369,175 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 $"UPDATE [JobPositions] SET [IsOpen] = [IsOpen] WHERE [Id] = {jobPositionId.Value}");
         }
     }
+
+    private Task<PlacementRequest?> GetPlacementRequestByIdAsync(int requestId) =>
+        _db.PlacementRequests
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(item => item.Id == requestId);
+
+    private Task<Student?> GetStudentByIdAsync(int studentId) =>
+        _db.Students
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(item => item.Id == studentId);
+
+    private async Task<RequestSummary?> GetRequestSummaryAsync(int requestId)
+    {
+        var raw = await _db.PlacementRequests
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(request => request.Id == requestId)
+            .Select(request => new { request.StudentId, request.JobPositionId, request.CompanyId })
+            .FirstOrDefaultAsync();
+
+        return raw is null ? null : new RequestSummary(raw.StudentId, raw.JobPositionId, raw.CompanyId);
+    }
+
+    private sealed record RequestSummary(int StudentId, int? JobPositionId, int CompanyId);
+
+    #endregion
+
+    #region Helper Methods - Acceptance Business Logic
+
+    private static string? ValidateAcceptanceActorPermission(ActorType actor, PlacementRequest request)
+    {
+        if (actor == ActorType.Admin
+            && (request.Status != RequestStatus.InterviewInvited
+                || request.StudentReportedInterviewAt is null
+                || request.StudentReportDismissedAt is not null))
+        {
+            return InterviewReportAlreadyHandledMessage;
+        }
+
+        if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
+        {
+            return RequestAlreadyHandledMessage;
+        }
+
+        return null;
+    }
+
+    private async Task<((PlacementRequestOperationStatus Status, string Message)? Error, JobPosition? Position, int AcceptedCount)>
+        ValidateJobPositionForAcceptanceAsync(int? jobPositionId)
+    {
+        if (!jobPositionId.HasValue)
+            return (null, null, 0);
+
+        var position = await _db.JobPositions
+            .FirstOrDefaultAsync(item => item.Id == jobPositionId.Value);
+
+        if (position is null || position.ApprovalStatus != JobPositionApprovalStatus.Approved)
+        {
+            return ((PlacementRequestOperationStatus.BusinessError, JobPositionNotApprovedMessage), null, 0);
+        }
+
+        var acceptedCount = await _db.Students.CountAsync(item =>
+            item.JobPositionId == position.Id && AcceptedStatuses.Contains(item.Status));
+
+        if (acceptedCount >= position.Quantity)
+        {
+            return ((PlacementRequestOperationStatus.Conflict, CapacityConflict), null, acceptedCount);
+        }
+
+        return (null, position, acceptedCount);
+    }
+
+    private static void ApplyRequestAcceptance(
+        PlacementRequest request,
+        string? note,
+        ActorType actor,
+        int actorUserId,
+        string? confirmationSource,
+        DateTime now)
+    {
+        request.Status = RequestStatus.Accepted;
+        request.ResultNote = CleanString(note);
+        request.ResultActorType = actor;
+        request.ReviewedBy = actorUserId;
+        request.ReviewedAt = now;
+        request.ConfirmationSource = confirmationSource;
+    }
+
+    private static void ApplyStudentAcceptance(Student student, int companyId, int? jobPositionId, DateTime now)
+    {
+        student.Status = StudentStatus.Accepted;
+        student.CompanyId = companyId;
+        student.JobPositionId = jobPositionId;
+        student.UpdatedAt = now;
+    }
+
+    private void AddAcceptanceStatusHistory(
+        int studentId,
+        int companyId,
+        ActorType actor,
+        int actorUserId,
+        string? positionTitle,
+        DateTime now)
+    {
+        var historyNote = BuildAcceptanceHistoryNote(actor, positionTitle);
+        _db.StatusHistories.Add(new StatusHistory
+        {
+            StudentId = studentId,
+            FromStatus = StudentStatus.NoCompany,
+            ToStatus = StudentStatus.Accepted,
+            CompanyId = companyId,
+            Note = historyNote,
+            ChangedAt = now,
+            ChangedBy = actorUserId,
+            ChangedByType = actor
+        });
+    }
+
+    private static string BuildAcceptanceHistoryNote(ActorType actor, string? positionTitle)
+    {
+        var targetPosition = string.IsNullOrEmpty(positionTitle) ? string.Empty : $" cho vị trí {positionTitle}";
+        return actor == ActorType.Company
+            ? $"Doanh nghiệp xác nhận Đạt{targetPosition}"
+            : $"Admin xác nhận Đạt thay doanh nghiệp{targetPosition}";
+    }
+
+    private async Task AutoRejectOtherStudentRequestsAsync(int studentId, int currentRequestId, DateTime now)
+    {
+        var otherOpenRequests = await _db.PlacementRequests
+            .IgnoreQueryFilters()
+            .Where(item => item.StudentId == studentId
+                && item.Id != currentRequestId
+                && (item.Status == RequestStatus.Pending || item.Status == RequestStatus.InterviewInvited))
+            .ToListAsync();
+
+        foreach (var otherRequest in otherOpenRequests)
+        {
+            otherRequest.Status = RequestStatus.Rejected;
+            otherRequest.ResultActorType = ActorType.System;
+            otherRequest.ResultNote = OtherRequestsResult;
+            otherRequest.ReviewedAt = now;
+            otherRequest.ReviewedBy = null;
+        }
+    }
+
+    private static void CheckAndCloseJobPositionIfFull(JobPosition? position, int acceptedCount)
+    {
+        if (position is not null && acceptedCount + 1 == position.Quantity)
+        {
+            position.IsOpen = false;
+        }
+    }
+
+    private void CreateAcceptanceNotification(Student student, Company company, string? positionTitle, DateTime now)
+    {
+        var positionDescription = string.IsNullOrEmpty(positionTitle) ? string.Empty : $" tại vị trí {positionTitle}";
+        _db.Notifications.Add(new Notification
+        {
+            Type = NotificationType.StudentAcceptedByCompany,
+            Title = StudentAcceptedNotificationTitle,
+            Message = $"{student.FullName} ({student.StudentCode}) đã được {company.Name} nhận{positionDescription}.",
+            StudentId = student.Id,
+            CompanyId = company.Id,
+            CompanyName = company.Name,
+            CreatedAt = now
+        });
+    }
+
+    #endregion
 
     private static async Task<PlacementRequestOperationResult> RollbackWithResultAsync(
         IDbContextTransaction transaction,
