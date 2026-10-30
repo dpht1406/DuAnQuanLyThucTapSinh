@@ -1,0 +1,32 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  StudentInternshipMgmt.Api -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+  StudentInternshipMgmt.Infrastructure.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.70]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
+  Skipped StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [1 ms]
+
+Passed!  - Failed:     0, Passed:   263, Skipped:     1, Total:   264, Duration: 6 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+  StudentInternshipMgmt.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   112, Skipped:     0, Total:   112, Duration: 51 ms - StudentInternshipMgmt.Tests.dll (net8.0)
+  PlacementAcceptance.Tests -> D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+Test run for D:\baitapthuctap\duanquanlythuctapsinh\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    22, Skipped:     0, Total:    22, Duration: 1 s - PlacementAcceptance.Tests.dll (net8.0)
