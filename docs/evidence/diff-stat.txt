@@ -1,0 +1,11 @@
+﻿ DuAnQuanLyThucTapSinh.sln                          | 107 +++
+ .../backend/InternshipManagement.sln               |  14 +
+ .../Services/PlacementAcceptanceService.cs         | 675 ++++++++++-------
+ docs/01-module-selection.md                        |  40 +
+ docs/02-problem-description.md                     |  84 +++
+ docs/05-bug-log.md                                 |   9 +
+ docs/evidence/metrics-before.txt                   |  28 +
+ docs/evidence/test-before.txt                      |  43 ++
+ .../PlacementAcceptance.Tests.csproj               |  26 +
+ .../PlacementAcceptanceCharacterizationTests.cs    | 825 +++++++++++++++++++++
+ 10 files changed, 1563 insertions(+), 288 deletions(-)

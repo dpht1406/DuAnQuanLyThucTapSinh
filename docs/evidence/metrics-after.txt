@@ -1,0 +1,38 @@
+﻿=== METRICS AFTER REFACTOR ===
+File: InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\PlacementAcceptanceService.cs
+Total Lines of Code (LOC): 578
+Number of Methods: 21
+- AcceptAsync: lines 68-144 (77 lines)
+- CancelAcceptedAsync: lines 146-220 (75 lines)
+- ExecuteInTransactionAsync: lines 224-268 (45 lines)
+- LockRelationalRowsForAcceptanceAsync: lines 270-286 (17 lines)
+- LockRelationalRowsForCancellationAsync: lines 288-301 (14 lines)
+- GetPlacementRequestByIdAsync: lines 303-323 (21 lines)
+- ValidateAcceptanceActorPermission: lines 331-347 (17 lines)
+- ApplyRequestAcceptance: lines 374-388 (15 lines)
+- ApplyStudentAcceptance: lines 390-396 (7 lines)
+- AddAcceptanceStatusHistory: lines 398-418 (21 lines)
+- BuildAcceptanceHistoryNote: lines 420-426 (7 lines)
+- AutoRejectOtherStudentRequestsAsync: lines 428-445 (18 lines)
+- CheckAndCloseJobPositionIfFull: lines 447-453 (7 lines)
+- CreateAcceptanceNotification: lines 455-468 (14 lines)
+- ValidateStudentForCancellation: lines 474-496 (23 lines)
+- ApplyStudentCancellation: lines 498-504 (7 lines)
+- ApplyRequestCancellation: lines 506-518 (13 lines)
+- AddCancellationStatusHistory: lines 520-538 (19 lines)
+- ReopenJobPositionIfCapacityAvailableAsync: lines 540-559 (20 lines)
+- RollbackWithResultAsync: lines 563-570 (8 lines)
+- CleanString: lines 572-577 (6 lines)
+
+Longest Method: AcceptAsync (77 lines)
+Second Longest Method: CancelAcceptedAsync (75 lines)
+Max Nesting Depth: 5
+Code Duplications: 0 (all 5 duplicate logic patterns eliminated)
+- Pattern 1 (Transaction rollback & error logging): Consolidated into ExecuteInTransactionAsync
+- Pattern 2 (Relational row locking): Extracted into LockRelationalRowsForAcceptanceAsync and LockRelationalRowsForCancellationAsync
+- Pattern 3 (PlacementRequest summary lookup & scope check): Reused GetRequestSummaryAsync
+- Pattern 4 (AcceptedStatuses array checking): Unified into AcceptedStatuses.Contains(...) in ReopenJobPositionIfCapacityAvailableAsync
+- Pattern 5 (StatusHistory & Notification creation): Extracted into dedicated single-responsibility domain methods
+
+Magic Values / Literals: 0 (All extracted to named constants with business intent)
+Dead / Unused Parameters: Documented and handled cleanly
