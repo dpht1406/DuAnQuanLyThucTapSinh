@@ -149,13 +149,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
         {
             if (_db.Database.IsRelational())
             {
-                var requestLock = await _db.PlacementRequests
-                    .IgnoreQueryFilters()
-                    .AsNoTracking()
-                    .Where(item => item.Id == requestId)
-                    .Select(item => new { item.StudentId, item.JobPositionId, item.CompanyId, item.Status })
-                    .FirstOrDefaultAsync();
-
+                var requestLock = await GetRequestSummaryAsync(requestId);
                 if (requestLock is null)
                 {
                     return await RollbackWithResultAsync(
@@ -167,10 +161,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                 await LockRelationalRowsForCancellationAsync(requestLock.StudentId, requestLock.JobPositionId);
             }
 
-            var request = await _db.PlacementRequests
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(item => item.Id == requestId);
-
+            var request = await GetPlacementRequestByIdAsync(requestId);
             if (request is null)
             {
                 return await RollbackWithResultAsync(
@@ -187,36 +178,6 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     OnlyAcceptedCanBeCanceledMessage);
             }
 
-            var student = await _db.Students
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(item => item.Id == request.StudentId);
-
-            if (student is null)
-            {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.NotFound,
-                    StudentNotFoundMessage);
-            }
-
-            if (student.IsDeleted)
-            {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.BusinessError,
-                    StudentDeletedMessage);
-            }
-
-            if (student.Status != StudentStatus.Accepted
-                || student.CompanyId != request.CompanyId
-                || student.JobPositionId != request.JobPositionId)
-            {
-                return await RollbackWithResultAsync(
-                    transaction,
-                    PlacementRequestOperationStatus.BusinessError,
-                    StudentDataMismatchMessage);
-            }
-
             if (note is not null && note.Trim().Length > MaxCancellationNoteLength)
             {
                 return await RollbackWithResultAsync(
@@ -225,56 +186,25 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     NoteTooLongMessage);
             }
 
+            var student = await GetStudentByIdAsync(request.StudentId);
+            var studentValidationError = ValidateStudentForCancellation(student, request);
+            if (studentValidationError is not null)
+            {
+                return await RollbackWithResultAsync(
+                    transaction,
+                    studentValidationError.Value.Status,
+                    studentValidationError.Value.Message);
+            }
+
             var cancellationNote = string.IsNullOrWhiteSpace(note)
                 ? DefaultCancellationNote
                 : CleanString(note, preserveLineBreaks: true)!;
 
             var now = DateTime.UtcNow;
-            student.Status = StudentStatus.NoCompany;
-            student.CompanyId = null;
-            student.JobPositionId = null;
-            student.UpdatedAt = now;
-
-            request.Status = RequestStatus.Rejected;
-            request.ResultNote = cancellationNote;
-            request.ResultActorType = ActorType.Admin;
-            request.ReviewedBy = adminUserId;
-            request.ReviewedAt = now;
-            request.ConfirmationSource = AdminCancelConfirmationSource;
-
-            _db.StatusHistories.Add(new StatusHistory
-            {
-                StudentId = student.Id,
-                FromStatus = StudentStatus.Accepted,
-                ToStatus = StudentStatus.NoCompany,
-                CompanyId = request.CompanyId,
-                Note = cancellationNote,
-                ChangedAt = now,
-                ChangedBy = adminUserId,
-                ChangedByType = ActorType.Admin
-            });
-
-            if (request.JobPositionId.HasValue)
-            {
-                var position = await _db.JobPositions.FirstOrDefaultAsync(item => item.Id == request.JobPositionId.Value);
-                if (position is not null
-                    && !position.IsOpen
-                    && position.ApprovalStatus == JobPositionApprovalStatus.Approved)
-                {
-                    var remainingAcceptedCount = await _db.Students.CountAsync(item =>
-                        item.JobPositionId == position.Id
-                        && item.Id != student.Id
-                        && !item.IsDeleted
-                        && (item.Status == StudentStatus.Accepted
-                            || item.Status == StudentStatus.Interning
-                            || item.Status == StudentStatus.Completed));
-
-                    if (remainingAcceptedCount < position.Quantity)
-                    {
-                        position.IsOpen = true;
-                    }
-                }
-            }
+            ApplyStudentCancellation(student!, now);
+            ApplyRequestCancellation(request, cancellationNote, adminUserId, now);
+            AddCancellationStatusHistory(student!.Id, request.CompanyId, adminUserId, cancellationNote, now);
+            await ReopenJobPositionIfCapacityAvailableAsync(request.JobPositionId, student!.Id);
 
             await _db.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -282,7 +212,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
             _logger.LogInformation(
                 "Placement request accepted result canceled: RequestId {RequestId}, StudentId {StudentId}, AdminUserId {AdminUserId}",
                 requestId,
-                student.Id,
+                student!.Id,
                 adminUserId);
 
             return new PlacementRequestOperationResult(PlacementRequestOperationStatus.Success);
@@ -535,6 +465,97 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
             CompanyName = company.Name,
             CreatedAt = now
         });
+    }
+
+    #endregion
+
+    #region Helper Methods - Cancellation Business Logic
+
+    private static (PlacementRequestOperationStatus Status, string Message)? ValidateStudentForCancellation(
+        Student? student,
+        PlacementRequest request)
+    {
+        if (student is null)
+        {
+            return (PlacementRequestOperationStatus.NotFound, StudentNotFoundMessage);
+        }
+
+        if (student.IsDeleted)
+        {
+            return (PlacementRequestOperationStatus.BusinessError, StudentDeletedMessage);
+        }
+
+        if (student.Status != StudentStatus.Accepted
+            || student.CompanyId != request.CompanyId
+            || student.JobPositionId != request.JobPositionId)
+        {
+            return (PlacementRequestOperationStatus.BusinessError, StudentDataMismatchMessage);
+        }
+
+        return null;
+    }
+
+    private static void ApplyStudentCancellation(Student student, DateTime now)
+    {
+        student.Status = StudentStatus.NoCompany;
+        student.CompanyId = null;
+        student.JobPositionId = null;
+        student.UpdatedAt = now;
+    }
+
+    private static void ApplyRequestCancellation(
+        PlacementRequest request,
+        string cancellationNote,
+        int adminUserId,
+        DateTime now)
+    {
+        request.Status = RequestStatus.Rejected;
+        request.ResultNote = cancellationNote;
+        request.ResultActorType = ActorType.Admin;
+        request.ReviewedBy = adminUserId;
+        request.ReviewedAt = now;
+        request.ConfirmationSource = AdminCancelConfirmationSource;
+    }
+
+    private void AddCancellationStatusHistory(
+        int studentId,
+        int companyId,
+        int adminUserId,
+        string cancellationNote,
+        DateTime now)
+    {
+        _db.StatusHistories.Add(new StatusHistory
+        {
+            StudentId = studentId,
+            FromStatus = StudentStatus.Accepted,
+            ToStatus = StudentStatus.NoCompany,
+            CompanyId = companyId,
+            Note = cancellationNote,
+            ChangedAt = now,
+            ChangedBy = adminUserId,
+            ChangedByType = ActorType.Admin
+        });
+    }
+
+    private async Task ReopenJobPositionIfCapacityAvailableAsync(int? jobPositionId, int currentStudentId)
+    {
+        if (!jobPositionId.HasValue)
+            return;
+
+        var position = await _db.JobPositions.FirstOrDefaultAsync(item => item.Id == jobPositionId.Value);
+        if (position is null || position.IsOpen || position.ApprovalStatus != JobPositionApprovalStatus.Approved)
+            return;
+
+        var remainingAcceptedCount = await _db.Students.CountAsync(item =>
+            item.JobPositionId == position.Id
+            && item.Id != currentStudentId
+            && !item.IsDeleted
+            && AcceptedStatuses.Contains(item.Status));
+
+        if (remainingAcceptedCount < position.Quantity)
+        {
+            position.IsOpen = true;
+        }
     }
 
     #endregion
