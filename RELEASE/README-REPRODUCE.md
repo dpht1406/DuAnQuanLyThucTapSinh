@@ -36,27 +36,28 @@ Build succeeded.
 
 ---
 
-### Bước 3: Chạy bộ kiểm thử đặc tả của module refactor (20 Tests)
+### Bước 3: Chạy bộ kiểm thử đặc tả của module refactor (22 Tests)
 ```bash
 dotnet test tests/PlacementAcceptance.Tests/PlacementAcceptance.Tests.csproj --no-build -v normal
 ```
 *Kết quả mong đợi*:
-- **Tổng số test**: 20
-- **Passed**: 20 (100%)
+- **Tổng số test**: 22
+- **Passed**: 22 (100%)
 - **Failed**: 0
 - **Skipped**: 0
 
 ---
 
-### Bước 4: Chạy toàn bộ test suites của backend (395 Tests)
+### Bước 4: Chạy toàn bộ test suites của backend (398 Tests)
 ```bash
-dotnet test InternshipManagement/backend/InternshipManagement.sln
+dotnet test InternshipManagement/backend/InternshipManagement.sln -m:1
 ```
 *Kết quả mong đợi*:
-- **Tổng số test**: 396
-- **Passed**: 395
+- **Tổng số test**: 398
+- **Passed**: 397
 - **Failed**: 0
 - **Skipped**: 1 (`StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters`)
+- *Ghi chú*: Kết quả chạy thực tế được lưu tại `docs/evidence/test-full-solution.txt`. Tham số `-m:1` được khuyến nghị trên môi trường Windows để tránh xung đột cổng socket giữa các test project song song.
 
 ---
 

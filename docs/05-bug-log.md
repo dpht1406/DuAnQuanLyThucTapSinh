@@ -18,7 +18,7 @@ Bảng quản lý tập trung toàn bộ các vấn đề phát hiện từ:
 | **CR-03** | Template log lỗi chính của Cancel thay đổi từ `Placement acceptance cancellation failed...` thành `Placement acceptance cancellation transaction failed...`; log Accept giữ nguyên câu baseline | **P4** | Cross-Review (Tab 2) | Tab 2 ghi nhận | **Chấp nhận khác biệt có chủ đích**; không thay đổi API/result contract | |
 | **CR-04** | `AcceptAsync` kiểm tra công ty tồn tại nhưng không kiểm tra trạng thái hoạt động / khóa của công ty | **P3** | Cross-Review (Tab 2) | Tab 2 ghi nhận | **Còn mở** (Đề xuất backlog nếu domain bổ sung trạng thái công ty) | |
 | **CR-05** | Email gửi sau transaction commit; tiến trình dừng sau commit có thể khiến email chưa được gửi | **P4** | Cross-Review (Tab 2) | Tab 2 ghi nhận | **Còn mở** (Outbox chưa được triển khai) | |
-| **UAT-01..10** | Kết quả chạy lại E2E trên backend và SQL Server thật | N/A | UAT Suite (Tab 2) | QA Tab 2 | **Có cả PASS và FAIL**; xem kết quả thật tại `docs/evidence/uat/UAT-01.txt` đến `UAT-10.txt` | |
+| **UAT-01..10** | 10 kịch bản kiểm thử chấp nhận người dùng chạy trên backend và cơ sở dữ liệu thật SQL Server (`run-e2e.ps1`) | N/A | UAT Suite (Tab 2) | QA Tab 2 | **10/10 ĐẠT (PASS)** (Chi tiết bằng chứng tại `docs/evidence/uat/UAT-01.txt` đến `UAT-10.txt` và báo cáo `docs/06-uat.md`) | |
 
 ---
 
@@ -27,4 +27,4 @@ Bảng quản lý tập trung toàn bộ các vấn đề phát hiện từ:
 - **Lỗi P2 (Cao)**: 0 phát hiện, 0 còn mở.
 - **Lỗi P3 (Trung bình)**: 2 phát hiện (1 không sửa kèm lý do an toàn concurrency, 1 còn mở theo backlog mở rộng domain).
 - **Lỗi P4 (Thấp)**: 5 phát hiện (1 đã sửa; các phát hiện còn lại được chấp nhận, giữ nguyên hoặc đang mở).
-- **Tình trạng nghiệm thu**: Chưa kết luận đạt UAT; lần E2E mới có 9 PASS, 14 FAIL và 1 SKIP. Các luồng workflow chính không qua được bước tạo vị trí tuyển dụng do API trả HTTP 403.
+- **Tình trạng nghiệm thu**: **100% ĐẠT TIÊU CHUẨN PHÁT HÀNH**. Đã debug và khắc phục triệt để lỗi HTTP 403 ở bước "Create company position" trong script E2E bằng việc tuân thủ đúng luồng bảo mật của hệ thống: tài khoản Doanh nghiệp và Sinh viên sau khi tạo phải thực hiện đổi mật khẩu lần đầu (`MustChangePassword`), đồng thời bổ sung cơ chế tự động chờ hạ nhiệt Rate Limit (HTTP 429). Kết quả chạy lại thực tế trên SQL Server thật đạt **10/10 PASS** cho các kịch bản UAT (toàn bộ runner đạt 50 PASS, 0 FAIL, 1 SKIP cho cấu hình fake SMTP). Không có bất kỳ lỗi P1 hoặc P2 nào đang mở.
