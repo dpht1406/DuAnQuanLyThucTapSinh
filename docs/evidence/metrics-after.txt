@@ -27,7 +27,7 @@ Number of Methods: 21
 Longest Method: AcceptAsync (77 lines)
 Second Longest Method: CancelAcceptedAsync (75 lines)
 Max Nesting Depth: 5
-Code Duplications: 0 (all 5 duplicate logic patterns eliminated)
+Code Duplications: 2 nhóm còn lặp (kiểm tra null + scopeCompanyId hai lần trong AcceptAsync; trả kết quả NotFound qua RollbackWithResultAsync tại 4 nhánh tra cứu request; 5 mẫu lặp lớn của baseline đã được triệt tiêu)
 - Pattern 1 (Transaction rollback & error logging): Consolidated into ExecuteInTransactionAsync
 - Pattern 2 (Relational row locking): Extracted into LockRelationalRowsForAcceptanceAsync and LockRelationalRowsForCancellationAsync
 - Pattern 3 (PlacementRequest summary lookup & scope check): Reused GetRequestSummaryAsync
