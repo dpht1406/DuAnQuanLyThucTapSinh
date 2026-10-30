@@ -1,0 +1,161 @@
+﻿=== REPRODUCTION LOG FROM CLEAN CLONE ===
+Date: 2026-10-30 09:33:21 +07:00
+Source Repository: D:\baitapthuctap\duanquanlythuctapsinh
+Target Directory: C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test
+
+--- STEP 0: CLONE REPO ---
+Cloning into 'C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test'...
+done.
+--- STEP 1: RESTORE ---
+Command: dotnet restore DuAnQuanLyThucTapSinh.sln
+  Determining projects to restore...
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\StudentInternshipMgmt.Domain.csproj (in 63 ms).
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj (in 1.97 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj (in 2.03 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Api\StudentInternshipMgmt.Api.csproj (in 2.03 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\tests\PlacementAcceptance.Tests\PlacementAcceptance.Tests.csproj (in 2.17 sec).
+--- STEP 2: BUILD ---
+Command: dotnet build DuAnQuanLyThucTapSinh.sln --no-restore
+  StudentInternshipMgmt.Domain -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(118,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(119,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(120,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(121,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(122,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(123,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(169,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(170,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(171,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(172,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(173,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(394,44): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Contains(string item)'. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(410,29): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Add(string item)'. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(414,28): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(415,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(416,31): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(417,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(418,29): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+  StudentInternshipMgmt.Infrastructure -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  PlacementAcceptance.Tests -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+  StudentInternshipMgmt.Api -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+
+Build succeeded.
+
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(118,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(119,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(120,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(121,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(122,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(123,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(169,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(170,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(171,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(172,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(173,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(394,44): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Contains(string item)'. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(410,29): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Add(string item)'. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(414,28): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(415,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(416,31): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(417,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(418,29): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+    18 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.17
+--- STEP 3: TEST MODULE (20 TESTS) ---
+Command: dotnet test tests/PlacementAcceptance.Tests/PlacementAcceptance.Tests.csproj --no-build -v normal
+Build started 10/30/2026 9:33:44 AM.
+Test run for C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.33)
+[xUnit.net 00:00:01.24]   Discovering: PlacementAcceptance.Tests
+[xUnit.net 00:00:01.27]   Discovered:  PlacementAcceptance.Tests
+[xUnit.net 00:00:01.27]   Starting:    PlacementAcceptance.Tests
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_ReopensJobPosition_WhenClosedAndCapacityAvailable [1 s]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportDismissed_ReturnsBusinessError [44 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_UnapprovedJobPosition_ReturnsBusinessError [19 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDeleted_ReturnsBusinessError [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportNotInterviewInvited_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_WithoutJobPosition_SetsNullPositionAndCorrectHistoryNote [67 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NoteExceeds1000Chars_ReturnsBusinessError [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_AdminActor_WithReportedInterview_Succeeds [8 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_StudentAlreadyAcceptedOrInterning_ReturnsConflict [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenRequestNotAccepted_ReturnsBusinessError [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_NonExistentRequest_ReturnsNotFound [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_JobPositionCapacityExceeded_ReturnsConflict [3 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_HappyPath_SucceedsAndRevertsStudentAndRequest [5 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDataMismatch_ReturnsBusinessError [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AutoClosesJobPosition_WhenQuotaReached [4 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_DefaultNote_WhenNoteNullOrWhitespace [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AlreadyProcessedRequest_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_CompanyActor_SucceedsAndUpdatesStudentAndSideEffects [12 ms]
+[xUnit.net 00:00:02.84]   Finished:    PlacementAcceptance.Tests
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_WrongScopeCompany_ReturnsNotFound [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NonExistentRequest_ReturnsNotFound [1 ms]
+
+Test Run Successful.
+Total tests: 20
+     Passed: 20
+ Total time: 4.2321 Seconds
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.01
+--- STEP 4: TEST ENTIRE SOLUTION (395 TESTS) ---
+Command: dotnet test InternshipManagement/backend/InternshipManagement.sln
+  Determining projects to restore...
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\StudentInternshipMgmt.Tests.csproj (in 763 ms).
+  Restored C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\StudentInternshipMgmt.Infrastructure.Tests.csproj (in 763 ms).
+  5 of 7 projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  PlacementAcceptance.Tests -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+  StudentInternshipMgmt.Api -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  StudentInternshipMgmt.Tests -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    20, Skipped:     0, Total:    20, Duration: 2 s - PlacementAcceptance.Tests.dll (net8.0)
+  StudentInternshipMgmt.Infrastructure.Tests -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:07.60]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
+  Skipped StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [1 ms]
+
+Passed!  - Failed:     0, Passed:   112, Skipped:     0, Total:   112, Duration: 81 ms - StudentInternshipMgmt.Tests.dll (net8.0)
+
+Passed!  - Failed:     0, Passed:   263, Skipped:     1, Total:   264, Duration: 9 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+--- STEP 5: VERIFY API BUILD & READY TO RUN ---
+Command: dotnet build InternshipManagement/backend/src/StudentInternshipMgmt.Api
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  StudentInternshipMgmt.Api -> C:\Users\PHAT\AppData\Local\Temp\reproduce-clean-clone-test\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.75
+=== REPRODUCTION COMPLETED SUCCESSFULLY ===
