@@ -59,6 +59,82 @@ public class DashboardServiceTests
         summary.CompletionRate.Should().Be(33.33);
     }
 
+    [Fact]
+    public async Task GetOverdueRequestsAsync_returns_pending_requests_due_within_alert_window()
+    {
+        await using var dbContext = CreateDbContext();
+        var now = DateTime.UtcNow;
+        var student = CreateStudent(1, StudentStatus.NoCompany);
+        var company = new Company
+        {
+            Id = 1,
+            Name = "Company 1",
+            Address = "Address",
+            Industry = "Technology",
+            ContactPerson = "Contact"
+        };
+        dbContext.AddRange(
+            student,
+            company,
+            new PlacementRequest
+            {
+                Id = 1,
+                StudentId = student.Id,
+                CompanyId = company.Id,
+                Status = RequestStatus.Pending,
+                CreatedAt = now.AddDays(-30),
+                DueAt = now.AddDays(3)
+            },
+            new PlacementRequest
+            {
+                Id = 2,
+                StudentId = student.Id,
+                CompanyId = company.Id,
+                Status = RequestStatus.Pending,
+                CreatedAt = now,
+                DueAt = now.AddDays(-2)
+            },
+            new PlacementRequest
+            {
+                Id = 3,
+                StudentId = student.Id,
+                CompanyId = company.Id,
+                Status = RequestStatus.Pending,
+                CreatedAt = now,
+                DueAt = now.AddDays(6)
+            },
+            new PlacementRequest
+            {
+                Id = 4,
+                StudentId = student.Id,
+                CompanyId = company.Id,
+                Status = RequestStatus.Pending,
+                CreatedAt = now,
+                DueAt = null
+            },
+            new PlacementRequest
+            {
+                Id = 5,
+                StudentId = student.Id,
+                CompanyId = company.Id,
+                Status = RequestStatus.InterviewInvited,
+                CreatedAt = now,
+                DueAt = now.AddDays(1)
+            });
+        await dbContext.SaveChangesAsync();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["OverdueRequestAlertDays"] = "5"
+            })
+            .Build();
+        var service = new DashboardService(dbContext, configuration);
+
+        var result = await service.GetOverdueRequestsAsync();
+
+        result.Select(request => request.Id).Should().Equal(2, 1);
+    }
+
     private static DashboardService CreateService(AppDbContext dbContext)
     {
         var configuration = new ConfigurationBuilder().Build();

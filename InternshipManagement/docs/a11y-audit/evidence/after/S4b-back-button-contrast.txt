@@ -1,0 +1,5 @@
+Phần tử: Nút "Quay lại" (.back-button .p-button-label)
+Màu chữ hiệu dụng: rgb(95, 101, 95)
+Màu nền hiệu dụng: rgb(246, 244, 238)
+Tỉ lệ tương phản WCAG: 5.43:1
+Tiêu chuẩn WCAG AA (tối thiểu 4.5:1): ĐẠT

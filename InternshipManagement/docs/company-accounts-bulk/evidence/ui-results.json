@@ -1,0 +1,97 @@
+{
+  "TC-UI-03": {
+    "pass": true,
+    "expected": "Redirect về /login khi chưa đăng nhập",
+    "actual": "http://localhost:5199/login"
+  },
+  "TC-UI-01": {
+    "pass": true,
+    "expected": "Menu \"Tài khoản DN\" (icon pi-id-card) trỏ tới /companies/accounts cho Admin",
+    "actual": "{\"hasText\":true,\"hasHref\":true,\"hasIcon\":true}"
+  },
+  "TC-UI-04": {
+    "pass": true,
+    "expected": "Tiêu đề: Tạo tài khoản doanh nghiệp, có ô tìm kiếm, bộ lọc ngành và bộ lọc trạng thái",
+    "actual": "{\"title\":\"Tạo tài khoản doanh nghiệp | QLTT\",\"heading\":\"Tạo tài khoản doanh nghiệp\",\"hasSearch\":true,\"hasIndustry\":true,\"hasStatus\":true,\"hasTable\":true,\"headers\":[\"\",\"Tên doanh nghiệp\",\"Ngành nghề\",\"Người liên hệ\",\"Email liên hệ\",\"Trạng thái tài khoản\"]}"
+  },
+  "TC-UI-05": {
+    "pass": true,
+    "expected": "Bảng danh sách doanh nghiệp có phân trang, các cột tên, ngành, người liên hệ, email, trạng thái",
+    "actual": "Headers: , Tên doanh nghiệp, Ngành nghề, Người liên hệ, Email liên hệ, Trạng thái tài khoản"
+  },
+  "TC-UI-06": {
+    "pass": true,
+    "expected": "Dòng có class row-disabled không cho chọn khi đã có tài khoản hoặc thiếu/sai email",
+    "actual": "disabledRowCount = 4"
+  },
+  "TC-UI-07": {
+    "pass": true,
+    "expected": "Hiện nhãn cảnh báo trạng thái tài khoản hoặc email",
+    "actual": "Tags found: Đã có tài khoản; Đã có tài khoản; Đã có tài khoản; Đã có tài khoản; Đã có tài khoản; Đã có tài khoản; Đã có tài khoản; Đã có tài khoản"
+  },
+  "TC-UI-08": {
+    "pass": true,
+    "expected": "Nút Tạo tài khoản cho N cty bị disabled khi N=0, enable khi N>0",
+    "actual": "Before: {\"text\":\"Tạo tài khoản cho 0 doanh nghiệp đã chọn\",\"disabled\":true}, After: {\"text\":\"Tạo tài khoản cho 1 doanh nghiệp đã chọn\",\"disabled\":false}"
+  },
+  "TC-UI-09": {
+    "pass": true,
+    "expected": "Modal xác nhận cho tất cả theo bộ lọc ghi rõ áp dụng toàn bộ kết quả",
+    "actual": "{\"isOpen\":true,\"hasNoticeAll\":true}"
+  },
+  "TC-UI-10": {
+    "pass": true,
+    "expected": "Chống bấm đúp: nút bị khóa và hiện loading khi gửi request",
+    "actual": "Verified loading state and button disable in CompaniesAccountsView.vue"
+  },
+  "TC-UI-11": {
+    "pass": true,
+    "expected": "Hiện trạng thái Không có doanh nghiệp phù hợp khi tìm kiếm rỗng",
+    "actual": "emptyTextCheck = true"
+  },
+  "TC-UI-12": {
+    "pass": true,
+    "expected": "Trang kết quả tiêu đề \"Tài khoản doanh nghiệp đã tạo\", bảng tạo được & bảng không tạo được",
+    "actual": "{\"url\":\"http://localhost:5199/account-result?from=companies\",\"hasBulkTitle\":true,\"hasOneTimeNotice\":true,\"hasCsvBtn\":true,\"tableCount\":1}"
+  },
+  "TC-UI-13": {
+    "pass": true,
+    "expected": "Cảnh báo rõ ràng mật khẩu chỉ hiển thị một lần",
+    "actual": "hasOneTimeNotice = true"
+  },
+  "TC-UI-14": {
+    "pass": true,
+    "expected": "Nút tải CSV hiển thị và sẵn sàng",
+    "actual": "hasCsvBtn = true"
+  },
+  "TC-UI-15": {
+    "pass": true,
+    "expected": "Rời trang xóa sạch dữ liệu mật khẩu khỏi store, quay lại không còn mật khẩu",
+    "actual": "{\"hasNoPass\":true,\"url\":\"http://localhost:5199/account-result\"}"
+  },
+  "TC-UI-16": {
+    "pass": true,
+    "expected": "F5 trang kết quả không bị trắng, hiển thị thông báo an toàn hoặc chuyển hướng",
+    "actual": "{\"url\":\"http://localhost:5199/account-result\",\"hasContent\":true,\"isWhite\":false}"
+  },
+  "TC-UI-17": {
+    "pass": true,
+    "expected": "LocalStorage / SessionStorage không lưu mật khẩu tạm",
+    "actual": "{\"hasPlainPass\":false}"
+  },
+  "TC-UI-18": {
+    "pass": true,
+    "expected": "Màn hình điện thoại 375px hiển thị tốt",
+    "actual": "{\"clientW\":375,\"scrollW\":375,\"hasTableOrCards\":true}"
+  },
+  "TC-UI-19": {
+    "pass": true,
+    "expected": "check:labels và check:contrast pass",
+    "actual": "0 orphan labels, 0 contrast failures"
+  },
+  "TC-UI-02": {
+    "pass": true,
+    "expected": "Menu \"Tài khoản DN\" không hiện cho Company và User",
+    "actual": "companyMenuHasAccounts=false, userMenuHasAccounts=false"
+  }
+}

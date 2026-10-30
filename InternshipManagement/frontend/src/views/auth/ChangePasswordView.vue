@@ -1,40 +1,81 @@
 <script setup>
-import { useRouter } from 'vue-router'
-import Card from 'primevue/card'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
+import { useAuthStore } from '../../stores/auth.js'
+import FormPage from '../../components/form/FormPage.vue'
+import FormSection from '../../components/form/FormSection.vue'
 import ChangePasswordForm from '../../components/common/ChangePasswordForm.vue'
+import { completePasswordChange, getSafeReturnPath } from '../../utils/authNavigation.js'
 
 const router = useRouter()
-
-let toast = null
-try { toast = useToast() } catch { }
+const route = useRoute()
+const toast = useToast()
+const authStore = useAuthStore()
+const returnPath = computed(() => getSafeReturnPath(route.query.from))
+const pageSubtitle = computed(() =>
+  authStore.mustChangePassword
+    ? 'Bạn cần cập nhật mật khẩu mới để tiếp tục sử dụng hệ thống.'
+    : 'Cập nhật mật khẩu để bảo vệ tài khoản của bạn.'
+)
 
 async function onSuccess() {
-  toast?.add({ severity: 'success', summary: 'Thành công', detail: 'Đổi mật khẩu thành công.', life: 3000 })
-  await router.push('/')
+  await completePasswordChange({ authStore, toast, router })
 }
 </script>
 
 <template>
-  <div class="page-container change-password-page">
-  <Card class="change-password-card">
-    <template #title><span class="page-title">Đổi mật khẩu</span></template>
-    <template #content>
+  <FormPage
+    class="change-password-page"
+    title="Đổi mật khẩu"
+    :subtitle="pageSubtitle"
+    :back-label="authStore.mustChangePassword ? '' : 'Quay lại'"
+    :back-to="authStore.mustChangePassword ? null : returnPath"
+  >
+    <FormSection
+      title="Thông tin mật khẩu"
+      description="Nhập mật khẩu hiện tại và thiết lập mật khẩu mới (từ 8 đến 128 ký tự, gồm chữ và số)."
+    >
       <ChangePasswordForm @success="onSuccess" />
-    </template>
-  </Card>
-  </div>
+    </FormSection>
+  </FormPage>
 </template>
 
 <style scoped>
-.change-password-card {
-  width: 100%;
-  max-width: 32rem;
+.change-password-page :deep(.form-page-container) {
+  max-width: 520px;
 }
 
-.change-password-page {
+.change-password-page :deep(.form-section) {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0;
+  border-top: none;
 }
 
+.change-password-page :deep(.form-section-header) {
+  gap: 4px;
+}
+
+.change-password-page :deep(.form-section-title) {
+  font-family: var(--ui-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ui-ink);
+}
+
+.change-password-page :deep(.form-section-description) {
+  font-family: var(--ui-font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ui-muted);
+}
+
+@media (max-width: 640px) {
+  .change-password-page :deep(.form-page-container) {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+}
 </style>

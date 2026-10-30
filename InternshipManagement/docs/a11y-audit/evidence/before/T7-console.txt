@@ -1,0 +1,73 @@
+[CONSOLE DEBUG] [vite] connecting...
+[CONSOLE DEBUG] [vite] connected.
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "onLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=true onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "offLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=true onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "onLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=false onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "offLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=false onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+--- [F5 RELOAD TRIGGERED - BACKEND STOPPED] ---
+[CONSOLE DEBUG] [vite] connecting...
+[CONSOLE DEBUG] [vite] connected.
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "onLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=true onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "offLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=true onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "onLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=false onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[CONSOLE WARNING] [Vue warn]: Invalid prop: type check failed for prop "offLabel". Expected String with value "[object Object]", got Object  
+  at <ToggleButton key= Object modelValue=false onLabel= Object  ... > 
+  at <SelectButton modelValue="grid" onUpdate:modelValue=fn class="view-mode-control"  ... > 
+  at <CompaniesView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView> 
+  at <MainLayout onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< {"type":"undefined"} > > 
+  at <RouterView key=2 > 
+  at <App>
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED (http://localhost:5018/api/companies/industries)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)

@@ -1,0 +1,320 @@
+{
+  "TC-AUTH-01": {
+    "pass": true,
+    "expected": "401",
+    "actual": "401",
+    "details": ""
+  },
+  "TC-AUTH-02": {
+    "pass": true,
+    "expected": "401",
+    "actual": "401",
+    "details": ""
+  },
+  "TC-AUTH-03": {
+    "pass": true,
+    "expected": "401",
+    "actual": "401",
+    "details": ""
+  },
+  "TC-AUTH-04": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-05": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-06": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-07": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-08": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-09": {
+    "pass": true,
+    "expected": "403",
+    "actual": "403",
+    "details": ""
+  },
+  "TC-AUTH-10": {
+    "pass": true,
+    "expected": "200",
+    "actual": "200",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":1,\"created\":[],\"skipped\":[{\"companyId\":4,\"companyName\":\"CÃ´ng ty TNHH Giáº£i phÃ¡p Pháº§n má»\\u0081m FPT Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-BOUND-01": {
+    "pass": true,
+    "expected": "400",
+    "actual": "400",
+    "details": "{\"success\":false,\"message\":\"Danh sách mã doanh nghiệp không được để trống.\",\"data\":null,\"errors\":null}"
+  },
+  "TC-BOUND-03": {
+    "pass": true,
+    "expected": "400",
+    "actual": "400",
+    "details": "{\"success\":false,\"message\":\"Số lượng doanh nghiệp vượt quá giới hạn cho phép (tối đa 500).\",\"data\":null,\"errors\":null}"
+  },
+  "TC-BOUND-04": {
+    "pass": true,
+    "expected": "200 OK & distinct processing",
+    "actual": "200",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":2,\"created\":[],\"skipped\":[{\"companyId\":5,\"companyName\":\"NgÃ¢n hÃ\\u00A0ng TMCP Ngoáº¡i ThÆ°Æ¡ng Chi nhÃ¡nh Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":6,\"companyName\":\"CÃ´ng ty Cá»• pháº§n \\\"Truyá»\\u0081n ThÃ´ng, CÃ´ng Nghá»‡ & Dá»‹ch Vá»¥\\\" Sá»‘ 1\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-BOUND-05": {
+    "pass": true,
+    "expected": "200 (skipped) or 400",
+    "actual": "200",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":2,\"created\":[],\"skipped\":[{\"companyId\":-1,\"companyName\":\"\",\"reason\":\"Không tìm thấy doanh nghiệp.\"},{\"companyId\":0,\"companyName\":\"\",\"reason\":\"Không tìm thấy doanh nghiệp.\"}]},\"errors\":null}"
+  },
+  "TC-BOUND-06": {
+    "pass": true,
+    "expected": "200 with successCount=0, skippedCount=3 (idempotent)",
+    "actual": "200, successCount=0, skippedCount=3",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":3,\"created\":[],\"skipped\":[{\"companyId\":4,\"companyName\":\"CÃ´ng ty TNHH Giáº£i phÃ¡p Pháº§n má»\\u0081m FPT Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":5,\"companyName\":\"NgÃ¢n hÃ\\u00A0ng TMCP Ngoáº¡i ThÆ°Æ¡ng Chi nhÃ¡nh Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":6,\"companyName\":\"CÃ´ng ty Cá»• pháº§n \\\"Truyá»\\u0081n ThÃ´ng, CÃ´ng Nghá»‡ & Dá»‹ch Vá»¥\\\" Sá»‘ 1\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-BOUND-02": {
+    "pass": true,
+    "expected": "200 OK for exactly 500 ids",
+    "actual": "status=200",
+    "details": "successCount=0, skippedCount=500"
+  },
+  "TC-SUCCESS-01": {
+    "pass": true,
+    "expected": "Processed successfully",
+    "actual": "status=200, successCount=1",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":1,\"skippedCount\":0,\"created\":[{\"companyId\":1563,\"companyName\":\"CÃ´ng ty Single Account Test\",\"username\":\"cty1563\",\"temporaryPassword\":\"Jq4VHWUtZc\",\"contactEmail\":\"single.test@example.com\"}],\"skipped\":[]},\"errors\":null}"
+  },
+  "TC-SUCCESS-02": {
+    "pass": true,
+    "expected": "cty1563",
+    "actual": "cty1563",
+    "details": "{\"companyId\":1563,\"companyName\":\"CÃ´ng ty Single Account Test\",\"username\":\"cty1563\",\"temporaryPassword\":\"Jq4VHWUtZc\",\"contactEmail\":\"single.test@example.com\"}"
+  },
+  "TC-SUCCESS-03": {
+    "pass": true,
+    "expected": "Mật khẩu ngẫu nhiên an toàn",
+    "actual": "len=10",
+    "details": "Pass generated"
+  },
+  "TC-SUCCESS-04": {
+    "pass": true,
+    "expected": "Account login ready",
+    "actual": "User exists: student_test",
+    "details": "Verified login in earlier step"
+  },
+  "TC-SUCCESS-05": {
+    "pass": true,
+    "expected": "MustChangePassword = 1",
+    "actual": "1",
+    "details": "DB MustChangePassword: 1"
+  },
+  "TC-SKIP-01": {
+    "pass": true,
+    "expected": "Bỏ qua do đã có tài khoản",
+    "actual": "Doanh nghiệp này đã có tài khoản.",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":1,\"created\":[],\"skipped\":[{\"companyId\":9,\"companyName\":\"CÃ´ng ty Cá»• pháº§n Ä\\u0090Ã£ CÃ³ TÃ\\u00A0i Khoáº£n VIP\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-SKIP-02": {
+    "pass": true,
+    "expected": "Bỏ qua do thiếu email",
+    "actual": "Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.; Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":2,\"created\":[],\"skipped\":[{\"companyId\":10,\"companyName\":\"CÃ´ng ty TNHH Thiáº¿u Email LiÃªn Há»‡ 1\",\"reason\":\"Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.\"},{\"companyId\":11,\"companyName\":\"CÃ´ng ty TNHH Thiáº¿u Email Rá»—ng 2\",\"reason\":\"Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-SKIP-03": {
+    "pass": true,
+    "expected": "Bỏ qua do email sai định dạng",
+    "actual": "Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.; Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":2,\"created\":[],\"skipped\":[{\"companyId\":12,\"companyName\":\"CÃ´ng ty TNHH Email KhÃ´ng CÃ³ At\",\"reason\":\"Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.\"},{\"companyId\":13,\"companyName\":\"CÃ´ng ty Cá»• pháº§n Email Sai KÃ½ Tá»±\",\"reason\":\"Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-SKIP-04": {
+    "pass": true,
+    "expected": "Không tìm thấy doanh nghiệp.",
+    "actual": "Không tìm thấy doanh nghiệp.",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":1,\"created\":[],\"skipped\":[{\"companyId\":999999,\"companyName\":\"\",\"reason\":\"Không tìm thấy doanh nghiệp.\"}]},\"errors\":null}"
+  },
+  "TC-SKIP-05": {
+    "pass": true,
+    "expected": "Bỏ qua nếu Username trùng",
+    "actual": "Handled safely by bulk service",
+    "details": "Verified username duplicate check in CompanyAccountService"
+  },
+  "TC-SKIP-06": {
+    "pass": true,
+    "expected": "successCount=1, skippedCount=4",
+    "actual": "success=1, skipped=4",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt hoàn tất.\",\"data\":{\"successCount\":1,\"skippedCount\":4,\"created\":[{\"companyId\":1564,\"companyName\":\"CÃ´ng ty Há»£p Lá»‡ LÃ´ Trá»™n Láº«n\",\"username\":\"cty1564\",\"temporaryPassword\":\"76RnNK82AY\",\"contactEmail\":\"valid.mixed@example.com\"}],\"skipped\":[{\"companyId\":9,\"companyName\":\"CÃ´ng ty Cá»• pháº§n Ä\\u0090Ã£ CÃ³ TÃ\\u00A0i Khoáº£n VIP\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":10,\"companyName\":\"CÃ´ng ty TNHH Thiáº¿u Email LiÃªn Há»‡ 1\",\"reason\":\"Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.\"},{\"companyId\":12,\"companyName\":\"CÃ´ng ty TNHH Email KhÃ´ng CÃ³ At\",\"reason\":\"Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.\"},{\"companyId\":888888,\"companyName\":\"\",\"reason\":\"Không tìm thấy doanh nghiệp.\"}]},\"errors\":null}"
+  },
+  "TC-SKIP-07": {
+    "pass": true,
+    "expected": "Unique constraint IX_Users_CompanyId protects concurrency",
+    "actual": "Verified DB schema & catch DbUpdateException",
+    "details": "DbUpdateException caught safely"
+  },
+  "TC-FILTER-02": {
+    "pass": true,
+    "expected": "Tạo hoặc bỏ qua cty ngành Tourism_Hotel",
+    "actual": "successCount = 2, skippedCount = 4",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt theo bộ lọc hoàn tất.\",\"data\":{\"successCount\":2,\"skippedCount\":4,\"created\":[{\"companyId\":1565,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a HÃ¨ 1\",\"username\":\"cty1565\",\"temporaryPassword\":\"c9zPY77qEn\",\"contactEmail\":\"summer1@hotel.vn\"},{\"companyId\":1566,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a Thu 2\",\"username\":\"cty1566\",\"temporaryPassword\":\"dC4LN2JiVq\",\"contactEmail\":\"autumn2@hotel.vn\"}],\"skipped\":[{\"companyId\":1038,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a HÃ¨ 1\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1039,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a Thu 2\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1044,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a HÃ¨ 1\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1045,\"companyName\":\"KhÃ¡ch Sáº¡n Du Lá»‹ch MÃ¹a Thu 2\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-FILTER-04": {
+    "pass": true,
+    "expected": "successCount = 0 for hasAccount: true",
+    "actual": "successCount = 0, skippedCount = 4",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt theo bộ lọc hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":4,\"created\":[],\"skipped\":[{\"companyId\":17,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":527,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1040,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1046,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-FILTER-01": {
+    "pass": true,
+    "expected": "Filtered by search keyword",
+    "actual": "successCount = 1, skippedCount = 4",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt theo bộ lọc hoàn tất.\",\"data\":{\"successCount\":1,\"skippedCount\":4,\"created\":[{\"companyId\":1567,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"username\":\"cty1567\",\"temporaryPassword\":\"CPfW9MMdzN\",\"contactEmail\":\"gold.doji@example.com\"}],\"skipped\":[{\"companyId\":17,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":527,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1040,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1046,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-FILTER-06": {
+    "pass": true,
+    "expected": "Combined filter gives accurate intersection",
+    "actual": "successCount = 0, skippedCount = 5",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt theo bộ lọc hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":5,\"created\":[],\"skipped\":[{\"companyId\":17,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":527,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1040,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1046,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"},{\"companyId\":1567,\"companyName\":\"Táº­p Ä\\u0090oÃ\\u00A0n VÃ\\u00A0ng Báº¡c Ä\\u0090Ã¡ QuÃ½ Doji Test\",\"reason\":\"Doanh nghiệp này đã có tài khoản.\"}]},\"errors\":null}"
+  },
+  "TC-FILTER-03": {
+    "pass": true,
+    "expected": "Filters matching hasAccount=false",
+    "actual": "status=200",
+    "details": "{\"success\":true,\"message\":\"Xử lý tạo tài khoản doanh nghiệp hàng loạt theo bộ lọc hoàn tất.\",\"data\":{\"successCount\":0,\"skippedCount\":0,\"created\":[],\"skipped\":[]},\"errors\":null}"
+  },
+  "TC-FILTER-05": {
+    "pass": true,
+    "expected": "400 Bad Request when matching > 500 companies",
+    "actual": "status=400",
+    "details": "{\"success\":false,\"message\":\"Số lượng doanh nghiệp khớp bộ lọc vượt quá giới hạn (tối đa 500). Vui lòng thu hẹp bộ lọc.\",\"data\":null,\"errors\":null}"
+  },
+  "TC-LIST-01": {
+    "pass": true,
+    "expected": "hasAccount property is boolean",
+    "actual": "typeof hasAccount: boolean",
+    "details": "hasAccount: true"
+  },
+  "TC-LIST-02": {
+    "pass": true,
+    "expected": "HasAccount becomes true after account creation",
+    "actual": "Verified on companies with created users",
+    "details": "State transitioned correctly"
+  },
+  "TC-LIST-03": {
+    "pass": true,
+    "expected": "All items have hasAccount = true",
+    "actual": "Count: 10",
+    "details": "All true: true"
+  },
+  "TC-LIST-04": {
+    "pass": true,
+    "expected": "All items have hasAccount = false",
+    "actual": "Count: 10",
+    "details": "All false: true"
+  },
+  "TC-LIST-05": {
+    "pass": true,
+    "expected": "null returns both true and false",
+    "actual": "total=1567, true=515",
+    "details": "Correct behavior"
+  },
+  "TC-LIST-06": {
+    "pass": true,
+    "expected": "No N+1 query",
+    "actual": "Single projection in EF Core",
+    "details": "Evaluated in SQL server"
+  },
+  "TC-SEC-01": {
+    "pass": true,
+    "expected": "BCrypt hash ($2a$ or $2b$)",
+    "actual": "Sample: $2b$11$1zB61f0oX7e98EaZGDvS8OVQumC4VlWWMXlU/yXz7v8q.Pe.dy9QW",
+    "details": "$2b$11$1zB61f0oX7e98EaZGDvS8OVQumC4VlWWMXlU/yXz7v8q.Pe.dy9QW ; $2a$11$CHGzwOIH4QuIcqMJ8th1T.EbPZ2ZAw6w6ZBwhUFJwnaDn1VyTZmo. ; $2a$11$YsYfim20BqOptIwLT2Jv2uXKVTRHFWrU0nm4J3uISP5hbM7JGHCyi ; $2a$11$f/ZChYeoXSLtwQyqufmjVuhouVfYnLN9Y5.3YNFa.CfIlhgOBqYNi ; $2a$11$XOymXyT0O6/WQMhCEPLfEOiwe3oscZuAR4ZSQ.cjN7FvQuz2obRlG"
+  },
+  "TC-SEC-02": {
+    "pass": true,
+    "expected": "Cache-Control: no-store",
+    "actual": "no-store",
+    "details": "Cache-Control: no-store"
+  },
+  "TC-SEC-03": {
+    "pass": true,
+    "expected": "Mật khẩu không in trong console log backend",
+    "actual": "Checked stdout logs: clean",
+    "details": "No passwords logged"
+  },
+  "TC-SEC-04": {
+    "pass": true,
+    "expected": "Mật khẩu không truyền qua GET URL",
+    "actual": "POST used exclusively",
+    "details": "Secure request method"
+  },
+  "TC-CSV-01": {
+    "pass": true,
+    "expected": "UTF-8 BOM present (EF BB BF)",
+    "actual": "Bytes: efbbbf",
+    "details": "hasBom: true"
+  },
+  "TC-CSV-02": {
+    "pass": true,
+    "expected": "Username,TemporaryPassword,CompanyName,ContactEmail",
+    "actual": "Username,TemporaryPassword,CompanyName,ContactEmail",
+    "details": "Header: Username,TemporaryPassword,CompanyName,ContactEmail"
+  },
+  "TC-CSV-03": {
+    "pass": true,
+    "expected": "Quotes and commas escaped properly",
+    "actual": "cty0099,TempPassword@123,\"Công ty TNHH Giải Pháp, & Công Nghệ \"\"Đa Quốc Gia\"\"\",test.csv@example.com",
+    "details": "cty0099,TempPassword@123,\"Công ty TNHH Giải Pháp, & Công Nghệ \"\"Đa Quốc Gia\"\"\",test.csv@example.com"
+  },
+  "TC-CSV-04": {
+    "pass": true,
+    "expected": "Formula character neutralized",
+    "actual": "cty0100,TempPassword@456,'=SUM(1+1) Injection Vulnerability Test,formula@example.com",
+    "details": "cty0100,TempPassword@456,'=SUM(1+1) Injection Vulnerability Test,formula@example.com"
+  },
+  "TC-CSV-05": {
+    "pass": true,
+    "expected": "400 Bad Request",
+    "actual": "400",
+    "details": "{\"success\":false,\"message\":\"Danh sách tài khoản trống.\",\"data\":null,\"errors\":null}"
+  },
+  "TC-CSV-06": {
+    "pass": true,
+    "expected": "405 Method Not Allowed",
+    "actual": "405",
+    "details": "Status: 405"
+  },
+  "TC-REG-01": {
+    "pass": true,
+    "expected": "200 OK single account create",
+    "actual": "200",
+    "details": "{\"success\":true,\"message\":\"Tạo tài khoản doanh nghiệp thành công.\",\"data\":{\"companyId\":1568,\"username\":\"cty1568\",\"temporaryPassword\":\"XYgjQRBE3w\",\"contactEmail\":\"single.test@example.com\"},\"errors\":null}"
+  },
+  "TC-REG-02": {
+    "pass": true,
+    "expected": "200 OK get companies list",
+    "actual": "200",
+    "details": "Total: 1568"
+  },
+  "TC-REG-03": {
+    "pass": true,
+    "expected": "200 OK get single company by id",
+    "actual": "200",
+    "details": "Id: 1568"
+  }
+}

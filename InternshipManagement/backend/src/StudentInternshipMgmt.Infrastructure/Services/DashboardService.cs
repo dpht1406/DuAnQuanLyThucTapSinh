@@ -69,12 +69,13 @@ public class DashboardService : IDashboardService
             overdueAlertDays = 5;
         }
 
-        var cutoff = DateTime.UtcNow.AddDays(-overdueAlertDays);
+        var cutoff = DateTime.UtcNow.AddDays(overdueAlertDays);
         return await _db.PlacementRequests
             .AsNoTracking()
             .Where(request => request.Status == RequestStatus.Pending
-                && request.CreatedAt <= cutoff)
-            .OrderBy(request => request.CreatedAt)
+                && request.DueAt.HasValue
+                && request.DueAt <= cutoff)
+            .OrderBy(request => request.DueAt)
             .Select(request => new PlacementRequestDto
             {
                 Id = request.Id,

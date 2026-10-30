@@ -61,7 +61,8 @@ export function validateCompanyForm(form = emptyForm()) {
     ['name', 'Tên doanh nghiệp không được để trống'],
     ['address', 'Địa chỉ không được để trống'],
     ['industry', 'Ngành không được để trống'],
-    ['contactPerson', 'Người liên hệ không được để trống']
+    ['contactPerson', 'Người liên hệ không được để trống'],
+    ['contactEmail', 'Email liên hệ không được để trống']
   ]
 
   for (const [field, message] of requiredFields) {
@@ -71,13 +72,20 @@ export function validateCompanyForm(form = emptyForm()) {
       continue
     }
 
+    if (field === 'contactEmail') {
+      const emailError = validateEmailAddress(values[field], LIMITS.contactEmail)
+      if (emailError) {
+        errors[field] = emailError.startsWith('Email có vẻ gõ sai') ? emailError : 'Email chưa đúng định dạng'
+      }
+      continue
+    }
+
     const safeTextError = validateSafeText(values[field], LIMITS[field])
     if (safeTextError) errors[field] = safeTextError
   }
 
   const optionalFields = [
     ['contactPhone', 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0'],
-    ['contactEmail', 'Email chưa đúng định dạng'],
     ['contactPosition', '']
   ]
 
@@ -86,14 +94,6 @@ export function validateCompanyForm(form = emptyForm()) {
     if (!value) continue
 
     const fieldLimit = LIMITS[field]
-
-    if (field === 'contactEmail') {
-      const emailError = validateEmailAddress(values[field], fieldLimit)
-      if (emailError) {
-        errors[field] = emailError.startsWith('Email có vẻ gõ sai') ? emailError : 'Email chưa đúng định dạng'
-      }
-      continue
-    }
 
     const safeTextError = validateSafeText(values[field], fieldLimit)
     if (safeTextError) {
@@ -105,6 +105,7 @@ export function validateCompanyForm(form = emptyForm()) {
       if (!/^0\d{9}$/.test(value)) errors[field] = defaultMessage
     }
   }
+
 
   return errors
 }

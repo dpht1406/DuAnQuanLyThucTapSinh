@@ -1,0 +1,7 @@
+Kết quả chạy Vitest sau thay đổi
+
+Lệnh: Vitest (dòng lệnh đầy đủ và stdout/stderr không được runner lưu lại).
+Mã thoát: 0.
+Kết quả do runner báo: 186 test đạt trên 16 tệp.
+
+Ghi chú: đây là bản ghi kết quả tóm tắt, không phải toàn bộ stdout/stderr.

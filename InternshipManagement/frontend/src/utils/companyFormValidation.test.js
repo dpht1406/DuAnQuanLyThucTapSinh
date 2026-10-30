@@ -27,10 +27,10 @@ describe('validateCompanyForm', () => {
       name: 'Tên doanh nghiệp không được để trống',
       address: 'Địa chỉ không được để trống',
       industry: 'Ngành không được để trống',
-      contactPerson: 'Người liên hệ không được để trống'
+      contactPerson: 'Người liên hệ không được để trống',
+      contactEmail: 'Email liên hệ không được để trống'
     })
     expect(errors.contactPhone).toBeUndefined()
-    expect(errors.contactEmail).toBeUndefined()
     expect(errors.contactPosition).toBeUndefined()
   })
 
@@ -43,9 +43,11 @@ describe('validateCompanyForm', () => {
       name: 'Công ty ABC',
       address: '123 Lê Lợi',
       industry: 'Kinh doanh',
-      contactPerson: 'Trần Thị B'
+      contactPerson: 'Trần Thị B',
+      contactEmail: 'contact@abc.vn'
     })).toEqual({})
   })
+
 
   it('accepts valid boundary lengths for all fields', () => {
     expect(validateCompanyForm({
@@ -89,8 +91,9 @@ describe('validateCompanyForm', () => {
     expect(validateCompanyForm({ ...validForm, contactEmail: 'lienhecongty.com' }).contactEmail).toBe('Email chưa đúng định dạng')
     expect(validateCompanyForm({ ...validForm, contactEmail: 'lienhe @congty.com' }).contactEmail).toBe('Email chưa đúng định dạng')
     expect(validateCompanyForm({ ...validForm, contactEmail: 'a'.repeat(151) + '@example.com' }).contactEmail).toBe('Email chưa đúng định dạng')
-    expect(validateCompanyForm({ ...validForm, contactEmail: '' })).toEqual({})
+    expect(validateCompanyForm({ ...validForm, contactEmail: '' }).contactEmail).toBe('Email liên hệ không được để trống')
   })
+
 
   it('rejects control characters', () => {
     const errors = validateCompanyForm({

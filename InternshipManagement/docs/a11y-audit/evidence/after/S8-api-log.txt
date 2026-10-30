@@ -1,0 +1,15 @@
+      Login failed for username admin
+warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP POST /api/auth/login responded 401 in 546ms TraceId=0HNPDMVDB0GU0:00000001 UserId=(null)
+warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/students responded 401 in 19ms TraceId=0HNPDMVDB0GU0:00000002 UserId=(null)
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP POST /api/auth/login responded 200 in 497ms TraceId=0HNPDMVDB0GU0:00000003 UserId=(null)
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/auth/me responded 200 in 53ms TraceId=0HNPDMVDB0GU0:00000004 UserId=1
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/companies responded 200 in 69ms TraceId=0HNPDMVDB0GU1:00000001 UserId=1
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/companies/industries responded 200 in 25ms TraceId=0HNPDMVDB0GU0:00000005 UserId=1
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/notifications/unread-count responded 200 in 15ms TraceId=0HNPDMVDB0GU1:00000002 UserId=1

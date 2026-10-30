@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="form-field">
-              <label for="company-contact-email">Email <span class="field-optional">(tuỳ chọn)</span></label>
+              <label for="company-contact-email">Email <span class="required-mark" aria-hidden="true">*</span></label>
               <InputText
                 id="company-contact-email"
                 :ref="(element) => setFieldRef('contactEmail', element)"
@@ -351,6 +351,14 @@ onBeforeUnmount(() => {
   margin-bottom: 20px;
 }
 
+.back-button {
+  color: var(--apply-muted);
+}
+
+.back-button:hover {
+  color: var(--apply-ink);
+}
+
 .company-create-header .page-title {
   font-size: 28px;
   line-height: 1.25;
@@ -360,7 +368,7 @@ onBeforeUnmount(() => {
 
 .company-create-card {
   background: var(--apply-surface);
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-border);
   border-radius: 18px;
   box-shadow: var(--apply-shadow);
   padding: 32px;
@@ -377,7 +385,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 18px;
   padding: 20px;
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-border);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.5);
 }
@@ -443,7 +451,7 @@ onBeforeUnmount(() => {
 :deep(.p-inputtext:focus) {
   min-height: 46px;
   border-radius: 10px;
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-input-border);
   background: var(--apply-surface);
   color: var(--apply-ink);
   font-size: 15px;
@@ -497,7 +505,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 16px;
   padding-top: 8px;
-  border-top: 1px solid var(--apply-border);
+  border-top: 1px solid var(--ui-border);
 }
 
 .required-note {
@@ -556,7 +564,7 @@ onBeforeUnmount(() => {
     padding: 16px;
     border-radius: 16px;
     background: var(--apply-surface);
-    border-color: var(--apply-border);
+    border-color: var(--ui-border);
   }
 
   .form-grid {
@@ -580,7 +588,7 @@ onBeforeUnmount(() => {
     gap: 12px;
     padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
     background: rgba(255, 255, 255, 0.96);
-    border-top: 1px solid var(--apply-border);
+    border-top: 1px solid var(--ui-border);
     backdrop-filter: blur(6px);
   }
 

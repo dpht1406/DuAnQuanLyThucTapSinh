@@ -53,10 +53,10 @@ function handleBack() {
         </div>
       </header>
 
-      <main class="form-page-surface">
+      <div class="form-page-surface">
         <slot />
         <slot name="actions" />
-      </main>
+      </div>
     </div>
   </div>
 </template>

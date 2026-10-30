@@ -416,6 +416,7 @@ public class PlacementRequestServiceTests
             ResultNote = "Đang chờ",
             StudentReportedInterviewAt = DateTime.UtcNow,
             StudentInterviewNote = "Đã tham gia",
+            StudentReportDismissedAt = DateTime.UtcNow.AddMinutes(-1),
             ResultActorType = ActorType.Admin,
             ConfirmationSource = "internal"
         };
@@ -436,9 +437,38 @@ public class PlacementRequestServiceTests
             mappedDto.ResultNote.Should().Be(request.ResultNote);
             mappedDto.StudentReportedInterviewAt.Should().Be(request.StudentReportedInterviewAt);
             mappedDto.StudentInterviewNote.Should().Be(request.StudentInterviewNote);
+            mappedDto.StudentReportDismissedAt.Should().Be(request.StudentReportDismissedAt);
             mappedDto.ResultActorType.Should().Be(ActorType.Admin);
         }
         typeof(PlacementRequestDto).GetProperty(nameof(PlacementRequest.ConfirmationSource)).Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Expired_requests_are_visible_in_admin_filter_and_student_request_list()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        dbContext.PlacementRequests.Add(new PlacementRequest
+        {
+            StudentId = fixture.Student.Id,
+            Student = fixture.Student,
+            CompanyId = fixture.Company.Id,
+            Company = fixture.Company,
+            Status = RequestStatus.Expired,
+            CreatedAt = DateTime.UtcNow,
+            DueAt = DateTime.UtcNow.AddDays(-1)
+        });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var filteredRequests = await service.GetRequestsAsync(
+            new PlacementRequestFilterDto { Status = RequestStatus.Expired });
+        var studentRequests = await service.GetMyRequestsAsync(fixture.Student.Id);
+
+        filteredRequests.Items.Should().ContainSingle()
+            .Which.Status.Should().Be(RequestStatus.Expired);
+        studentRequests.Should().ContainSingle()
+            .Which.Status.Should().Be(RequestStatus.Expired);
     }
 
     [Fact]
@@ -579,6 +609,28 @@ public class PlacementRequestServiceTests
         result.NotFound.Should().BeTrue();
         result.Error.Should().Be("Không tìm thấy yêu cầu.");
         request.StudentReportedInterviewAt.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRequestByIdAsync_returns_the_same_full_dto_fields_as_the_admin_list()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var service = CreateService(dbContext);
+        var created = await service.CreateRequestAsync(
+            fixture.Student.Id,
+            CreateValidDto(fixture.Company.Id, fixture.Position.Id));
+        var request = await dbContext.PlacementRequests.SingleAsync();
+        request.StudentReportDismissedAt = DateTime.UtcNow;
+        await dbContext.SaveChangesAsync();
+
+        var detail = await service.GetRequestByIdAsync(request.Id);
+        var listed = await service.GetRequestsAsync(new PlacementRequestFilterDto());
+
+        detail.Should().NotBeNull();
+        detail.Should().BeEquivalentTo(listed.Items.Single());
+        detail!.StudentReportDismissedAt.Should().Be(request.StudentReportDismissedAt);
+        detail.Id.Should().Be(created.Data!.Id);
     }
 
     private static PlacementRequestService CreateService(AppDbContext dbContext) =>

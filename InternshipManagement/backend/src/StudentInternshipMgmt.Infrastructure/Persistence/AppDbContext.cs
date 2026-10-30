@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<PlacementRequest> PlacementRequests => Set<PlacementRequest>();
     public DbSet<StatusHistory> StatusHistories => Set<StatusHistory>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<AboutPage> AboutPages => Set<AboutPage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,5 +32,6 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PlacementRequestConfiguration());
         modelBuilder.ApplyConfiguration(new StatusHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+        modelBuilder.ApplyConfiguration(new AboutPageConfiguration());
     }
 }

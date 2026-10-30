@@ -1,0 +1,4 @@
+Màu chữ placeholder: rgb(117, 119, 113)
+Màu nền ô nhập: rgb(255, 255, 255) (Màu nền hiệu dụng: rgb(255, 255, 255))
+Tỉ lệ tương phản WCAG: 4.53:1
+Tiêu chuẩn WCAG AA (tối thiểu 4.5:1): ĐẠT

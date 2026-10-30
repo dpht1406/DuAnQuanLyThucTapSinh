@@ -1,0 +1,23 @@
+dotnet build .\InternshipManagement.sln
+Build succeeded; 0 warnings; 0 errors.
+
+dotnet test .\InternshipManagement.sln
+StudentInternshipMgmt.Tests: 85 passed; 0 failed.
+StudentInternshipMgmt.Infrastructure.Tests: 206 passed; 1 skipped; 0 failed.
+Total: 291 passed; 1 skipped; 0 failed.
+
+npm run build
+Passed; Vite transformed 504 modules.
+
+npm test
+12 test files passed; 133 tests passed; 0 failed.
+
+npm run check:contrast
+11 color checks passed; 0 failed.
+npm run check:labels
+No orphan labels or unlabeled controls in 45 Vue files.
+
+Browser computed-style check on /companies/new:
+getComputedStyle(.p-button-label).color = rgb(95, 101, 95)
+Visible canvas background = rgb(246, 244, 238)
+Contrast = 5.43:1 (minimum required: 4.5:1).

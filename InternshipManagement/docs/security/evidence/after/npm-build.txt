@@ -1,0 +1,7 @@
+Kết quả build frontend sau thay đổi
+
+Lệnh: npm build (dòng lệnh đầy đủ và stdout/stderr không được runner lưu lại).
+Mã thoát: 0.
+Kết quả do runner báo: build hoàn tất.
+
+Ghi chú: đây là bản ghi kết quả tóm tắt, không phải toàn bộ stdout/stderr; không thể xác nhận chi tiết các cảnh báo từ đầu ra bị thiếu.

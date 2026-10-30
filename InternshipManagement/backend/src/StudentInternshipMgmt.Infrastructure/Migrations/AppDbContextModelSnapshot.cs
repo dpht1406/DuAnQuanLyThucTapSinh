@@ -22,6 +22,26 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("StudentInternshipMgmt.Domain.Entities.AboutPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AboutPages", (string)null);
+                });
+
             modelBuilder.Entity("StudentInternshipMgmt.Domain.Entities.Company", b =>
                 {
                     b.Property<int>("Id")

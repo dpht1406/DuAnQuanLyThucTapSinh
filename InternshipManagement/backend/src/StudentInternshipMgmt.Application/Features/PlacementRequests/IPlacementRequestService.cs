@@ -9,6 +9,8 @@ public interface IPlacementRequestService
 
     Task<PagedResult<PlacementRequestDto>> GetRequestsAsync(PlacementRequestFilterDto filter);
 
+    Task<PlacementRequestDto?> GetRequestByIdAsync(int requestId);
+
     Task<PagedResult<CompanyPlacementRequestDto>> GetCompanyRequestsAsync(
         int companyId,
         CompanyPlacementRequestFilterDto filter);

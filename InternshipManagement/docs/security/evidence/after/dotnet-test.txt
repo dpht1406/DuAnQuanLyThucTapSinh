@@ -1,0 +1,9 @@
+Kết quả chạy kiểm thử .NET sau thay đổi
+
+Lệnh: dotnet test (dòng lệnh đầy đủ và stdout/stderr không được runner lưu lại).
+Mã thoát: 0.
+Kết quả do runner báo: 375 test đạt, 1 test bỏ qua, 0 test lỗi.
+
+Kiểm thử tích hợp ma trận phân quyền chạy riêng: 10/10 test đạt.
+
+Ghi chú: đây là bản ghi kết quả tóm tắt, không phải toàn bộ stdout/stderr. Sau lần chạy này, test runner của VS Code cũng xác nhận 375 test đạt, 0 test lỗi.

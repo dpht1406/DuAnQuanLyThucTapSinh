@@ -1,0 +1,7 @@
+Kết quả build .NET sau thay đổi
+
+Lệnh: dotnet build (dòng lệnh đầy đủ và stdout/stderr không được runner lưu lại).
+Mã thoát: 0.
+Kết quả do runner báo: build thành công, 0 cảnh báo, 0 lỗi.
+
+Ghi chú: đây là bản ghi kết quả tóm tắt, không phải toàn bộ stdout/stderr.

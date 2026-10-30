@@ -1,0 +1,10 @@
+Command: dotnet test backend/tests/StudentInternshipMgmt.Infrastructure.Tests/StudentInternshipMgmt.Infrastructure.Tests.csproj --no-restore --filter FullyQualifiedName~Admin_who_must_change_password_cannot_use_management_endpoints --logger "console;verbosity=minimal"
+Source: working tree immediately before the SEC-16 fix. This is not the missing before-security-review tag.
+
+Test result:
+Failed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Admin_who_must_change_password_cannot_use_management_endpoints
+Expected: Forbidden
+Actual:   OK
+Failed: 1
+Passed: 0
+

@@ -1,3 +1,5 @@
+using StudentInternshipMgmt.Application.Features.Companies.Dtos;
+
 namespace StudentInternshipMgmt.Application.Features.Companies.Accounts;
 
 public interface ICompanyAccountService
@@ -6,6 +8,14 @@ public interface ICompanyAccountService
 
     Task<(bool Success, string? Error, bool NotFound, CompanyAccountCredentialsDto? Data)> CreateAccountAsync(
         int companyId,
+        int adminUserId);
+
+    Task<CreateCompanyAccountsResultDto> CreateAccountsBulkAsync(
+        List<int> companyIds,
+        int adminUserId);
+
+    Task<(bool Success, string? Error, CreateCompanyAccountsResultDto? Data)> CreateAccountsBulkByFilterAsync(
+        CompanyFilterDto filter,
         int adminUserId);
 
     Task<(bool Success, string? Error, bool NotFound, CompanyAccountCredentialsDto? Data)> ResetPasswordAsync(

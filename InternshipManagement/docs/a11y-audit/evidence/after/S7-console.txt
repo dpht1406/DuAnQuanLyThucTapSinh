@@ -1,0 +1,49 @@
+[CONSOLE DEBUG] [vite] connecting...
+[CONSOLE DEBUG] [vite] connected.
+--- [F5 RELOAD TRIGGERED - BACKEND STOPPED] ---
+[CONSOLE DEBUG] [vite] connecting...
+[CONSOLE DEBUG] [vite] connected.
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE WARN] [api] retry 1/2 GET /auth/me
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE WARN] [api] retry 2/2 GET /auth/me
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE ERROR] Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/auth/me)
+[CONSOLE ERROR] Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[CONSOLE WARN] [api] retry 1/2 GET /companies
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[CONSOLE WARN] [api] retry 1/2 GET /companies/industries
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[CONSOLE WARN] [api] retry 1/2 GET /notifications/unread-count
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[CONSOLE WARN] [api] retry 2/2 GET /companies
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[CONSOLE ERROR] Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[CONSOLE WARN] [api] retry 2/2 GET /companies/industries
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[CONSOLE WARN] [api] retry 2/2 GET /notifications/unread-count
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies?Search=&Industry=&PageNumber=1&PageSize=10)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/companies/industries)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED
+[BROWSER LOG ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED (http://localhost:5018/api/notifications/unread-count)
+[CONSOLE ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED

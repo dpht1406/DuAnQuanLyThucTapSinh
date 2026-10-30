@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
@@ -11,29 +11,65 @@ import Message from 'primevue/message'
 import ProgressBar from 'primevue/progressbar'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
-import { getCompanyProfile } from '../../data/companyProfileSeed.js'
+import { getAbout } from '../../api/about.js'
+import { getJobPositions } from '../../api/job-positions.js'
+import { useAuthStore } from '../../stores/auth.js'
+import { extractErrorMessage } from '../../utils/apiError.js'
+import { formatServerDateTime } from '../../utils/dateTime.js'
+import { formatDeadline } from '../../utils/jobPosition.js'
 import { STATUS_SEVERITY } from '../../utils/studentStatus.js'
 
 const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
 
 const profile = ref(null)
+const updatedAt = ref(null)
 const loading = ref(true)
 const errorMessage = ref('')
+
+const realPositions = ref([])
+const totalOpenPositions = ref(0)
+const positionsLoading = ref(false)
+const positionsError = ref('')
 
 const CHECKLIST_KEY = 'about_apply_checklist_v1'
 const checked = ref([])
 
-const sections = [
-  { id: 'lich-su', label: 'Lịch sử' },
-  { id: 'linh-vuc', label: 'Lĩnh vực' },
-  { id: 'moi-truong', label: 'Môi trường' },
-  { id: 'gia-tri', label: 'Giá trị cốt lõi' },
-  { id: 'truoc-khi-ung-tuyen', label: 'Trước khi ứng tuyển' }
-]
+const hasEnvironment = computed(() => {
+  const env = profile.value?.environment
+  return Boolean(
+    env &&
+      ((env.highlights && env.highlights.length > 0) ||
+        (env.week && env.week.length > 0) ||
+        (env.tools && env.tools.length > 0))
+  )
+})
 
-const openPositions = computed(() => profile.value?.positions.filter((p) => p.isOpen) ?? [])
-const openSlots = computed(() => openPositions.value.reduce((sum, p) => sum + p.quantity, 0))
-const checklistTotal = computed(() => profile.value?.studentInfo.checklist.length ?? 0)
+const sections = computed(() => {
+  const list = []
+  if (profile.value?.history?.length > 0) {
+    list.push({ id: 'lich-su', label: 'Lịch sử' })
+  }
+  if (profile.value?.fields?.length > 0) {
+    list.push({ id: 'linh-vuc', label: 'Lĩnh vực' })
+  }
+  if (hasEnvironment.value) {
+    list.push({ id: 'moi-truong', label: 'Môi trường' })
+  }
+  if (profile.value?.values?.length > 0) {
+    list.push({ id: 'gia-tri', label: 'Giá trị cốt lõi' })
+  }
+  list.push({ id: 'truoc-khi-ung-tuyen', label: 'Trước khi ứng tuyển' })
+  return list
+})
+
+const updatedAtText = computed(() => {
+  if (!updatedAt.value) return null
+  return formatServerDateTime(updatedAt.value)
+})
+
+const checklistTotal = computed(() => profile.value?.studentInfo?.checklist?.length ?? 0)
 const checklistPercent = computed(() =>
   checklistTotal.value === 0 ? 0 : Math.round((checked.value.length / checklistTotal.value) * 100)
 )
@@ -61,15 +97,40 @@ async function loadProfile(retry = false) {
   errorMessage.value = ''
   try {
     // ?error=1 chỉ có tác dụng khi chạy dev, dùng để kiểm thử nhánh lỗi.
-    const simulateError = import.meta.env.DEV && route.query.error === '1' && !retry
-    profile.value = await getCompanyProfile({ simulateError })
-    const validIds = new Set(profile.value.studentInfo.checklist.map((item) => item.id))
+    if (import.meta.env.DEV && route.query.error === '1' && !retry) {
+      throw new Error('Không tải được thông tin giới thiệu. Vui lòng thử lại.')
+    }
+    const data = await getAbout()
+    profile.value = data?.content ?? null
+    updatedAt.value = data?.updatedAt ?? null
+
+    const validIds = new Set((profile.value?.studentInfo?.checklist ?? []).map((item) => item.id))
     checked.value = readChecklist().filter((id) => validIds.has(id))
   } catch (err) {
     profile.value = null
-    errorMessage.value = err?.message || 'Không tải được thông tin doanh nghiệp.'
+    errorMessage.value = extractErrorMessage(err, 'Không tải được thông tin giới thiệu.')
   } finally {
     loading.value = false
+  }
+}
+
+async function loadRealPositions() {
+  positionsLoading.value = true
+  positionsError.value = ''
+  try {
+    const result = await getJobPositions({
+      availability: 'open',
+      sort: 'recommended',
+      pageNumber: 1,
+      pageSize: 6
+    })
+    realPositions.value = result?.items ?? []
+    totalOpenPositions.value = result?.totalCount ?? 0
+  } catch (err) {
+    realPositions.value = []
+    positionsError.value = extractErrorMessage(err, 'Không thể tải danh sách vị trí thực tập.')
+  } finally {
+    positionsLoading.value = false
   }
 }
 
@@ -81,8 +142,17 @@ function resetChecklist() {
   checked.value = []
 }
 
+function formatTelHref(phone) {
+  if (!phone) return ''
+  const sanitized = String(phone).replace(/[^\d+]/g, '')
+  return sanitized ? `tel:${sanitized}` : ''
+}
+
 watch(checked, saveChecklist, { deep: true })
-onMounted(loadProfile)
+onMounted(() => {
+  loadProfile()
+  loadRealPositions()
+})
 </script>
 
 <template>
@@ -105,16 +175,31 @@ onMounted(loadProfile)
       <!-- Hero -->
       <section class="hero" aria-labelledby="about-title">
         <div class="hero-copy">
-          <p class="hero-company">{{ profile.name }}</p>
+          <div class="hero-top-bar">
+            <p class="hero-company">{{ profile.name }}</p>
+            <div v-if="authStore.isAdmin" class="admin-action-pill">
+              <Button
+                label="Chỉnh sửa nội dung"
+                icon="pi pi-pencil"
+                size="small"
+                severity="secondary"
+                outlined
+                @click="router.push('/about/edit')"
+              />
+            </div>
+          </div>
+
           <h1 id="about-title" class="hero-title">{{ profile.tagline }}</h1>
+          <p v-if="updatedAtText" class="hero-updated">Cập nhật lần cuối: {{ updatedAtText }}</p>
           <p class="hero-summary">{{ profile.summary }}</p>
+
           <div class="hero-actions">
             <Button label="Xem vị trí đang mở" icon="pi pi-briefcase" @click="scrollToSection('truoc-khi-ung-tuyen')" />
             <router-link to="/companies" class="hero-link">Danh sách doanh nghiệp đối tác</router-link>
           </div>
         </div>
 
-        <aside class="hero-facts" aria-label="Thông tin nhanh">
+        <aside v-if="profile.facts && profile.facts.length > 0" class="hero-facts" aria-label="Thông tin nhanh">
           <h2 class="facts-title">Thông tin nhanh</h2>
           <dl class="facts-list">
             <div v-for="fact in profile.facts" :key="fact.label" class="fact">
@@ -124,22 +209,22 @@ onMounted(loadProfile)
             </div>
           </dl>
           <p class="facts-open">
-            <strong>{{ openSlots }}</strong> chỉ tiêu đang mở ở <strong>{{ openPositions.length }}</strong> vị trí
+            <strong>{{ totalOpenPositions }}</strong> vị trí đang mở
           </p>
         </aside>
       </section>
 
-      <nav class="section-nav" aria-label="Mục lục trang">
+      <nav v-if="sections.length > 0" class="section-nav" aria-label="Mục lục trang">
         <button v-for="s in sections" :key="s.id" type="button" class="section-chip" @click="scrollToSection(s.id)">
           {{ s.label }}
         </button>
       </nav>
 
       <!-- Lịch sử -->
-      <section id="lich-su" class="section" aria-labelledby="h-lich-su">
+      <section v-if="profile.history && profile.history.length > 0" id="lich-su" class="section" aria-labelledby="h-lich-su">
         <h2 id="h-lich-su" class="section-title">Lịch sử hình thành</h2>
         <ol class="timeline">
-          <li v-for="item in profile.history" :key="item.year" class="timeline-item">
+          <li v-for="item in profile.history" :key="item.year + item.title" class="timeline-item">
             <span class="timeline-year">{{ item.year }}</span>
             <div class="timeline-body">
               <h3>{{ item.title }}</h3>
@@ -150,14 +235,14 @@ onMounted(loadProfile)
       </section>
 
       <!-- Lĩnh vực -->
-      <section id="linh-vuc" class="section" aria-labelledby="h-linh-vuc">
+      <section v-if="profile.fields && profile.fields.length > 0" id="linh-vuc" class="section" aria-labelledby="h-linh-vuc">
         <h2 id="h-linh-vuc" class="section-title">Lĩnh vực hoạt động</h2>
         <div class="field-grid">
           <article v-for="f in profile.fields" :key="f.title" class="field-card">
             <span class="icon-badge" :class="f.icon" aria-hidden="true" />
             <h3>{{ f.title }}</h3>
             <p>{{ f.text }}</p>
-            <ul class="tag-row" aria-label="Công nghệ sử dụng">
+            <ul v-if="f.tags && f.tags.length > 0" class="tag-row" aria-label="Công nghệ sử dụng">
               <li v-for="t in f.tags" :key="t">{{ t }}</li>
             </ul>
           </article>
@@ -165,10 +250,10 @@ onMounted(loadProfile)
       </section>
 
       <!-- Môi trường -->
-      <section id="moi-truong" class="section" aria-labelledby="h-moi-truong">
+      <section v-if="hasEnvironment" id="moi-truong" class="section" aria-labelledby="h-moi-truong">
         <h2 id="h-moi-truong" class="section-title">Môi trường làm việc</h2>
         <div class="env-layout">
-          <div class="env-highlights">
+          <div v-if="profile.environment.highlights && profile.environment.highlights.length > 0" class="env-highlights">
             <article v-for="h in profile.environment.highlights" :key="h.title" class="env-item">
               <span class="icon-badge small" :class="h.icon" aria-hidden="true" />
               <div>
@@ -177,24 +262,31 @@ onMounted(loadProfile)
               </div>
             </article>
           </div>
-          <div class="env-week">
-            <h3>Một tuần thực tập diễn ra thế nào</h3>
-            <dl>
-              <div v-for="d in profile.environment.week" :key="d.day" class="week-row">
-                <dt>{{ d.day }}</dt>
-                <dd>{{ d.text }}</dd>
-              </div>
-            </dl>
-            <p class="env-tools-label">Công cụ bạn sẽ dùng</p>
-            <ul class="tag-row">
-              <li v-for="t in profile.environment.tools" :key="t">{{ t }}</li>
-            </ul>
+          <div
+            v-if="(profile.environment.week && profile.environment.week.length > 0) || (profile.environment.tools && profile.environment.tools.length > 0)"
+            class="env-week"
+          >
+            <template v-if="profile.environment.week && profile.environment.week.length > 0">
+              <h3>Một tuần thực tập diễn ra thế nào</h3>
+              <dl>
+                <div v-for="d in profile.environment.week" :key="d.day" class="week-row">
+                  <dt>{{ d.day }}</dt>
+                  <dd>{{ d.text }}</dd>
+                </div>
+              </dl>
+            </template>
+            <template v-if="profile.environment.tools && profile.environment.tools.length > 0">
+              <p class="env-tools-label">Công cụ bạn sẽ dùng</p>
+              <ul class="tag-row">
+                <li v-for="t in profile.environment.tools" :key="t">{{ t }}</li>
+              </ul>
+            </template>
           </div>
         </div>
       </section>
 
       <!-- Giá trị cốt lõi -->
-      <section id="gia-tri" class="section" aria-labelledby="h-gia-tri">
+      <section v-if="profile.values && profile.values.length > 0" id="gia-tri" class="section" aria-labelledby="h-gia-tri">
         <h2 id="h-gia-tri" class="section-title">Giá trị cốt lõi</h2>
         <ul class="value-list">
           <li v-for="v in profile.values" :key="v.title" class="value-item">
@@ -211,37 +303,64 @@ onMounted(loadProfile)
       <section id="truoc-khi-ung-tuyen" class="section" aria-labelledby="h-ung-tuyen">
         <h2 id="h-ung-tuyen" class="section-title">Sinh viên cần biết trước khi ứng tuyển</h2>
 
-        <h3 class="sub-title">Vị trí đang nhận</h3>
-        <ul class="position-list">
-          <li v-for="p in profile.positions" :key="p.title" class="position-row" :class="{ closed: !p.isOpen }">
+        <!-- Khối Vị trí đang nhận (lấy dữ liệu thật) -->
+        <div class="positions-section-header">
+          <h3 class="sub-title flush">Vị trí đang nhận</h3>
+          <router-link to="/job-positions" class="view-all-positions-link">
+            Xem tất cả vị trí <i class="pi pi-arrow-right" aria-hidden="true" />
+          </router-link>
+        </div>
+
+        <div v-if="positionsLoading" class="positions-loading">
+          <Skeleton height="3.5rem" class="mb-2" />
+          <Skeleton height="3.5rem" class="mb-2" />
+        </div>
+        <p v-else-if="positionsError" class="positions-error-notice">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true" /> {{ positionsError }}
+        </p>
+        <ul v-else-if="realPositions.length > 0" class="position-list">
+          <li v-for="p in realPositions" :key="p.id" class="position-row" :class="{ closed: !p.isOpen }">
             <div class="position-main">
               <strong>{{ p.title }}</strong>
-              <span>Cần biết: {{ p.skills }}</span>
+              <span class="position-sub">
+                <span v-if="p.companyName" class="position-company">{{ p.companyName }}</span>
+                <span v-if="p.department" class="position-dept"> · {{ p.department }}</span>
+                <span v-if="p.displayLocation || p.companyAddress" class="position-loc"> · {{ p.displayLocation || p.companyAddress }}</span>
+              </span>
+              <span v-if="p.deadline" class="position-deadline">Hạn nộp: {{ formatDeadline(p.deadline) }}</span>
             </div>
             <span class="position-qty">{{ p.quantity }} chỉ tiêu</span>
             <Tag :value="p.isOpen ? 'Đang mở' : 'Đã đủ'" :severity="p.isOpen ? 'success' : 'secondary'" />
           </li>
         </ul>
+        <p v-else class="empty-positions">Hiện chưa có vị trí thực tập nào đang mở.</p>
 
         <div class="info-grid">
-          <div class="info-block">
-            <h3 class="sub-title">Điều kiện</h3>
-            <ul class="plain-list">
-              <li v-for="e in profile.studentInfo.eligibility" :key="e">{{ e }}</li>
-            </ul>
-            <h3 class="sub-title">Hồ sơ cần chuẩn bị</h3>
-            <ul class="plain-list">
-              <li v-for="d in profile.studentInfo.documents" :key="d">{{ d }}</li>
-            </ul>
+          <div
+            v-if="(profile.studentInfo?.eligibility && profile.studentInfo.eligibility.length > 0) || (profile.studentInfo?.documents && profile.studentInfo.documents.length > 0)"
+            class="info-block"
+          >
+            <template v-if="profile.studentInfo.eligibility && profile.studentInfo.eligibility.length > 0">
+              <h3 class="sub-title">Điều kiện</h3>
+              <ul class="plain-list">
+                <li v-for="e in profile.studentInfo.eligibility" :key="e">{{ e }}</li>
+              </ul>
+            </template>
+            <template v-if="profile.studentInfo.documents && profile.studentInfo.documents.length > 0">
+              <h3 class="sub-title">Hồ sơ cần chuẩn bị</h3>
+              <ul class="plain-list">
+                <li v-for="d in profile.studentInfo.documents" :key="d">{{ d }}</li>
+              </ul>
+            </template>
           </div>
 
-          <div class="info-block">
+          <div v-if="profile.studentInfo?.process && profile.studentInfo.process.length > 0" class="info-block">
             <h3 class="sub-title">Quy trình từ lúc nộp đến khi hoàn thành</h3>
             <ol class="steps">
-              <li v-for="(s, i) in profile.studentInfo.process" :key="s.status" class="step">
+              <li v-for="(s, i) in profile.studentInfo.process" :key="s.status + i" class="step">
                 <span class="step-index" aria-hidden="true">{{ i + 1 }}</span>
                 <div>
-                  <Tag :value="s.status" :severity="STATUS_SEVERITY[i + 1]" />
+                  <Tag :value="s.status" :severity="STATUS_SEVERITY[i + 1] || 'secondary'" />
                   <p>{{ s.text }}</p>
                 </div>
               </li>
@@ -249,7 +368,8 @@ onMounted(loadProfile)
           </div>
         </div>
 
-        <div class="checklist-card">
+        <!-- Checklist -->
+        <div v-if="profile.studentInfo?.checklist && profile.studentInfo.checklist.length > 0" class="checklist-card">
           <div class="checklist-head">
             <div>
               <h3 class="sub-title flush">Kiểm tra nhanh trước khi gửi yêu cầu</h3>
@@ -269,25 +389,36 @@ onMounted(loadProfile)
           </p>
         </div>
 
-        <h3 class="sub-title">Câu hỏi thường gặp</h3>
-        <Accordion value="0" class="faq">
-          <AccordionPanel v-for="(item, i) in profile.studentInfo.faq" :key="item.q" :value="String(i)">
-            <AccordionHeader>{{ item.q }}</AccordionHeader>
-            <AccordionContent><p class="faq-answer">{{ item.a }}</p></AccordionContent>
-          </AccordionPanel>
-        </Accordion>
+        <!-- FAQ -->
+        <template v-if="profile.studentInfo?.faq && profile.studentInfo.faq.length > 0">
+          <h3 class="sub-title">Câu hỏi thường gặp</h3>
+          <Accordion value="0" class="faq">
+            <AccordionPanel v-for="(item, i) in profile.studentInfo.faq" :key="item.q" :value="String(i)">
+              <AccordionHeader>{{ item.q }}</AccordionHeader>
+              <AccordionContent><p class="faq-answer">{{ item.a }}</p></AccordionContent>
+            </AccordionPanel>
+          </Accordion>
+        </template>
 
-        <h3 class="sub-title">Liên hệ</h3>
-        <address class="contact">
-          <p><span class="pi pi-user" aria-hidden="true" />{{ profile.contact.person }}</p>
-          <p><span class="pi pi-map-marker" aria-hidden="true" />{{ profile.contact.address }}</p>
-          <p><span class="pi pi-envelope" aria-hidden="true" /><a :href="`mailto:${profile.contact.email}`">{{ profile.contact.email }}</a></p>
-          <p><span class="pi pi-phone" aria-hidden="true" /><a :href="`tel:${profile.contact.phone.replace(/\s/g, '')}`">{{ profile.contact.phone }}</a></p>
-          <p><span class="pi pi-clock" aria-hidden="true" />{{ profile.contact.hours }}</p>
-        </address>
+        <!-- Liên hệ -->
+        <template v-if="profile.contact && (profile.contact.person || profile.contact.address || profile.contact.email || profile.contact.phone || profile.contact.hours)">
+          <h3 class="sub-title">Liên hệ</h3>
+          <address class="contact">
+            <p v-if="profile.contact.person"><span class="pi pi-user" aria-hidden="true" />{{ profile.contact.person }}</p>
+            <p v-if="profile.contact.address"><span class="pi pi-map-marker" aria-hidden="true" />{{ profile.contact.address }}</p>
+            <p v-if="profile.contact.email">
+              <span class="pi pi-envelope" aria-hidden="true" /><a :href="`mailto:${profile.contact.email}`">{{ profile.contact.email }}</a>
+            </p>
+            <p v-if="profile.contact.phone">
+              <span class="pi pi-phone" aria-hidden="true" /><a :href="formatTelHref(profile.contact.phone)">{{ profile.contact.phone }}</a>
+            </p>
+            <p v-if="profile.contact.hours"><span class="pi pi-clock" aria-hidden="true" />{{ profile.contact.hours }}</p>
+          </address>
+        </template>
       </section>
 
-      <p class="seed-note">Thông tin trên trang là dữ liệu minh họa của một doanh nghiệp giả lập.</p>
+      <!-- Footnote thay cho dòng dữ liệu minh họa -->
+      <p v-if="profile.footnote" class="seed-note">{{ profile.footnote }}</p>
     </template>
   </div>
 </template>
@@ -300,8 +431,10 @@ onMounted(loadProfile)
 
 /* Hero */
 .hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
-.hero-company { margin: 0 0 12px; color: var(--primary); font-size: var(--text-body); font-weight: 600; }
+.hero-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+.hero-company { margin: 0; color: var(--primary); font-size: var(--text-body); font-weight: 600; }
 .hero-title { margin: 0; color: var(--text-h); font-size: 34px; font-weight: 700; line-height: 1.25; max-width: 24ch; letter-spacing: -0.01em; }
+.hero-updated { margin: 6px 0 0; color: var(--text-muted, #64748b); font-size: 13px; }
 .hero-summary { margin: 16px 0 0; max-width: 62ch; font-size: 16px; line-height: 1.65; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 24px; }
 .hero-link { color: var(--primary); font-size: var(--text-body); font-weight: 600; text-decoration: none; }
@@ -335,7 +468,7 @@ p { margin: 0; }
 .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .tag-row li { padding: 3px 10px; color: var(--text-h); background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--radius-pill); font-size: var(--text-caption); font-weight: 500; }
 
-/* Timeline (thứ tự thời gian thật nên dùng năm làm mốc) */
+/* Timeline */
 .timeline { position: relative; margin: 0; padding: 0; list-style: none; }
 .timeline::before { content: ''; position: absolute; top: 8px; bottom: 8px; left: 51px; width: 2px; background: var(--border); }
 .timeline-item { position: relative; display: grid; grid-template-columns: 52px 1fr; gap: 28px; padding: 0 0 24px; }
@@ -376,14 +509,21 @@ p { margin: 0; }
 .value-item p { margin-top: 2px; font-size: var(--text-body); line-height: 1.55; }
 
 /* Sinh viên */
+.positions-section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-top: 8px; }
+.view-all-positions-link { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.view-all-positions-link:hover { text-decoration: underline; }
+.positions-error-notice { margin: 8px 0; color: #b91c1c; font-size: 13px; }
+.empty-positions { color: var(--text-muted, #64748b); font-size: 14px; font-style: italic; }
 .position-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .position-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
 .position-row.closed { background: var(--surface-soft); }
 .position-row.closed .position-main strong { color: var(--text); }
 .position-main { display: grid; gap: 2px; min-width: 0; }
 .position-main strong { color: var(--text-h); font-size: 15px; font-weight: 600; }
-.position-main span, .position-qty { font-size: 13px; }
-.position-qty { white-space: nowrap; }
+.position-sub { color: var(--text-muted, #64748b); font-size: 13px; }
+.position-company { font-weight: 500; }
+.position-deadline { font-size: 12px; color: var(--text-muted, #64748b); margin-top: 2px; }
+.position-qty { white-space: nowrap; font-size: 13px; }
 
 .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
 .info-block { display: grid; gap: 12px; align-content: start; }

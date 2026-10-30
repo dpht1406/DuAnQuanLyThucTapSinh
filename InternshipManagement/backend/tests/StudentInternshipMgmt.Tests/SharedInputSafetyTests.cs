@@ -1,4 +1,5 @@
 using StudentInternshipMgmt.Application.Common;
+using System.Text.Json;
 
 namespace StudentInternshipMgmt.Tests;
 
@@ -70,5 +71,15 @@ public class SharedInputSafetyTests
         Assert.False(new SafeStringAttribute(10).IsValid("line\nbreak"));
         Assert.False(new SafeStringAttribute(3).IsValid("four"));
         Assert.True(new SafeStringAttribute(4, trimBeforeLength: true).IsValid(" abcd "));
+    }
+
+    [Fact]
+    public void Safe_string_preserves_script_markup_as_a_json_string()
+    {
+        const string input = "<script>alert(1)</script>";
+        var attribute = new SafeStringAttribute(100);
+
+        Assert.True(attribute.IsValid(input));
+        Assert.Equal(input, JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(input)));
     }
 }

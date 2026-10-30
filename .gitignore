@@ -1,0 +1,20 @@
+# .NET
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+.vs/
+TestResults/
+*.trx
+
+# Node
+node_modules/
+dist/
+
+# OS / temporary
+.DS_Store
+Thumbs.db
+*.zip
+.agent/

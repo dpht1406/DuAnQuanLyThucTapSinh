@@ -434,12 +434,17 @@ onBeforeUnmount(() => {
 .back-button {
   min-height: 44px;
   flex: 0 0 auto;
+  color: var(--apply-muted);
+}
+
+.back-button:hover {
+  color: var(--apply-ink);
 }
 
 .student-edit-card {
   min-width: 0;
   background: var(--apply-surface);
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-border);
   border-radius: 18px;
   box-shadow: var(--apply-shadow);
   padding: 1.5rem;
@@ -456,7 +461,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 1rem;
   padding: 1.25rem;
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-border);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.5);
 }
@@ -509,7 +514,7 @@ onBeforeUnmount(() => {
 .student-input {
   width: 100%;
   min-height: 44px;
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--ui-input-border);
   border-radius: 10px;
   background: var(--apply-surface);
   color: var(--apply-ink);
@@ -570,7 +575,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 1rem;
   padding-top: 0.5rem;
-  border-top: 1px solid var(--apply-border);
+  border-top: 1px solid var(--ui-border);
 }
 
 .required-note {
@@ -646,7 +651,7 @@ onBeforeUnmount(() => {
     gap: 0.75rem;
     padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom));
     background: var(--apply-surface);
-    border-top: 1px solid var(--apply-border);
+    border-top: 1px solid var(--ui-border);
   }
 
   .required-note {

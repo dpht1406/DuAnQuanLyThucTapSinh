@@ -51,6 +51,65 @@ public class AdminPlacementFlowTests
     }
 
     [Fact]
+    public async Task Admin_passed_rejects_a_dismissed_report_without_changing_student_or_request_result()
+    {
+        await using var db = CreateDbContext();
+        var fixture = await SeedAsync(db);
+        var request = AddReportedRequest(db, fixture, 13);
+        var service = CreateService(db);
+
+        var dismissed = await service.AdminConfirmResultAsync(13, 99, new AdminPlacementResultDto
+        {
+            Decision = AdminPlacementDecision.DismissReport,
+            ConfirmationSource = "Đã xác minh"
+        });
+        var result = await service.AdminConfirmResultAsync(13, 99, new AdminPlacementResultDto
+        {
+            Decision = AdminPlacementDecision.Passed,
+            ConfirmationSource = "Đã xác minh"
+        });
+        var acceptanceResult = await new PlacementAcceptanceService(
+            db,
+            NullLogger<PlacementAcceptanceService>.Instance).AcceptAsync(
+                13,
+                null,
+                ActorType.Admin,
+                99,
+                "Đạt",
+                "Đã xác minh");
+
+        dismissed.Status.Should().Be(PlacementRequestOperationStatus.Success);
+        result.Status.Should().Be(PlacementRequestOperationStatus.BusinessError);
+        result.Error.Should().Be("Báo cáo phỏng vấn này đã được xử lý.");
+        acceptanceResult.Status.Should().Be(PlacementRequestOperationStatus.BusinessError);
+        acceptanceResult.Error.Should().Be("Báo cáo phỏng vấn này đã được xử lý.");
+        request.Status.Should().Be(RequestStatus.InterviewInvited);
+        request.ResultActorType.Should().BeNull();
+        fixture.Student.Status.Should().Be(StudentStatus.NoCompany);
+    }
+
+    [Fact]
+    public async Task Admin_passed_requires_a_student_report()
+    {
+        await using var db = CreateDbContext();
+        var fixture = await SeedAsync(db);
+        var request = CreateRequest(14, fixture.Student, fixture.Company, fixture.Position, RequestStatus.InterviewInvited);
+        db.PlacementRequests.Add(request);
+        await db.SaveChangesAsync();
+
+        var result = await CreateService(db).AdminConfirmResultAsync(14, 99, new AdminPlacementResultDto
+        {
+            Decision = AdminPlacementDecision.Passed,
+            ConfirmationSource = "Đã xác minh"
+        });
+
+        result.Status.Should().Be(PlacementRequestOperationStatus.BusinessError);
+        request.Status.Should().Be(RequestStatus.InterviewInvited);
+        request.ResultActorType.Should().BeNull();
+        fixture.Student.Status.Should().Be(StudentStatus.NoCompany);
+    }
+
+    [Fact]
     public async Task Admin_confirmation_requires_confirmation_source()
     {
         await using var db = CreateDbContext();
@@ -418,17 +477,19 @@ public class AdminPlacementFlowTests
     }
 
     [Fact]
-    public async Task Overdue_requests_filter_status_and_age_and_sort_oldest_first()
+    public async Task Overdue_requests_filter_status_and_due_date_and_sort_earliest_due_first()
     {
         await using var db = CreateDbContext();
         var fixture = await SeedAsync(db);
         var now = DateTime.UtcNow;
         var older = CreateRequest(50, fixture.Student, fixture.Company, null, RequestStatus.Pending);
-        older.CreatedAt = now.AddDays(-8);
+        older.CreatedAt = now.AddDays(-2);
+        older.DueAt = now.AddDays(-8);
         var newer = CreateRequest(51, fixture.Student, fixture.Company, null, RequestStatus.Pending);
-        newer.CreatedAt = now.AddDays(-6);
+        newer.CreatedAt = now.AddDays(-20);
+        newer.DueAt = now.AddDays(-6);
         var fresh = CreateRequest(52, fixture.Student, fixture.Company, null, RequestStatus.Pending);
-        fresh.CreatedAt = now.AddDays(-2);
+        fresh.DueAt = now.AddDays(6);
         var excluded = new[]
         {
             CreateRequest(53, fixture.Student, fixture.Company, null, RequestStatus.InterviewInvited),
@@ -437,7 +498,10 @@ public class AdminPlacementFlowTests
             CreateRequest(56, fixture.Student, fixture.Company, null, RequestStatus.Accepted)
         };
         foreach (var item in excluded)
+        {
             item.CreatedAt = now.AddDays(-20);
+            item.DueAt = now.AddDays(-10);
+        }
         db.PlacementRequests.AddRange(older, newer, fresh);
         db.PlacementRequests.AddRange(excluded);
         await db.SaveChangesAsync();
@@ -455,10 +519,13 @@ public class AdminPlacementFlowTests
     {
         await using var db = CreateDbContext();
         var fixture = await SeedAsync(db);
+        var now = DateTime.UtcNow;
         var oldEnough = CreateRequest(57, fixture.Student, fixture.Company, null);
-        oldEnough.CreatedAt = DateTime.UtcNow.AddDays(-6);
+        oldEnough.CreatedAt = now;
+        oldEnough.DueAt = now.AddDays(-6);
         var tooNew = CreateRequest(58, fixture.Student, fixture.Company, null);
-        tooNew.CreatedAt = DateTime.UtcNow.AddDays(-4);
+        tooNew.CreatedAt = now.AddDays(-20);
+        tooNew.DueAt = now.AddDays(6);
         db.PlacementRequests.AddRange(oldEnough, tooNew);
         await db.SaveChangesAsync();
         (string Key, string? Value)[] config = days is null

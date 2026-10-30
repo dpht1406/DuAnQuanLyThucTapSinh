@@ -1,0 +1,16 @@
+﻿D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:13: <img :src="heroImg" class="base" width="170" height="179" alt="" />
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:14: <img :src="vueLogo" class="framework" alt="Vue logo" />
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:15: <img :src="viteLogo" class="vite" alt="Vite logo" />
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:30: <svg class="icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:38: <img class="logo" :src="viteLogo" alt="" />
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:44: <img class="button-icon" :src="vueLogo" alt="" />
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:51: <svg class="icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:59: <svg class="button-icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:67: <svg class="button-icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:75: <svg class="button-icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\components\HelloWorld.vue:83: <svg class="button-icon" role="presentation" aria-hidden="true">
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\views\auth\LoginView.vue:68: <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+--- After-fix image markup audit ---
+D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\frontend\src\views\auth\LoginView.vue:68: <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+--- Removed starter asset references ---
+No references.

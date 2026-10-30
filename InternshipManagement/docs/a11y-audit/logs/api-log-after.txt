@@ -1,0 +1,15 @@
+warn: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
+      Login failed for username auditnotfound
+fail: StudentInternshipMgmt.Api.Middlewares.ExceptionHandlingMiddleware[0]
+      Unhandled exception while processing POST /api/auth/login. TraceId: 0HNPDM36VQEFP:00000001
+      System.UnauthorizedAccessException: Tên đăng nhập hoặc mật khẩu không đúng.
+         at StudentInternshipMgmt.Infrastructure.Services.AuthService.LoginAsync(LoginRequestDto request, CancellationToken cancellationToken) in D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\AuthService.cs:line 41
+         at StudentInternshipMgmt.Api.Controllers.AuthController.Login(LoginRequestDto request, CancellationToken cancellationToken) in D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\backend\src\StudentInternshipMgmt.Api\Controllers\AuthController.cs:line 26
+warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP POST /api/auth/login responded 401 in 29ms TraceId=0HNPDM36VQEFP:00000001 UserId=(null)
+warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/students responded 401 in 2ms TraceId=0HNPDM36VQEFK:00000001 UserId=(null)
+warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP GET /api/companies/industries responded 401 in 0ms TraceId=0HNPDM36VQEFP:00000002 UserId=(null)
+info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
+      HTTP OPTIONS /api/companies/industries responded 204 in 0ms TraceId=0HNPDM36VQEFQ:00000001 UserId=(null)

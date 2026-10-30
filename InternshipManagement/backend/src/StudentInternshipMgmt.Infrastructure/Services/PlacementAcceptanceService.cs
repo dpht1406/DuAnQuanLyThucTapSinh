@@ -2,6 +2,8 @@ using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Domain.Enums;
@@ -25,11 +27,26 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
 
     private readonly AppDbContext _db;
     private readonly ILogger<PlacementAcceptanceService> _logger;
+    private readonly PlacementRequestEmailNotifier _emailNotifier;
 
     public PlacementAcceptanceService(AppDbContext db, ILogger<PlacementAcceptanceService> logger)
+        : this(
+            db,
+            logger,
+            new PlacementRequestEmailNotifier(
+                new NoOpEmailSender(NullLogger<NoOpEmailSender>.Instance),
+                NullLogger<PlacementRequestEmailNotifier>.Instance))
+    {
+    }
+
+    public PlacementAcceptanceService(
+        AppDbContext db,
+        ILogger<PlacementAcceptanceService> logger,
+        PlacementRequestEmailNotifier emailNotifier)
     {
         _db = db;
         _logger = logger;
+        _emailNotifier = emailNotifier;
     }
 
     public async Task<PlacementRequestOperationResult> AcceptAsync(
@@ -64,6 +81,9 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
             if (_db.Database.IsRelational())
             {
                 await _db.Database.ExecuteSqlInterpolatedAsync(
+                    $"UPDATE [PlacementRequests] SET [Status] = [Status] WHERE [Id] = {requestId}");
+
+                await _db.Database.ExecuteSqlInterpolatedAsync(
                     $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {requestIds.StudentId}");
 
                 if (requestIds.JobPositionId.HasValue)
@@ -84,6 +104,17 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     transaction,
                     PlacementRequestOperationStatus.NotFound,
                     "Không tìm thấy đơn ứng tuyển.");
+            }
+
+            if (actor == ActorType.Admin
+                && (request.Status != RequestStatus.InterviewInvited
+                    || request.StudentReportedInterviewAt is null
+                    || request.StudentReportDismissedAt is not null))
+            {
+                return await RollbackWithResultAsync(
+                    transaction,
+                    PlacementRequestOperationStatus.BusinessError,
+                    "Báo cáo phỏng vấn này đã được xử lý.");
             }
 
             if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
@@ -140,6 +171,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
                     PlacementRequestOperationStatus.BusinessError,
                     "Không tìm thấy doanh nghiệp.");
             }
+            request.Company = company;
 
             var now = DateTime.UtcNow;
             request.Status = RequestStatus.Accepted;
@@ -206,6 +238,7 @@ public sealed class PlacementAcceptanceService : IPlacementAcceptanceService
 
             await _db.SaveChangesAsync();
             await transaction.CommitAsync();
+            await _emailNotifier.NotifyResultAsync(request, passed: true, request.ResultNote);
 
             _logger.LogInformation(
                 "Placement request accepted: RequestId {RequestId}, StudentId {StudentId}, CompanyId {CompanyId}, Actor {Actor}",

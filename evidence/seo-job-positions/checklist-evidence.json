@@ -1,0 +1,195 @@
+{
+  "head": {
+    "title": "Danh sách vị trí thực tập | QLTT",
+    "titleLength": 32,
+    "metaDesc": "Cổng thông tin quản lý sinh viên thực tập, doanh nghiệp và vị trí thực tập.",
+    "metaDescLength": 75,
+    "metaViewport": "width=device-width, initial-scale=1.0",
+    "metaCharset": "UTF-8",
+    "htmlLang": "vi",
+    "canonical": null,
+    "metaRobots": null,
+    "ogTitle": null,
+    "ogDesc": null,
+    "ogImage": null,
+    "twitterCard": null,
+    "favicon": "/favicon.svg",
+    "jsonLd": []
+  },
+  "structure": {
+    "headings": [
+      {
+        "tag": "h1",
+        "text": "Vị trí thực tập",
+        "className": "page-title"
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh phần mềm",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Kiểm thử phần mềm",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thuc tap sinh Lap trinh vien .NET",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Phát triển .NET",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend .NET Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend .NET Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend .NET Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend .NET Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Backend Java Developer",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh Data Analyst",
+        "className": ""
+      },
+      {
+        "tag": "h2",
+        "text": "Thực tập sinh DevOps Engineer",
+        "className": ""
+      }
+    ],
+    "h1Count": 1,
+    "landmarks": {
+      "headers": 3,
+      "navs": 3,
+      "mains": 1,
+      "footers": 12
+    },
+    "cardsCount": 12,
+    "sampleCards": [
+      {
+        "title": "Thực tập sinh phần mềm",
+        "hasRealLink": false,
+        "titleIsLink": false,
+        "buttons": [
+          {
+            "text": "Xem chi tiết",
+            "ariaLabel": "Xem chi tiết Thực tập sinh phần mềm"
+          },
+          {
+            "text": "Ứng tuyển",
+            "ariaLabel": "Ứng tuyển Thực tập sinh phần mềm"
+          }
+        ],
+        "avatarAriaHidden": null
+      },
+      {
+        "title": "Thực tập sinh Kiểm thử phần mềm",
+        "hasRealLink": false,
+        "titleIsLink": false,
+        "buttons": [
+          {
+            "text": "Xem chi tiết",
+            "ariaLabel": "Xem chi tiết Thực tập sinh Kiểm thử phần mềm"
+          },
+          {
+            "text": "Ứng tuyển",
+            "ariaLabel": "Ứng tuyển Thực tập sinh Kiểm thử phần mềm"
+          }
+        ],
+        "avatarAriaHidden": null
+      },
+      {
+        "title": "Thuc tap sinh Lap trinh vien .NET",
+        "hasRealLink": false,
+        "titleIsLink": false,
+        "buttons": [
+          {
+            "text": "Xem chi tiết",
+            "ariaLabel": "Xem chi tiết Thuc tap sinh Lap trinh vien .NET"
+          },
+          {
+            "text": "Ứng tuyển",
+            "ariaLabel": "Ứng tuyển Thuc tap sinh Lap trinh vien .NET"
+          }
+        ],
+        "avatarAriaHidden": null
+      }
+    ],
+    "controls": {
+      "searchHasId": true,
+      "searchHasMatchingLabel": true,
+      "searchPlaceholder": "Tên vị trí, công ty hoặc phòng ban",
+      "selectHasId": true,
+      "selectHasMatchingLabel": true
+    }
+  },
+  "drawerA11y": {
+    "role": "dialog",
+    "ariaModal": "true",
+    "ariaLabelledby": null,
+    "hasCloseButton": true,
+    "hasH2Title": true,
+    "hasH3Desc": true
+  },
+  "errorState": {
+    "title": "Danh sách vị trí thực tập | QLTT",
+    "h1": "Vị trí thực tập",
+    "errorMsg": "Hệ thống đang gặp sự cố. Vui lòng thử lại sau.\nThử lại",
+    "hasRetryBtn": true
+  },
+  "apiPerformance": {
+    "apiCallDurationMs": 1206,
+    "requestsCount": 209,
+    "consoleErrorsCount": 2
+  },
+  "robotsTxt": {
+    "status": 200,
+    "content": "User-agent: *\r\nAllow: /\r\n"
+  },
+  "sitemapXml": {
+    "status": 200,
+    "contentType": "text/html",
+    "exists": false,
+    "note": "Không có file sitemap.xml vật lý; Vite dev server trả về index.html (200 OK, Content-Type: text/html) qua cơ chế SPA fallback -> Lỗi Soft 404 / Invalid XML đối với web crawler"
+  },
+  "unauthenticatedAccess": {
+    "initialRequestedUrl": "http://localhost:5173/job-positions",
+    "finalUrl": "http://localhost:5173/login",
+    "redirectType": "Client-side SPA redirect (vue-router beforeEach navigation guard: return next(\"/login\"))",
+    "serverHttpStatus": 200,
+    "finalTitle": "Đăng nhập | QLTT",
+    "redirectedToLogin": true
+  },
+  "reloadTest": {
+    "titleBeforeReload": "Danh sách vị trí thực tập | QLTT",
+    "titleAfterReload": "Danh sách vị trí thực tập | QLTT",
+    "persistedCorrectly": true
+  }
+}

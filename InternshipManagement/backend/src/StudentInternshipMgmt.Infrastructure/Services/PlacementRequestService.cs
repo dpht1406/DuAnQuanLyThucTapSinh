@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,14 +15,52 @@ namespace StudentInternshipMgmt.Infrastructure.Services;
 
 public class PlacementRequestService : IPlacementRequestService
 {
+    private static readonly Expression<Func<PlacementRequest, PlacementRequestDto>> PlacementRequestProjection =
+        request => new PlacementRequestDto
+        {
+            Id = request.Id,
+            StudentId = request.StudentId,
+            StudentCode = request.Student.StudentCode,
+            StudentFullName = request.Student.FullName,
+            CompanyId = request.CompanyId,
+            CompanyName = request.Company.Name,
+            JobPositionId = request.JobPositionId,
+            JobPositionTitle = request.JobPosition != null ? request.JobPosition.Title : null,
+            ApplicantFullName = request.ApplicantFullName,
+            ApplicantEmail = request.ApplicantEmail,
+            ApplicantPhone = request.ApplicantPhone,
+            ApplicantSchool = request.ApplicantSchool,
+            ApplicantMajor = request.ApplicantMajor,
+            CvUrl = request.CvUrl,
+            CoverLetter = request.CoverLetter,
+            Status = request.Status,
+            Note = request.Note,
+            RejectReason = request.RejectReason,
+            CreatedAt = request.CreatedAt,
+            DueAt = request.DueAt,
+            InterviewAt = request.InterviewAt,
+            InterviewLocation = request.InterviewLocation,
+            InterviewNote = request.InterviewNote,
+            ResultNote = request.ResultNote,
+            StudentReportedInterviewAt = request.StudentReportedInterviewAt,
+            StudentInterviewNote = request.StudentInterviewNote,
+            StudentReportDismissedAt = request.StudentReportDismissedAt,
+            ResultActorType = request.ResultActorType,
+            ReviewedBy = request.ReviewedBy,
+            ReviewedByUsername = request.ReviewedByUser != null ? request.ReviewedByUser.Username : null,
+            ReviewedAt = request.ReviewedAt
+        };
+
     private readonly AppDbContext _db;
     private readonly ILogger<PlacementRequestService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IPlacementAcceptanceService _placementAcceptanceService;
+    private readonly PlacementRequestEmailNotifier _emailNotifier;
 
     public PlacementRequestService(AppDbContext db, ILogger<PlacementRequestService> logger, IConfiguration configuration)
         : this(db, logger, configuration, new PlacementAcceptanceService(
-            db, NullLogger<PlacementAcceptanceService>.Instance))
+            db, NullLogger<PlacementAcceptanceService>.Instance),
+            CreateNoOpEmailNotifier(configuration))
     {
     }
 
@@ -30,11 +69,22 @@ public class PlacementRequestService : IPlacementRequestService
         ILogger<PlacementRequestService> logger,
         IConfiguration configuration,
         IPlacementAcceptanceService placementAcceptanceService)
+        : this(db, logger, configuration, placementAcceptanceService, CreateNoOpEmailNotifier(configuration))
+    {
+    }
+
+    public PlacementRequestService(
+        AppDbContext db,
+        ILogger<PlacementRequestService> logger,
+        IConfiguration configuration,
+        IPlacementAcceptanceService placementAcceptanceService,
+        PlacementRequestEmailNotifier emailNotifier)
     {
         _db = db;
         _logger = logger;
         _configuration = configuration;
         _placementAcceptanceService = placementAcceptanceService;
+        _emailNotifier = emailNotifier;
     }
 
     public async Task<(bool Success, string? Error, PlacementRequestDto? Data)> CreateRequestAsync(int studentId, CreatePlacementRequestDto dto)
@@ -115,7 +165,9 @@ public class PlacementRequestService : IPlacementRequestService
         {
             StudentId = studentId,
             CompanyId = dto.CompanyId,
+            Company = company,
             JobPositionId = dto.JobPositionId,
+            JobPosition = jobPosition,
             ApplicantFullName = CleanString(dto.ApplicantFullName),
             ApplicantEmail = CleanString(dto.ApplicantEmail)?.ToLowerInvariant(),
             ApplicantPhone = CleanString(dto.ApplicantPhone),
@@ -131,6 +183,7 @@ public class PlacementRequestService : IPlacementRequestService
 
         _db.PlacementRequests.Add(request);
         await _db.SaveChangesAsync();
+        await _emailNotifier.NotifyApplicationSubmittedAsync(request, company);
 
         _logger.LogInformation(
             "Placement request created: RequestId {RequestId}, StudentId {StudentId}, CompanyId {CompanyId}, JobPositionId {JobPositionId}",
@@ -183,44 +236,18 @@ public class PlacementRequestService : IPlacementRequestService
         if (filter.Status.HasValue)
             query = query.Where(r => r.Status == filter.Status.Value);
 
-        // Chiếu (Select) trực tiếp sang PlacementRequestDto ngay trong LINQ-to-Entities
-        // để EF Core dịch được ra SQL — không dùng hàm map tay ở bước này.
         return await query
             .OrderByDescending(r => r.CreatedAt)
-            .Select(r => new PlacementRequestDto
-            {
-                Id = r.Id,
-                StudentId = r.StudentId,
-                StudentCode = r.Student.StudentCode,
-                StudentFullName = r.Student.FullName,
-                CompanyId = r.CompanyId,
-                CompanyName = r.Company.Name,
-                JobPositionId = r.JobPositionId,
-                JobPositionTitle = r.JobPosition != null ? r.JobPosition.Title : null,
-                ApplicantFullName = r.ApplicantFullName,
-                ApplicantEmail = r.ApplicantEmail,
-                ApplicantPhone = r.ApplicantPhone,
-                ApplicantSchool = r.ApplicantSchool,
-                ApplicantMajor = r.ApplicantMajor,
-                CvUrl = r.CvUrl,
-                CoverLetter = r.CoverLetter,
-                Status = r.Status,
-                Note = r.Note,
-                RejectReason = r.RejectReason,
-                CreatedAt = r.CreatedAt,
-                DueAt = r.DueAt,
-                InterviewAt = r.InterviewAt,
-                InterviewLocation = r.InterviewLocation,
-                InterviewNote = r.InterviewNote,
-                ResultNote = r.ResultNote,
-                StudentReportedInterviewAt = r.StudentReportedInterviewAt,
-                StudentInterviewNote = r.StudentInterviewNote,
-                ResultActorType = r.ResultActorType,
-                ReviewedBy = r.ReviewedBy,
-                ReviewedByUsername = r.ReviewedByUser != null ? r.ReviewedByUser.Username : null,
-                ReviewedAt = r.ReviewedAt
-            })
+            .Select(PlacementRequestProjection)
             .ToPagedResultAsync(filter);
+    }
+
+    public Task<PlacementRequestDto?> GetRequestByIdAsync(int requestId)
+    {
+        return _db.PlacementRequests
+            .Where(request => request.Id == requestId)
+            .Select(PlacementRequestProjection)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<PagedResult<CompanyPlacementRequestDto>> GetCompanyRequestsAsync(
@@ -309,7 +336,9 @@ public class PlacementRequestService : IPlacementRequestService
         InviteInterviewDto dto,
         int companyUserId)
     {
-        var request = await _db.PlacementRequests.FirstOrDefaultAsync(item =>
+        var request = await _db.PlacementRequests
+            .Include(item => item.Company)
+            .FirstOrDefaultAsync(item =>
             item.Id == requestId
             && item.CompanyId == companyId);
 
@@ -335,6 +364,7 @@ public class PlacementRequestService : IPlacementRequestService
         request.ReviewedBy = companyUserId;
         request.ReviewedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
+        await _emailNotifier.NotifyInterviewInvitedAsync(request);
 
         LogCompanyRequestAction("InviteInterview", companyId, requestId, companyUserId, true, "Updated");
         return (true, null, false);
@@ -346,7 +376,9 @@ public class PlacementRequestService : IPlacementRequestService
         CompanyRejectPlacementRequestDto dto,
         int companyUserId)
     {
-        var request = await _db.PlacementRequests.FirstOrDefaultAsync(item =>
+        var request = await _db.PlacementRequests
+            .Include(item => item.Company)
+            .FirstOrDefaultAsync(item =>
             item.Id == requestId
             && item.CompanyId == companyId);
 
@@ -371,6 +403,7 @@ public class PlacementRequestService : IPlacementRequestService
         request.ReviewedBy = companyUserId;
         request.ReviewedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
+        await _emailNotifier.NotifyResultAsync(request, passed: false, request.RejectReason);
 
         LogCompanyRequestAction("Reject", companyId, requestId, companyUserId, true, "Updated");
         return (true, null, false);
@@ -402,45 +435,61 @@ public class PlacementRequestService : IPlacementRequestService
             return accepted;
         }
 
-        var request = await _db.PlacementRequests.FirstOrDefaultAsync(item =>
-            item.Id == requestId
-            && item.CompanyId == companyId);
-
-        if (request is null)
-        {
-            LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "NotFound");
-            return new PlacementRequestOperationResult(
-                PlacementRequestOperationStatus.NotFound,
-                "Không tìm thấy đơn ứng tuyển.");
-        }
-
-        if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
-        {
-            LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "InvalidStatus");
-            return new PlacementRequestOperationResult(
-                PlacementRequestOperationStatus.BusinessError,
-                "Đơn này đã được xử lý.");
-        }
-
-        if (string.IsNullOrWhiteSpace(dto.Note))
-        {
-            LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "MissingNote");
-            return new PlacementRequestOperationResult(
-                PlacementRequestOperationStatus.BusinessError,
-                "Ghi chú là bắt buộc khi sinh viên không đạt.");
-        }
-
-        request.Status = RequestStatus.Rejected;
-        request.ResultNote = CleanString(dto.Note, preserveLineBreaks: true);
-        request.ResultActorType = ActorType.Company;
-        request.ReviewedBy = companyUserId;
-        request.ReviewedAt = DateTime.UtcNow;
+        using var transaction = await _db.Database.BeginTransactionAsync();
         try
         {
+            if (_db.Database.IsRelational())
+            {
+                await _db.Database.ExecuteSqlInterpolatedAsync(
+                    $"UPDATE [PlacementRequests] SET [Status] = [Status] WHERE [Id] = {requestId}");
+            }
+
+            var request = await _db.PlacementRequests
+                .Include(item => item.Company)
+                .FirstOrDefaultAsync(item => item.Id == requestId);
+
+            if (request is not null)
+                await _db.Entry(request).ReloadAsync();
+
+            if (request is null || request.CompanyId != companyId)
+            {
+                await transaction.RollbackAsync();
+                LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "NotFound");
+                return new PlacementRequestOperationResult(
+                    PlacementRequestOperationStatus.NotFound,
+                    "Không tìm thấy đơn ứng tuyển.");
+            }
+
+            if (request.Status is not (RequestStatus.Pending or RequestStatus.InterviewInvited))
+            {
+                await transaction.RollbackAsync();
+                LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "InvalidStatus");
+                return new PlacementRequestOperationResult(
+                    PlacementRequestOperationStatus.BusinessError,
+                    "Đơn này đã được xử lý.");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Note))
+            {
+                await transaction.RollbackAsync();
+                LogCompanyRequestAction("RecordResult", companyId, requestId, companyUserId, false, "MissingNote");
+                return new PlacementRequestOperationResult(
+                    PlacementRequestOperationStatus.BusinessError,
+                    "Ghi chú là bắt buộc khi sinh viên không đạt.");
+            }
+
+            request.Status = RequestStatus.Rejected;
+            request.ResultNote = CleanString(dto.Note, preserveLineBreaks: true);
+            request.ResultActorType = ActorType.Company;
+            request.ReviewedBy = companyUserId;
+            request.ReviewedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync();
+            await transaction.CommitAsync();
+            await _emailNotifier.NotifyResultAsync(request, passed: false, request.ResultNote);
         }
         catch (Exception exception) when (exception is DbUpdateException or DbException)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(
                 exception,
                 "Company placement result could not be saved: RequestId {RequestId}, CompanyId {CompanyId}",
@@ -517,6 +566,7 @@ public class PlacementRequestService : IPlacementRequestService
                 ResultNote = r.ResultNote,
                 StudentReportedInterviewAt = r.StudentReportedInterviewAt,
                 StudentInterviewNote = r.StudentInterviewNote,
+                StudentReportDismissedAt = r.StudentReportDismissedAt,
                 ResultActorType = r.ResultActorType,
                 ReviewedBy = r.ReviewedBy,
                 ReviewedByUsername = r.ReviewedByUser != null ? r.ReviewedByUser.Username : null,
@@ -668,6 +718,7 @@ public class PlacementRequestService : IPlacementRequestService
 
                         var lockedRequest = await _db.PlacementRequests
                             .IgnoreQueryFilters()
+                            .Include(item => item.Company)
                             .FirstOrDefaultAsync(item => item.Id == requestId);
 
                         if (lockedRequest is not null)
@@ -692,6 +743,10 @@ public class PlacementRequestService : IPlacementRequestService
                         lockedRequest.ConfirmationSource = confirmationSource;
                         await _db.SaveChangesAsync();
                         await transaction.CommitAsync();
+                        await _emailNotifier.NotifyResultAsync(
+                            lockedRequest,
+                            passed: false,
+                            lockedRequest.ResultNote);
                         return new PlacementRequestOperationResult(PlacementRequestOperationStatus.Success);
                     }
                     catch (Exception exception) when (exception is DbUpdateException or DbException)
@@ -772,4 +827,9 @@ public class PlacementRequestService : IPlacementRequestService
     public Task<PlacementRequestOperationResult> CancelAcceptedResultAsync(int requestId, int adminUserId, string? note = null)
         => _placementAcceptanceService.CancelAcceptedAsync(requestId, adminUserId, note);
 
+    private static PlacementRequestEmailNotifier CreateNoOpEmailNotifier(IConfiguration configuration) =>
+        new(
+            new NoOpEmailSender(NullLogger<NoOpEmailSender>.Instance),
+            NullLogger<PlacementRequestEmailNotifier>.Instance,
+            configuration);
 }

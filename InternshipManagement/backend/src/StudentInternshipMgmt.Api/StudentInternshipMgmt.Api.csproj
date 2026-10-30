@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj" />
@@ -24,6 +24,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>172049aa-b3b1-4c2f-a2f3-538028103edf</UserSecretsId>
   </PropertyGroup>
 
 </Project>

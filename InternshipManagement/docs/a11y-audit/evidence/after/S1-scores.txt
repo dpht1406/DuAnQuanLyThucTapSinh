@@ -1,0 +1,3 @@
+Accessibility: 97
+Best Practices: 100
+SEO: 100

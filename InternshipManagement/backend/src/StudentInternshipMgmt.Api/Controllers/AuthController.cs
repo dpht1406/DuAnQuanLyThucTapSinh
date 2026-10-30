@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Auth;
 using StudentInternshipMgmt.Application.Features.Auth.Dtos;
@@ -12,28 +13,60 @@ namespace StudentInternshipMgmt.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ILoginAttemptTracker _loginAttemptTracker;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ILoginAttemptTracker loginAttemptTracker)
     {
         _authService = authService;
+        _loginAttemptTracker = loginAttemptTracker;
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Login(
         LoginRequestDto request,
         CancellationToken cancellationToken)
     {
-        var response = await _authService.LoginAsync(request, cancellationToken);
-        return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response, "Dang nhap thanh cong."));
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        if (!_loginAttemptTracker.TryBeginAttempt(request.Username, ipAddress, out var retryAfter))
+        {
+            var retryAfterSeconds = Math.Max(1, (int)Math.Ceiling(retryAfter.TotalSeconds));
+            Response.Headers.RetryAfter = retryAfterSeconds.ToString();
+            var retryAfterMinutes = Math.Max(1, (int)Math.Ceiling(retryAfter.TotalMinutes));
+            return StatusCode(
+                StatusCodes.Status429TooManyRequests,
+                ApiResponse<LoginResponseDto>.FailResponse(
+                    $"Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau {retryAfterMinutes} phút."));
+        }
+
+        LoginResponseDto response;
+        try
+        {
+            response = await _authService.LoginAsync(request, cancellationToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _loginAttemptTracker.RecordFailedAttempt(request.Username, ipAddress);
+            throw;
+        }
+        catch
+        {
+            _loginAttemptTracker.CancelAttempt(request.Username, ipAddress);
+            throw;
+        }
+
+        _loginAttemptTracker.RecordSuccessfulAttempt(request.Username, ipAddress);
+        return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response, "Đăng nhập thành công."));
     }
 
     [HttpPost("refresh")]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Refresh(
         RefreshTokenRequestDto request,
         CancellationToken cancellationToken)
     {
         var response = await _authService.RefreshTokenAsync(request, cancellationToken);
-        return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response, "Lam moi token thanh cong."));
+        return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response, "Làm mới token thành công."));
     }
 
     [Authorize]
@@ -43,7 +76,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _authService.ChangePasswordAsync(GetCurrentUserId(), request, cancellationToken);
-        return Ok(ApiResponse<object>.SuccessResponse(null, "Doi mat khau thanh cong."));
+        return Ok(ApiResponse<object>.SuccessResponse(null, "Đổi mật khẩu thành công."));
     }
 
     [Authorize]
@@ -53,7 +86,7 @@ public class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _authService.LogoutAsync(request.RefreshToken, cancellationToken);
-        return Ok(ApiResponse<object>.SuccessResponse(null, "Dang xuat thanh cong."));
+        return Ok(ApiResponse<object>.SuccessResponse(null, "Đăng xuất thành công."));
     }
 
     [Authorize]
@@ -71,7 +104,7 @@ public class AuthController : ControllerBase
 
         if (!int.TryParse(userId, out var parsedUserId))
         {
-            throw new UnauthorizedAccessException("Token khong hop le.");
+            throw new UnauthorizedAccessException("Token không hợp lệ.");
         }
 
         return parsedUserId;

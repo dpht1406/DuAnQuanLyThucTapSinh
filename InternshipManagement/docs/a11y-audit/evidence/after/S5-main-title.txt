@@ -1,0 +1,2 @@
+document.querySelectorAll('main').length = 1
+document.title = "Thêm doanh nghiệp | QLTT"
