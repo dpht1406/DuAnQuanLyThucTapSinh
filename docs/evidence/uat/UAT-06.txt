@@ -1,10 +1,5 @@
-﻿=== REQUEST ===
-POST http://127.0.0.1:5018/api/placement-requests/1029/cancel-accepted-result HTTP/1.1
-Content-Type: application/json
-
-{"note":"Khong truyen token xac thuc"}
-
-=== RESPONSE ===
-HTTP/1.1 401 Unauthorized
-
-
+Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+Scenario: Auth /api/students / Admin
+Status: PASS
+Actual: HTTP 200

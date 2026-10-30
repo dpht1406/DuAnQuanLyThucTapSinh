@@ -10,10 +10,17 @@ Mọi số liệu dưới đây được đo đạc trực tiếp từ mã ngu�
 | **Số lượng phương thức (Method count)** | 4 methods | 21 methods | Tăng từ 4 hàm nguyên khối lên 21 hàm chuyên biệt theo đúng Single Responsibility |
 | **Phương thức dài nhất** | `AcceptAsync` (228 dòng) | `AcceptAsync` (77 dòng) | **Giảm 151 dòng (-66.2%)** |
 | **Phương thức dài thứ hai** | `CancelAcceptedAsync` (186 dòng) | `CancelAcceptedAsync` (75 dòng) | **Giảm 111 dòng (-59.7%)** |
-| **Độ lồng sâu tối đa (Max Nesting)** | 5 tầng (try/if/if lồng nhau) | 3 tầng trong luồng chính (5 tầng chỉ cục bộ ở transaction wrapper chuẩn) | Đạt độ phẳng cao, các luồng nghiệp vụ đọc theo tuyến tính từ trên xuống |
-| **Số đoạn code lặp rõ ràng** | 5 đoạn lặp | 0 đoạn lặp | **Triệt tiêu 100% code lặp** giữa 2 quy trình tiếp nhận và hủy tiếp nhận |
+| **Độ lồng sâu tối đa (Max Nesting)** | 5 tầng | 4 tầng | Giảm 1 tầng, đo độ lồng block trong class sau khi bỏ qua comment và chuỗi |
+| **Nhóm logic lặp rõ ràng** | 5 nhóm đã nhận diện | 2 nhóm còn lặp | Loại bỏ 3/5 nhóm (60%); không phải 0 đoạn / 100% |
 | **Magic strings & magic numbers** | 7 chuỗi cứng rải rác, số 1000 | 0 (tất cả quy tụ thành const) | Toàn bộ thông báo lỗi và giới hạn được quản lý tập trung |
-| **Kết quả kiểm thử** | 20/20 test Passed | 20/20 test Passed | **100% xanh, thời gian chạy ~1.2s** |
+| **Kết quả kiểm thử module** | 20/20 test Passed | 22/22 test Passed | Hai test mới kiểm tra lỗi `SaveChangesAsync` và email notifier |
+
+### Logic lặp còn lại trong source hiện tại
+
+1. `AcceptAsync` lặp kiểm tra `null` và `scopeCompanyId` cho `requestSummary` và `request` (hai nhánh).
+2. `RollbackWithResultAsync` được gọi với cùng trạng thái `NotFound` và `RequestNotFoundMessage` tại bốn nhánh tra cứu request trong `AcceptAsync` và `CancelAcceptedAsync`.
+
+Các số đo độ dài phương thức và độ lồng sâu được tạo lại từ `git show baseline:<file>` và source hiện tại; quy tắc đếm được ghi trong `docs/evidence/metrics-before.txt` và `docs/evidence/metrics-after.txt`.
 
 ---
 

@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
+using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.PlacementRequests;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Domain.Enums;
@@ -13,17 +14,27 @@ namespace PlacementAcceptance.Tests;
 
 public class PlacementAcceptanceCharacterizationTests
 {
-    private static AppDbContext CreateDbContext()
+    private static AppDbContext CreateDbContext(params IInterceptor[] interceptors)
     {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-            .Options;
+            .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+        if (interceptors.Length > 0)
+        {
+            optionsBuilder.AddInterceptors(interceptors);
+        }
+
+        var options = optionsBuilder.Options;
         return new AppDbContext(options);
     }
 
     private static PlacementAcceptanceService CreateService(AppDbContext db) =>
         new(db, NullLogger<PlacementAcceptanceService>.Instance);
+
+    private static PlacementAcceptanceService CreateService(
+        AppDbContext db,
+        PlacementRequestEmailNotifier emailNotifier) =>
+        new(db, NullLogger<PlacementAcceptanceService>.Instance, emailNotifier);
 
     private static async Task<(Company Company, JobPosition Position, Student Student, User AdminUser, User CompanyUser)> SeedBaseEntitiesAsync(
         AppDbContext db,
@@ -821,5 +832,124 @@ public class PlacementAcceptanceCharacterizationTests
 
         result.Status.Should().Be(PlacementRequestOperationStatus.NotFound);
         result.Error.Should().Be("Không tìm thấy đơn ứng tuyển.");
+    }
+
+    [Fact]
+    public async Task AcceptAsync_SaveChangesThrowsDbUpdateException_ReturnsConflictWithoutPersistingChanges()
+    {
+        var interceptor = new ToggleFailingSaveChangesInterceptor();
+        await using var db = CreateDbContext(interceptor);
+        var (company, position, student, _, companyUser) = await SeedBaseEntitiesAsync(db);
+        var request = new PlacementRequest
+        {
+            Id = 503,
+            StudentId = student.Id,
+            CompanyId = company.Id,
+            JobPositionId = position.Id,
+            Status = RequestStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+        db.PlacementRequests.Add(request);
+        await db.SaveChangesAsync();
+
+        interceptor.ShouldFail = true;
+        var service = CreateService(db);
+        var result = await service.AcceptAsync(
+            request.Id,
+            company.Id,
+            ActorType.Company,
+            companyUser.Id,
+            "Accepted",
+            null);
+
+        result.Status.Should().Be(PlacementRequestOperationStatus.Conflict);
+        result.Error.Should().Be("Không thể hoàn tất, vui lòng thử lại.");
+
+        db.ChangeTracker.Clear();
+        (await db.PlacementRequests.SingleAsync(item => item.Id == request.Id))
+            .Status.Should().Be(RequestStatus.Pending);
+        var unchangedStudent = await db.Students.SingleAsync(item => item.Id == student.Id);
+        unchangedStudent.Status.Should().Be(StudentStatus.NoCompany);
+        unchangedStudent.CompanyId.Should().BeNull();
+        unchangedStudent.JobPositionId.Should().BeNull();
+        (await db.StatusHistories.CountAsync()).Should().Be(0);
+        (await db.Notifications.CountAsync()).Should().Be(0);
+    }
+
+    [Fact]
+    public async Task AcceptAsync_NotifiesExactlyOnceOnSuccessAndDoesNotNotifyOnFailure()
+    {
+        await using var db = CreateDbContext();
+        var (company, position, student, _, companyUser) = await SeedBaseEntitiesAsync(db);
+        var request = new PlacementRequest
+        {
+            Id = 504,
+            StudentId = student.Id,
+            CompanyId = company.Id,
+            JobPositionId = position.Id,
+            ApplicantFullName = student.FullName,
+            ApplicantEmail = student.Email,
+            Status = RequestStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+        db.PlacementRequests.Add(request);
+        await db.SaveChangesAsync();
+
+        var emailSender = new CountingEmailSender();
+        var emailNotifier = new PlacementRequestEmailNotifier(
+            emailSender,
+            NullLogger<PlacementRequestEmailNotifier>.Instance);
+        var service = CreateService(db, emailNotifier);
+
+        var success = await service.AcceptAsync(
+            request.Id,
+            company.Id,
+            ActorType.Company,
+            companyUser.Id,
+            "Accepted",
+            null);
+
+        success.Status.Should().Be(PlacementRequestOperationStatus.Success);
+        emailSender.SendCount.Should().Be(1);
+
+        var failure = await service.AcceptAsync(
+            requestId: 99999,
+            scopeCompanyId: company.Id,
+            actor: ActorType.Company,
+            actorUserId: companyUser.Id,
+            note: "Not found",
+            confirmationSource: null);
+
+        failure.Status.Should().Be(PlacementRequestOperationStatus.NotFound);
+        emailSender.SendCount.Should().Be(1);
+    }
+
+    private sealed class ToggleFailingSaveChangesInterceptor : SaveChangesInterceptor
+    {
+        public bool ShouldFail { get; set; }
+
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            if (ShouldFail)
+            {
+                throw new DbUpdateException("Injected SaveChanges failure for test.");
+            }
+
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+    }
+
+    private sealed class CountingEmailSender : IEmailSender
+    {
+        public int SendCount { get; private set; }
+
+        public Task<bool> SendAsync(EmailMessageDto message, CancellationToken ct)
+        {
+            SendCount++;
+            return Task.FromResult(true);
+        }
     }
 }

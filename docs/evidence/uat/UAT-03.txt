@@ -1,11 +1,5 @@
-﻿=== REQUEST ===
-POST http://127.0.0.1:5018/api/company-me/placement-requests/1030/result HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDAzIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIxMDAzIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImNvbXBhbnlfdGVzdCIsInVuaXF1ZV9uYW1lIjoiY29tcGFueV90ZXN0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ29tcGFueSIsInJvbGUiOiJDb21wYW55IiwiQ29tcGFueUlkIjoiMSIsImV4cCI6MTc5MzMyODI3NCwiaXNzIjoiU3R1ZGVudEludGVybnNoaXBNZ210IiwiYXVkIjoiU3R1ZGVudEludGVybnNoaXBNZ210In0.IiL7uOSswXCgddCYIBOraeM_g3x-zLyqsUS2UW18cpk
-Content-Type: application/json
-
-{"isPassed":false,"note":""}
-
-=== RESPONSE ===
-HTTP/1.1 400 Bad Request
-{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Note":["Ghi chú là bắt buộc khi sinh viên không đạt."]},"traceId":"00-ffe643ca17dec27d97ff36649d8d2671-ba9538eadd39acd7-00"}
-
+Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+Scenario: c. Company Passed and Failed (note required)
+Status: FAIL
+Actual: Create company position expected HTTP 200/201 but got 403: The remote server returned an error: (403) Forbidden.

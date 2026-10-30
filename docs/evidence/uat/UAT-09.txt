@@ -1,10 +1,5 @@
-﻿=== REQUEST ===
-POST http://127.0.0.1:5018/api/placement-requests/1029/cancel-accepted-result HTTP/1.1
-Authorization: Bearer [REDACTED]
-Content-Length: 1026
-NoteLength: 1005
-
-=== RESPONSE ===
-HTTP/1.1 400 Bad Request
-{"success":false,"message":"Ghi chú không được vượt quá 1000 ký tự.","data":null,"errors":null}
-
+Runner: run-e2e.ps1
+Database: StudentInternshipMgmtDb_Evidence_20261030_1004
+Scenario: Auth /api/students / Anonymous
+Status: PASS
+Actual: HTTP 401

@@ -35,13 +35,24 @@ Quá trình kiểm chứng được tiến hành độc lập bằng việc:
 |:---:|---|:---:|---|---|---|
 | **CR-01** | `PlacementAcceptanceService.cs:572-577` | **P4** | Code Smell | Tham số `preserveLineBreaks` trong `CleanString` không được sử dụng thực tế (dùng discard `_ = preserveLineBreaks;`). Tồn tại từ baseline (`BUG-PRE-01`). | Chuẩn hóa hàm làm sạch chuỗi khi có thư viện tiện ích chung; hiện tại giữ nguyên để đảm bảo tương thích 100% chữ ký hàm. |
 | **CR-02** | `PlacementAcceptanceService.cs:150-171` | **P3** | Hiệu năng | Trong luồng `CancelAcceptedAsync` trên CSDL quan hệ, có 2 lần truy vấn entity đơn ứng tuyển (`GetRequestSummaryAsync` và `GetPlacementRequestByIdAsync`). | Có thể tối ưu gom thành một lần đọc nếu không yêu cầu phân tách bước khóa dòng trước tracking. |
-| **CR-03** | `PlacementAcceptanceService.cs:235-257` | **P4** | Khả năng bảo trì | Template log trong `ExecuteInTransactionAsync` bổ sung từ khóa "transaction", khác nhẹ so với câu log gốc của baseline. | Xem xét đồng bộ lại template nếu các hệ thống log monitor bên ngoài có regex bắt chuỗi cũ. |
+| **CR-03** | `PlacementAcceptanceService.cs:235-257` | **P4** | Khả năng bảo trì | Template log chung giữ nguyên câu lỗi của Accept nhưng thêm từ `transaction` vào log lỗi chính của Cancel so với baseline. | Chấp nhận khác biệt nếu hệ thống giám sát không phụ thuộc chuỗi cũ; kiểm tra matcher riêng cho luồng Cancel. |
 | **CR-04** | `PlacementAcceptanceService.cs:112-117` | **P3** | Nghiệp vụ biên | `AcceptAsync` chỉ kiểm tra công ty tồn tại, chưa kiểm tra trạng thái hoạt động của doanh nghiệp (kế thừa từ baseline). | Bổ sung kiểm tra cờ hoạt động doanh nghiệp nếu domain entity hỗ trợ trong tương lai. |
 | **CR-05** | `PlacementAcceptanceService.cs:138-141` | **P4** | Thiết kế | Bắn email thông báo sau commit transaction; nếu tiến trình chết đột ngột sau commit thì email chưa được gửi. | Tương lai có thể triển khai Outbox Pattern cho các tác vụ gửi thông báo/email. |
 
 ---
 
 ## 4. Chi Tiết Từng Phát Hiện
+
+### CR-03: Đối chiếu log transaction ở cả hai luồng với baseline
+
+Đối chiếu trực tiếp bằng `git show baseline:InternshipManagement/backend/src/StudentInternshipMgmt.Infrastructure/Services/PlacementAcceptanceService.cs`:
+
+- **Accept baseline**: `Placement acceptance transaction failed: RequestId {RequestId}`.
+- **Cancel baseline**: `Placement acceptance cancellation failed: RequestId {RequestId}`.
+- **Sau refactor**: `ExecuteInTransactionAsync` dùng `"{OperationName} transaction failed: RequestId {RequestId}"`. Với operation name của Accept, câu log không đổi; với Cancel, câu log trở thành `Placement acceptance cancellation transaction failed: RequestId {RequestId}`.
+- **Rollback**: baseline có hai template riêng `Placement acceptance rollback failed...` và `Placement acceptance cancellation rollback failed...`; template mới `"{OperationName} rollback failed..."` giữ nguyên cả hai câu sau khi nội suy operation name.
+
+Vì vậy CR-03 chỉ áp dụng cho log lỗi chính của Cancel; mô tả cũ rằng cả template transaction được bổ sung là không chính xác.
 
 ### CR-01: Tham số `preserveLineBreaks` không được sử dụng trong `CleanString`
 - **Tập tin**: `InternshipManagement/backend/src/StudentInternshipMgmt.Infrastructure/Services/PlacementAcceptanceService.cs` (Dòng 572–577)

@@ -32,7 +32,7 @@ Toàn bộ các thay đổi trong đợt tái cấu trúc (refactoring) được
   - `LockRelationalRowsForCancellationAsync`: Tách riêng khóa dòng phục vụ hủy kết quả tiếp nhận.
 
 ### [48b2134] `refactor(placement-acceptance): decompose AcceptAsync into business validation and domain transition methods`
-- **Mục đích**: Tách nhỏ phương thức `AcceptAsync` (từ 228 dòng xuống còn 76 dòng), giảm độ lồng sâu từ 5 tầng xuống 2 tầng, tuân thủ nguyên lý Đơn Trách Nhiệm (SRP).
+- **Mục đích**: Tách nhỏ phương thức `AcceptAsync` từ 228 xuống 77 dòng; độ lồng block tối đa của class giảm từ 5 xuống 4 tầng theo phép đo hiện tại, tuân thủ nguyên lý Đơn Trách Nhiệm (SRP).
 - **Phương thức con được phân tách**:
   - `GetRequestSummaryAsync`: Đọc nhanh thông tin định danh phục vụ khóa dòng.
   - `ValidateAcceptanceActorPermission`: Kiểm tra phân quyền Admin vs Doanh nghiệp và trạng thái hợp lệ của đơn.
@@ -45,7 +45,7 @@ Toàn bộ các thay đổi trong đợt tái cấu trúc (refactoring) được
   - `CreateAcceptanceNotification`: Tạo thông báo hệ thống cho sinh viên và doanh nghiệp.
 
 ### [bde2cea] `refactor(placement-acceptance): decompose CancelAcceptedAsync and use consistent status checks`
-- **Mục đích**: Tách nhỏ phương thức `CancelAcceptedAsync` (từ 186 dòng xuống 74 dòng), sử dụng mảng hằng số trạng thái `AcceptedStatuses` đồng nhất.
+- **Mục đích**: Tách nhỏ phương thức `CancelAcceptedAsync` từ 186 xuống 75 dòng, sử dụng mảng hằng số trạng thái `AcceptedStatuses` đồng nhất.
 - **Phương thức con được phân tách**:
   - `ValidateStudentForCancellation`: Kiểm tra sinh viên có tồn tại, chưa bị xóa mềm, và dữ liệu khớp với đơn đã nhận.
   - `ApplyStudentCancellation`: Hoàn tác sinh viên về trạng thái `NoCompany`.
