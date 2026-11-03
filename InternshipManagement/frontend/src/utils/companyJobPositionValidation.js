@@ -18,7 +18,7 @@ export function validateCompanyJobPosition(form = {}, { isCreate = false, today 
   const errors = {}
   const title = typeof form.title === 'string' ? form.title.trim() : ''
 
-  if (!title) errors.title = 'Tiêu đề (Title) là bắt buộc.'
+  if (!title) errors.title = 'Tiêu đề là bắt buộc.'
 
   for (const [field, label, limit, allowLineBreaks] of fields) {
     const value = typeof form[field] === 'string' ? form[field] : ''
@@ -28,7 +28,7 @@ export function validateCompanyJobPosition(form = {}, { isCreate = false, today 
 
   const quantity = Number(form.quantity)
   if (!Number.isInteger(quantity) || quantity <= 0) {
-    errors.quantity = 'Số lượng tuyển (Quantity) phải là số nguyên lớn hơn 0.'
+    errors.quantity = 'Số lượng tuyển phải là số nguyên lớn hơn 0.'
   }
 
   if (isCreate && form.deadline) {

@@ -246,7 +246,7 @@ public class JobPositionService : IJobPositionService
         var acceptedCount = await CountAcceptedAsync(id);
         if (dto.Quantity < acceptedCount)
             return (false,
-                $"Không thể giảm số lượng tuyển (Quantity) xuống dưới số lượng đã nhận hiện tại ({acceptedCount}).",
+                $"Không thể giảm số lượng tuyển xuống dưới số lượng đã nhận hiện tại ({acceptedCount}).",
                 false);
 
         jobPosition.Title = dto.Title.Trim();
@@ -277,7 +277,7 @@ public class JobPositionService : IJobPositionService
         var acceptedCount = await CountAcceptedAsync(id);
         if (dto.Quantity < acceptedCount)
             return (false,
-                $"Không thể giảm số lượng tuyển (Quantity) xuống dưới số lượng đã nhận hiện tại ({acceptedCount}).",
+                $"Không thể giảm số lượng tuyển xuống dưới số lượng đã nhận hiện tại ({acceptedCount}).",
                 false,
                 null);
 
@@ -555,9 +555,9 @@ public class JobPositionService : IJobPositionService
     private static string? ValidateFields(string title, string department, string? location, DateTime? deadline, int quantity, string description, bool isCreate)
     {
         if (string.IsNullOrWhiteSpace(title))
-            return "Tiêu đề (Title) là bắt buộc.";
+            return "Tiêu đề là bắt buộc.";
         if (title.Trim().Length > TitleMaxLength)
-            return $"Tiêu đề (Title) không được quá {TitleMaxLength} ký tự.";
+            return $"Tiêu đề không được quá {TitleMaxLength} ký tự.";
 
         if ((department ?? string.Empty).Trim().Length > 100)
             return "Phòng ban không được quá 100 ký tự.";
@@ -569,10 +569,10 @@ public class JobPositionService : IJobPositionService
             return "Hạn nộp hồ sơ không được trước ngày hôm nay.";
 
         if (quantity <= 0)
-            return "Số lượng tuyển (Quantity) phải lớn hơn 0.";
+            return "Số lượng tuyển phải lớn hơn 0.";
 
         if (description.Trim().Length > DescriptionMaxLength)
-            return $"Mô tả (Description) không được quá {DescriptionMaxLength} ký tự.";
+            return $"Mô tả không được quá {DescriptionMaxLength} ký tự.";
 
         return null;
     }

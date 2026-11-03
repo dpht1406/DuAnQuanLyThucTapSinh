@@ -13,8 +13,8 @@ const validForm = {
 describe('validateCompanyJobPosition', () => {
   it('requires a title and a positive integer quantity', () => {
     expect(validateCompanyJobPosition({ ...validForm, title: '   ', quantity: 0 })).toMatchObject({
-      title: 'Tiêu đề (Title) là bắt buộc.',
-      quantity: 'Số lượng tuyển (Quantity) phải là số nguyên lớn hơn 0.'
+      title: 'Tiêu đề là bắt buộc.',
+      quantity: 'Số lượng tuyển phải là số nguyên lớn hơn 0.'
     })
     expect(validateCompanyJobPosition({ ...validForm, quantity: 1.5 }).quantity).toBeTruthy()
   })
