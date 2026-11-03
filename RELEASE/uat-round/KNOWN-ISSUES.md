@@ -32,12 +32,30 @@ Tài liệu này ghi nhận công khai các vấn đề còn tồn đọng, các
 
 ---
 
-## 3. Các Lưu ý Kỹ thuật Khác (Technical Observations)
+## 3. Các Vấn đề Phát hiện trong Đánh giá Chéo Đã Được Khắc Phục (Resolved from Review)
 
-### 3.1 Ca kiểm thử bỏ qua theo thiết kế (Design Skipped Test)
+> [!NOTE]
+> Các vấn đề dưới đây đã được xử lý triệt để và **không còn nằm trong danh sách mở**:
+
+### 3.1 CR-03: Cờ trạng thái `saving` ở hàm submit ứng tuyển chưa bọc `try...finally` toàn diện
+- **Mức ưu tiên**: P3.
+- **Tình trạng**: **ĐÃ SỬA DỨT ĐIỂM** (Closed).
+- **Giải pháp**: Hàm `submit()` tại `JobPositionApplyView.vue` đã được bọc trọn vẹn trong `try...finally` ngay sau khi đặt `saving.value = true`. Đã bổ sung 4 unit test trong `JobPositionApplyView.test.js` kiểm chứng cờ `saving` luôn trở về `false` trong mọi tình huống (kể cả khi kiểm tra tính hợp lệ phía client ném lỗi).
+- **Commit**: `6588fb3` (`fix(uat): CR-03 ensure saving flag resets via try-finally in submit`).
+
+### 3.2 DOC-01: Tài liệu hướng dẫn tái lập thiếu bước `npm install` trên bản clone sạch
+- **Mức ưu tiên**: P3.
+- **Tình trạng**: **ĐÃ SỬA DỨT ĐIỂM** (Closed).
+- **Giải pháp**: Đã bổ sung chỉ dẫn `npm install` bắt buộc tại Mục 2.3 trong `README-REPRODUCE-UAT.md`, đồng thời hoàn thiện các bước hướng dẫn chuẩn bị môi trường clone sạch.
+
+---
+
+## 4. Các Lưu ý Kỹ thuật Khác (Technical Observations)
+
+### 4.1 Ca kiểm thử bỏ qua theo thiết kế (Design Skipped Test)
 - **Tên test**: `StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters` trong `StudentInternshipMgmt.Infrastructure.Tests`.
 - **Lý do**: Test yêu cầu collation SQL Server Tiếng Việt đặc thù (`Vietnamese_CI_AS`) để tìm kiếm LIKE không dấu / có dấu tiếng Việt chính xác. EF Core InMemory không hỗ trợ collation này nên được đánh dấu `[Fact(Skip = "...")]` từ trước.
 
-### 3.2 Chuỗi dự phòng tại CompanyPlacementRequestDetailView.vue
+### 4.2 Chuỗi dự phòng tại CompanyPlacementRequestDetailView.vue
 - **Vị trí**: Dòng 174 file `CompanyPlacementRequestDetailView.vue`.
 - **Mô tả**: Khi `coverLetter` của đơn ứng tuyển bị rỗng, template hiển thị chuỗi fallback `'tedjsfjdjklfjasdfslfajaisf'`. Mặc dù không ảnh hưởng đến luồng vận hành chính (do validation bắt buộc coverLetter có tối thiểu 20 ký tự), đây là một nợ kỹ thuật nhỏ cần được thay bằng chuỗi hiển thị thân thiện hơn (ví dụ: `"(Không có lời giới thiệu)"`) ở đợt dọn dẹp tiếp theo.

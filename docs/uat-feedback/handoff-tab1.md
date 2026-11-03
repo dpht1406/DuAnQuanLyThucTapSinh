@@ -10,24 +10,27 @@
 
 ## 1. Tóm tắt Nội dung Đã hoàn thành
 
-TAB 1 đã thu thập 10 phản hồi UAT thực nghiệm (FB-01 đến FB-10) và triển khai sửa đổi dứt điểm **5 phản hồi** (vượt yêu cầu tối thiểu 3 phản hồi):
+TAB 1 đã thu thập 10 phản hồi UAT thực nghiệm (FB-01 đến FB-10) và triển khai sửa đổi dứt điểm **5 phản hồi** (vượt yêu cầu tối thiểu 3 phản hồi), đồng thời tiếp thu và xử lý triệt để 2 phát hiện từ đợt đánh giá chéo của TAB 2 (CR-03 và DOC-01):
 1. **FB-04 (P4)**: Sửa lỗi mã hóa tiếng Việt (mojibake) dòng cuối cùng trong [README.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/README.md).
 2. **FB-01 (P3)**: Chuẩn hóa thông báo lỗi tạo/sửa sinh viên sang tiếng Việt tự nhiên, không còn kẹp các từ tiếng Anh (`FullName`, `PhoneNumber`, `StudentCode`).
 3. **FB-02 (P3)**: Xóa bỏ các định danh kỹ thuật `(Title)` và `(Quantity)` trong thông báo lỗi vị trí tuyển dụng ở frontend và backend.
 4. **FB-03 (P3)**: Tự động cắt (trim) khoảng trắng ở hai đầu liên kết CV, lưu giá trị sạch vào CSDL; từ chối triệt để `javascript:`, URL tương đối, và khoảng trắng ở giữa.
 5. **FB-10 (P2)**: Khắc phục lỗi Race Condition (phát hiện từ ca kiểm thử **TC-12**) khi bấm nộp đơn 2 lần liên tiếp nhanh chóng bằng Database Transaction + Row Lock trên bảng `Students` và disable button tức thì ở giao diện.
+6. **CR-03 (P3)**: Bọc toàn bộ thân hàm `submit()` trong `JobPositionApplyView.vue` bằng `try...finally` để bảo đảm cờ `saving` luôn luôn được trả về `false` trong mọi trường hợp, bổ sung 4 unit test trong `JobPositionApplyView.test.js`.
+7. **DOC-01 (P3)**: Bổ sung chỉ dẫn `npm install` trước `npm test` trong `README-REPRODUCE-UAT.md` và rà soát các bước chạy trên clone sạch.
 
 ---
 
 ## 2. Danh sách Commit Git (Một commit nhỏ cho mỗi phản hồi)
 
-| Mã phản hồi | Commit SHA | Thông điệp Commit (Conventional Commit) |
+| Mã phản hồi / Mã lỗi | Commit SHA | Thông điệp Commit (Conventional Commit) |
 | :--- | :---: | :--- |
 | **FB-04** | `381d0eb` | `fix(uat): FB-04 fix README mojibake encoding` |
 | **FB-01** | `cde0541` | `fix(uat): FB-01 standardize student validation messages in Vietnamese` |
 | **FB-02** | `40ff5a9` | `fix(uat): FB-02 remove technical identifiers from job position validation messages` |
 | **FB-03** | `838f6de` | `fix(uat): FB-03 allow trimmed CV URL and reject invalid schemes and internal spaces` |
 | **FB-10** | `21d7ded` | `fix(uat): FB-10 prevent duplicate placement request on rapid double submission` |
+| **CR-03** | `6588fb3` | `fix(uat): CR-03 ensure saving flag resets via try-finally in submit` |
 
 ---
 
@@ -50,7 +53,8 @@ TAB 1 đã thu thập 10 phản hồi UAT thực nghiệm (FB-01 đến FB-10) v
 - [`companyJobPositionValidation.test.js`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/utils/companyJobPositionValidation.test.js): Cập nhật test assertion.
 - [`applicationValidation.js`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/utils/applicationValidation.js): Hỗ trợ trim CV URL ở client, chặn URL tương đối, javascript, khoảng trắng giữa.
 - [`applicationValidation.test.js`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/utils/applicationValidation.test.js): Bổ sung 4 ca kiểm thử mới cho URL trim và URL invalid.
-- [`JobPositionApplyView.vue`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.vue): Kích hoạt `saving.value = true` ngay đầu hàm `submit()` để vô hiệu hóa nút bấm tức thì.
+- [`JobPositionApplyView.vue`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.vue): Kích hoạt `saving.value = true` ngay đầu hàm `submit()` và bọc toàn bộ thân hàm trong `try...finally` (CR-03).
+- [`JobPositionApplyView.test.js`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.test.js): Bộ 4 ca kiểm thử cho saving guard (CR-03).
 
 ---
 
@@ -62,7 +66,7 @@ TAB 1 đã thu thập 10 phản hồi UAT thực nghiệm (FB-01 đến FB-10) v
 | - `StudentInternshipMgmt.Infrastructure.Tests` | 264 (263 pass, 1 skip) | 265 (264 pass, 1 skip) | +1 test | Xanh |
 | - `StudentInternshipMgmt.Tests` | 112 pass | 115 pass | +3 tests | Xanh |
 | - `PlacementAcceptance.Tests` | 22 pass | 22 pass | 0 | Xanh |
-| **Frontend Tests (Vitest)** | 186 tests pass (16 files) | **190 tests pass (16 files)** | **+4 tests** | **100% XANH** |
+| **Frontend Tests (Vitest)** | 186 tests pass (16 files) | **194 tests pass (17 files)** | **+8 tests** | **100% XANH** |
 | **Frontend Production Build** | Success (dist) | **Success (dist)** | 0 cảnh báo | **XANH** |
 
 > *Ghi chú*: 1 ca test bỏ qua (`StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters`) là chủ đích thiết kế từ các đợt trước do yêu cầu collation SQL Server Tiếng Việt đặc thù.
@@ -79,8 +83,9 @@ TAB 1 đã thu thập 10 phản hồi UAT thực nghiệm (FB-01 đến FB-10) v
    # Chạy toàn bộ backend tests
    dotnet test InternshipManagement/backend/InternshipManagement.sln -m:1
 
-   # Chạy toàn bộ frontend tests
+   # Chạy toàn bộ frontend tests (đã bổ sung npm install cho clone sạch)
    cd InternshipManagement/frontend
+   npm install
    npm test
 
    # Kiểm tra build frontend

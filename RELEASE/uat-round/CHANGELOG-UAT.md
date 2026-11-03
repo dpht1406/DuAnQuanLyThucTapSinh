@@ -14,9 +14,12 @@ Tất cả các thay đổi đáng chú ý trong đợt phát hành UAT Sprint 2
 - **FB-10 (P2)**: Khắc phục triệt để lỗi Race Condition (phát hiện qua ca kiểm thử TC-12) khi người dùng bấm nút nộp đơn hai lần liên tiếp (double click) hoặc gửi request song song:
   - Backend: Bọc trong Database Transaction và áp dụng Pessimistic Row Lock trên bảng `Students` (`UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {studentId}`).
   - Frontend: Vô hiệu hóa nút bấm (`saving = true`) ngay tại dòng đầu tiên khi người dùng click nộp đơn.
+- **CR-03 (P3)**: Tái cấu trúc hàm `submit()` trong `JobPositionApplyView.vue` với khối `try...finally` bao bọc toàn bộ phần thân hàm sau khi gán `saving.value = true`. Đảm bảo cờ `saving` luôn luôn được trả về `false` trong mọi tình huống (kể cả khi kiểm tra tính hợp lệ phía client ném ngoại lệ hoặc trả về sớm), giải quyết dứt điểm rủi ro treo trạng thái nút nộp đơn.
+- **DOC-01 (P3)**: Cập nhật tài liệu hướng dẫn tái lập `README-REPRODUCE-UAT.md` mục 2.3: bổ sung bước `npm install` bắt buộc trên bản clone sạch trước khi chạy `npm test` và `npm run build`; rà soát bổ sung chỉ dẫn checkout branch và chạy EF migrations trên CSDL biệt lập.
 
 ### Đã thêm (Added)
 - Bộ kiểm thử đơn vị và tích hợp mới:
+  - `JobPositionApplyView.test.js`: 4 ca kiểm thử chuyên sâu cho vòng đời cờ trạng thái `saving` (client validation fail, client validation throw, submit success, submit error).
   - `CreateRequestAsync_double_submission_creates_only_one_request_and_rejects_second` trong `PlacementRequestServiceTests.cs`.
   - Kiểm thử thông báo tiếng Việt chuẩn trong `StudentValidatorTests.cs`.
   - Các ca kiểm thử biên và kiểm thử từ chối URL CV trong `CreatePlacementRequestDtoValidatorTests.cs` và `applicationValidation.test.js`.
