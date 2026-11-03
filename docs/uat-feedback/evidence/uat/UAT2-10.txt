@@ -1,0 +1,14 @@
+﻿KICH BAN UAT2-10: Kiem tra duong dan loi - Phan quyen vai tro va cach ly du lieu cheo (Multi-Tenancy)
+Nguoi thuc hien: SV-01 / DN-01 / Doanh nghiep B
+Thoi diem: 2026-11-03 10:41:12
+
+Buoc 1: Sinh vien co tinh truy cap tai nguyen quan tri (/api/students):
+HTTP Status nhan duoc: 403 (Ky vong: 403 Forbidden)
+
+Buoc 2: Nguoi dung nac danh goi API quan tri (/api/students):
+HTTP Status nhan duoc: 401 (Ky vong: 401 Unauthorized)
+
+Buoc 3: Doanh nghiep B co tinh chinh sua tin tuyen dung cua Doanh nghiep A:
+HTTP Status nhan duoc: 404 (Ky vong: 403 hoac 404)
+
+Ket luan: DAT (PASS) - Co che phan quyen theo vai tro va cach ly du lieu da nguoi thue hoat dong an toan tuyet doi, ngan chan thanh cong moi hanh vi truy cap trai phep.

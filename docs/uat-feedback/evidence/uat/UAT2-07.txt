@@ -1,0 +1,15 @@
+﻿KICH BAN UAT2-07: Hoi quy Doanh nghiep tiep nhan ho so, moi phong van va danh gia ket qua
+Nguoi thuc hien: DN-01 (Dai dien Doanh nghiep)
+Thoi diem: 2026-11-03 10:41:08
+
+Buoc 1: Doanh nghiep kiem tra danh sach don ung tuyen nhan duoc:
+HTTP Status: 200 | So don: 1
+
+Buoc 2: Doanh nghiep gui thu moi phong van:
+HTTP Status: 200
+
+Buoc 3: Doanh nghiep cap nhat ket qua tuyen dung (Passed):
+HTTP Status: 200
+Trang thai don ghi nhan trong he thong: 4 (Ky vong: Accepted / 4)
+
+Ket luan: DAT (PASS) - Doanh nghiep thuc hien hoan chinh quy trinh duyet don, moi phong van va tiep nhan thuc tap sinh thanh cong.

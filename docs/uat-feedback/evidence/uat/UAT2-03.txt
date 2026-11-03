@@ -1,0 +1,16 @@
+﻿KICH BAN UAT2-03: Kiem tra cat tia khoang trang CV URL va phong ve URL (FB-03)
+Nguoi thuc hien: SV-02 (Sinh vien thao tac nop CV)
+Thoi diem: 2026-11-03 10:40:52
+
+Buoc 1: Nop don voi CV URL co khoang trang o dau va cuoi ('   https://drive.google.com/file/d/test-cv/view   '):
+HTTP Status nhan duoc: 200
+Don ung tuyen duoc tao thanh cong voi Ma: 1
+Gia tri CvUrl thuc te luu trong CSDL: https://drive.google.com/file/d/test-cv/view
+
+Buoc 2: Nop don voi URL scheme ftp://:
+HTTP Status nhan duoc: 400 (Ky vong: 400)
+
+Buoc 3: Nop don voi URL co khoang trang o giua ('https://example.com/cv file.pdf'):
+HTTP Status nhan duoc: 400 (Ky vong: 400)
+
+Ket luan: DAT (PASS) - He thong tu dong cat tia khoang trang 2 dau hop le va luu chuoi sach vao CSDL; tu choi triet de scheme ftp va khoang trang giua.

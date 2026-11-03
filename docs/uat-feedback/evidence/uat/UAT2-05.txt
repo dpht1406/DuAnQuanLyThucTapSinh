@@ -1,0 +1,10 @@
+﻿KICH BAN UAT2-05: Kiem tra kiem soat dong thoi chong tao 2 don trung lap (FB-10 / TC-12)
+Nguoi thuc hien: SV-01 (Sinh vien thao tac nop ho so)
+Thoi diem: 2026-11-03 10:40:55
+
+Gui dong thoi 2 HTTP POST request toi http://127.0.0.1:5028/api/me/placement-requests:
+Ket qua Request A: HTTP 200
+Ket qua Request B: HTTP 400
+So luong ban ghi don ung tuyen thuc te trong CSDL: 1
+
+Ket luan: DAT (PASS) - Database Transaction va Row Lock da bao ve thanh cong: dung 1 request duoc chap nhan va 1 request bi tu choi; trong CSDL chi co duy nhat 1 don duoc tao.

@@ -1,0 +1,8 @@
+﻿KICH BAN UAT2-04: Kiem tra ma hoa tieng Viet UTF-8 khong loi font README.md (FB-04)
+Nguoi thuc hien: NM-01 (Nguoi tiep can du an)
+Thoi diem: 2026-11-03 10:40:55
+
+Duong dan file: D:\baitapthuctap\duanquanlythuctapsinh\InternshipManagement\README.md
+Dong cuoi cung doc bang UTF-8: 'Hệ thống quản lý sinh viên thực tập (ASP.NET Core 8 + Vue 3).'
+
+Ket luan: DAT (PASS) - File tai lieu hien thi tieng Viet UTF-8 chuan xac 100%, khong con bat ky dau hieu loi font mojibake nao.

@@ -1,0 +1,121 @@
+================================================================================
+BẢN GHI KIỂM TRA TÁI LẬP GÓI PHÁT HÀNH TỪ BẢN CLONE SẠCH (CLEAN CLONE REPRODUCE)
+================================================================================
+Người thực hiện: Reviewer & QA Độc lập (TAB 2)
+Thời gian thực thi: 2026-11-03 10:44:00 - 10:47:00
+Môi trường kiểm tra: Windows 11, .NET 8 SDK (9.0.308), Node.js v22.19.0, npm 10.9.2, SQL Server LocalDB/localhost
+Nhánh kiểm tra: feature/uat-feedback (Commit HEAD: 6b5a950)
+Thư mục clone sạch: C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2 (Không chứa bin, obj, node_modules, .agent)
+Tài liệu hướng dẫn đối chiếu: RELEASE/uat-round/README-REPRODUCE-UAT.md
+
+--------------------------------------------------------------------------------
+BƯỚC 1: KHỞI TẠO BẢN CLONE SẠCH TỪ GIT
+--------------------------------------------------------------------------------
+Lệnh thực hiện:
+git clone -b feature/uat-feedback "D:\baitapthuctap\duanquanlythuctapsinh" "C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2"
+
+Kết quả:
+Cloning into 'C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2'...
+done.
+Xác nhận kiểm tra:
+- Thư mục .agent: Không tồn tại (False)
+- Thư mục node_modules: Không tồn tại (False)
+- Thư mục bin/obj: Không tồn tại (False)
+Đánh giá: BẢN CLONE HOÀN TOÀN SẠCH.
+
+--------------------------------------------------------------------------------
+BƯỚC 2: KIỂM TRA BẢN DỰNG VÀ BỘ TEST TỰ ĐỘNG THEO MỤC 2 README
+--------------------------------------------------------------------------------
+
+[2.1] Biên dịch Solution:
+Lệnh: dotnet build DuAnQuanLyThucTapSinh.sln
+Kết quả:
+Restored projects: 5/5
+Build succeeded.
+18 Warning(s) (Cảnh báo gán null compiler CS8601/CS8604 vốn có từ baseline)
+0 Error(s)
+Time Elapsed 00:00:12.93
+Đánh giá: ĐẠT (PASS) - Khớp 100% kỳ vọng "Build succeeded. 0 Error(s)".
+
+[2.2] Chạy Backend Tests:
+Lệnh: dotnet test InternshipManagement/backend/InternshipManagement.sln -m:1
+Kết quả:
+- StudentInternshipMgmt.Infrastructure.Tests: Passed: 264, Skipped: 1 (theo thiết kế Collation Tiếng Việt), Total: 265
+- StudentInternshipMgmt.Tests: Passed: 116, Skipped: 0, Total: 116
+- PlacementAcceptance.Tests: Passed: 22, Skipped: 0, Total: 22
+Tổng cộng: 402 Passed, 1 Skipped, 0 Failed (Thời gian chạy: ~10 giây)
+Đánh giá: ĐẠT (PASS) - Khớp 100% kỳ vọng 402 Passed, 1 Skipped, 0 Failed.
+
+[2.3] Chạy Frontend Tests và Production Build:
+Thao tác: cd InternshipManagement/frontend
+
+* Thử nghiệm 1: Chạy ĐÚNG NGUYÊN VĂN theo hướng dẫn trong README (không bổ sung lệnh ngầm):
+Lệnh: npm test
+Kết quả:
+> frontend@0.0.0 test
+> vitest run
+'vitest' is not recognized as an internal or external command, operable program or batch file.
+Exit Code: 1
+
+Lệnh: npm run build
+Kết quả:
+> frontend@0.0.0 build
+> vite build
+[vite]: Rollup failed to resolve import "primevue/config" from ".../src/main.js".
+Exit Code: 1
+
+--> PHÁT HIỆN LỖI TÀI LIỆU (DOC-01 / P3):
+Mục 2.3 trong README-REPRODUCE-UAT.md bỏ quên bước tiên quyết `npm install` (hoặc `npm ci`). Trên bản clone sạch từ git, thư mục `node_modules` không tồn tại, khiến lệnh `npm test` và `npm run build` thất bại vì thiếu dependencies. Đã ghi nhận vào Sổ lỗi (Mức P3 - Tài liệu hướng dẫn thiếu bước).
+
+* Thử nghiệm 2: Chạy sau khi thực hiện `npm install`:
+Lệnh: npm install
+Kết quả: added 106 packages, audited 107 packages in 7s. Exit Code 0.
+
+Lệnh: npm test
+Kết quả:
+Test Files: 16 passed (16)
+Tests: 190 passed (190)
+Duration: 4.16s
+Exit Code: 0.
+
+Lệnh: npm run build
+Kết quả:
+✓ 513 modules transformed.
+dist/index.html 1.54 kB
+dist/assets/...
+✓ built in 2.39s
+Exit Code: 0.
+Đánh giá: ĐẠT (PASS) khi có `npm install`.
+
+--------------------------------------------------------------------------------
+BƯỚC 3: KIỂM TRA THỬ NGHIỆM THỰC TẾ THEO MỤC 3 README
+--------------------------------------------------------------------------------
+
+[3.1] Tự động hóa bằng PowerShell Script:
+Lệnh: powershell -ExecutionPolicy Bypass -File docs/uat-feedback/evidence/before-after/capture-after-evidence.ps1
+Kết quả:
+Khoi dong Backend API ket noi toi StudentInternshipMgmtDb_UATBuild...
+API san sang tai http://127.0.0.1:5018.
+Dang thu thap bang chung FB-01 (After)...
+Da ghi FB-01-after.txt
+Dang thu thap bang chung FB-02 (After)...
+Da ghi FB-02-after.txt
+Dang thu thap bang chung FB-03 (After)...
+Da ghi FB-03-after.txt
+Dang thu thap bang chung FB-04 (After)...
+Da ghi FB-04-after.txt
+Dang thu thap bang chung FB-10 (After)...
+Da ghi FB-10-after.txt
+TOAN BO BANG CHUNG SAU (AFTER) DA DUOC THU THAP THANH CONG!
+Dung API job...
+API da dung.
+Exit Code: 0.
+Đánh giá: ĐẠT (PASS) - Quy trình tự động hóa chạy mượt mà, thu thập đầy đủ 5 bằng chứng sau sửa đổi trên CSDL kiểm nghiệm `StudentInternshipMgmtDb_UATBuild`.
+
+--------------------------------------------------------------------------------
+KẾT LUẬN NGHIỆM THU TÁI LẬP
+--------------------------------------------------------------------------------
+- Tính tái lập: TOÀN BỘ GIẢI PHÁP TÁI LẬP THÀNH CÔNG TỪ BẢN CLONE SẠCH.
+- Số test backend độc lập: 402 passed, 1 skipped, 0 failed.
+- Số test frontend độc lập: 190 passed, 0 failed.
+- Điểm không khớp tài liệu: Mục 2.3 thiếu hướng dẫn chạy `npm install` trước `npm test`. Cần bổ sung vào tài liệu hướng dẫn ở bản release hoàn thiện.

@@ -1,0 +1,13 @@
+﻿KICH BAN UAT2-08: Hoi quy Quan tri vien phe duyet viec lam va giam sat Dashboard
+Nguoi thuc hien: AD-01 (Quan tri vien he thong)
+Thoi diem: 2026-11-03 10:41:10
+
+Buoc 1: Quan tri vien phe duyet tin tuyen dung:
+HTTP Status: 200
+Trang thai tin sau duyet: IsOpen=True, ApprovalStatus=2
+
+Buoc 2: Quan tri vien truy xuat so lieu Dashboard tong quan:
+HTTP Status: 200
+So lieu tong hop: {"totalStudents":7,"withCompanyCount":1,"withoutCompanyCount":6,"completedCount":0,"completionRate":0}
+
+Ket luan: DAT (PASS) - Quan tri vien phe duyet tin tuyen dung hop le va giam sat thong so van hanh tren Dashboard muot ma.

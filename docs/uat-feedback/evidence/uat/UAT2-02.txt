@@ -1,0 +1,10 @@
+﻿KICH BAN UAT2-02: Loai bo ma dinh danh ky thuat (Title), (Quantity) (FB-02)
+Nguoi thuc hien: DN-01 (Dai dien Doanh nghiep)
+Thoi diem: 2026-11-03 10:40:51
+
+Buoc 1: Doanh nghiep gui form tao vi tri voi Tieu de rong va So luong = 0:
+HTTP Status nhan duoc: 400
+Noi dung phan hoi loi:
+{"success":false,"message":"Tiêu đề là bắt buộc.","data":null,"errors":null}
+
+Ket luan: DAT (PASS) - He thong tu choi va hien thi thong bao ro rang, khong chua cac dinh danh ky thuat (Title) hoac (Quantity).

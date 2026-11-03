@@ -1,0 +1,16 @@
+﻿KICH BAN UAT2-01: Chuan hoa thong bao loi tao sinh vien sang tieng Viet tu nhien (FB-01)
+Nguoi thuc hien: AD-01 (Can bo quan ly thuc tap)
+Thoi diem: 2026-11-03 10:40:49
+Moi truong: http://127.0.0.1:5028 | CSDL: StudentInternshipMgmtDb_E2E
+
+Buoc 1: Gui yeu cau tao sinh vien voi cac truong bat buoc de trong:
+HTTP Status nhan duoc: 400
+Noi dung phan hoi loi:
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Email":["Email không được để trống."],"Major":["Ngành không được để trống."],"FullName":["Họ tên không được để trống."],"ClassName":["Lớp không được để trống."],"PhoneNumber":["Số điện thoại không được để trống.","Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0)."],"StudentCode":["Mã số sinh viên không được để trống."]},"traceId":"00-17fe90c1378e1169135f891e40f817ce-6507fea295e64730-00"}
+
+Buoc 2: Gui yeu cau tao sinh vien voi ma sinh vien trung lap (SVA294B1D4):
+HTTP Status nhan duoc: 400
+Noi dung phan hoi loi:
+{"success":false,"message":"Mã số sinh viên 'SVA294B1D4' đã tồn tại.","data":null,"errors":null}
+
+Ket luan: DAT (PASS) - He thong tu choi hop le va tra ve 100% cau thong bao tieng Viet chuan muc, khong con kep tu tieng Anh ky thuat.

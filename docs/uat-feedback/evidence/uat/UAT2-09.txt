@@ -1,0 +1,15 @@
+﻿KICH BAN UAT2-09: Kiem tra duong dan loi - Xac thuc du lieu dau vao thieu hoac sai dinh dang
+Nguoi thuc hien: SV-01 / DN-01
+Thoi diem: 2026-11-03 10:41:11
+
+Buoc 1: Sinh vien nop don vi pham nhieu rang buoc xac thuc du lieu:
+HTTP Status nhan duoc: 400 (Ky vong: 400)
+Thong bao loi chi tiet:
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"CoverLetter":["Lời giới thiệu phải từ 20 đến 2000 ký tự."],"ApplicantEmail":["Email không đúng định dạng hoặc vượt quá 254 ký tự."],"ApplicantMajor":["Ngành học phải từ 2 đến 150 ký tự."],"ApplicantPhone":["Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0."],"ApplicantSchool":["Trường học phải từ 2 đến 150 ký tự."],"ApplicantFullName":["Họ tên là bắt buộc."]},"traceId":"00-21b663126f0d227df500d3a00a96c942-6e5c8774f2c3661f-00"}
+
+Buoc 2: Doanh nghiep tao tin voi so luong tuyen am (-5):
+HTTP Status nhan duoc: 400 (Ky vong: 400)
+Thong bao loi chi tiet:
+{"success":false,"message":"Số lượng tuyển phải lớn hơn 0.","data":null,"errors":null}
+
+Ket luan: DAT (PASS) - He thong kiem tra va tu choi nghiem ngat cac du lieu khong hop le o ca hai vai tro, hien thi thong bao loi than thien ro rang.

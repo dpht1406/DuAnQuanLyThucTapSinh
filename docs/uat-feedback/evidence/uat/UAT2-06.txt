@@ -1,0 +1,14 @@
+﻿KICH BAN UAT2-06: Hoi quy Sinh vien nop ho so va theo doi tien do ung tuyen
+Nguoi thuc hien: SV-01 (Sinh vien)
+Thoi diem: 2026-11-03 10:41:00
+
+Buoc 1: Sinh vien tra cuu danh sach viec lam mo qua /api/job-positions:
+HTTP Status: 200 | So vi tri tim thay: 10
+
+Buoc 2: Sinh vien nop don ung tuyen:
+HTTP Status: 200 | Ma don tao thanh cong: 3
+
+Buoc 3: Sinh vien kiem tra danh sach don ca nhan qua /api/me/placement-requests:
+So don tim thay: 1 | Trang thai don vua nop: 0
+
+Ket luan: DAT (PASS) - Sinh vien hoan thanh toan bo luong tim viec, nop don thanh cong va theo doi trang thai ho so chinh xac.
