@@ -97,7 +97,20 @@ public class PlacementRequestService : IPlacementRequestService
             return (false, message, null);
         }
 
-        var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == studentId);
+        var isRelational = _db.Database.IsRelational();
+        var transaction = isRelational && _db.Database.CurrentTransaction is null
+            ? await _db.Database.BeginTransactionAsync()
+            : null;
+
+        try
+        {
+            if (isRelational)
+            {
+                await _db.Database.ExecuteSqlInterpolatedAsync(
+                    $"UPDATE [Students] SET [Status] = [Status] WHERE [Id] = {studentId}");
+            }
+
+            var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == studentId);
         if (student is null)
             return Reject("StudentNotFound", "Không tìm thấy sinh viên.");
 
@@ -183,6 +196,10 @@ public class PlacementRequestService : IPlacementRequestService
 
         _db.PlacementRequests.Add(request);
         await _db.SaveChangesAsync();
+
+        if (transaction is not null)
+            await transaction.CommitAsync();
+
         await _emailNotifier.NotifyApplicationSubmittedAsync(request, company);
 
         _logger.LogInformation(
@@ -222,6 +239,12 @@ public class PlacementRequestService : IPlacementRequestService
             ReviewedByUsername = null,
             ReviewedAt = request.ReviewedAt
         });
+        }
+        finally
+        {
+            if (transaction is not null)
+                await transaction.DisposeAsync();
+        }
     }
 
     public async Task<PagedResult<PlacementRequestDto>> GetRequestsAsync(PlacementRequestFilterDto filter)

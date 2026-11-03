@@ -119,15 +119,16 @@ async function loadData() {
 async function submit() {
   if (!position.value || saving.value || !canApply(position.value)) return
 
+  saving.value = true
   Object.keys(fieldErrors).forEach((field) => delete fieldErrors[field])
   formError.value = ''
   Object.assign(fieldErrors, validateApplication(form.value))
   if (invalidFieldCount.value > 0) {
+    saving.value = false
     await focusFirstInvalidField()
     return
   }
 
-  saving.value = true
   try {
     const payload = Object.fromEntries(
       Object.entries(form.value).map(([field, value]) => [field, value.trim()])

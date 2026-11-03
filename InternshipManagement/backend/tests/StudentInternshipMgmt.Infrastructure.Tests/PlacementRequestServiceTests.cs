@@ -300,6 +300,23 @@ public class PlacementRequestServiceTests
     }
 
     [Fact]
+    public async Task CreateRequestAsync_double_submission_creates_only_one_request_and_rejects_second()
+    {
+        await using var dbContext = CreateDbContext();
+        var fixture = await SeedBaseAsync(dbContext);
+        var service = CreateService(dbContext);
+        var dto = CreateValidDto(fixture.Company.Id, fixture.Position.Id);
+
+        var first = await service.CreateRequestAsync(fixture.Student.Id, dto);
+        var second = await service.CreateRequestAsync(fixture.Student.Id, dto);
+
+        first.Success.Should().BeTrue();
+        second.Success.Should().BeFalse();
+        second.Error.Should().Be("Bạn đã có đơn đang mở cho doanh nghiệp và vị trí này.");
+        (await dbContext.PlacementRequests.CountAsync()).Should().Be(1);
+    }
+
+    [Fact]
     public async Task CreateRequestAsync_compares_null_job_position_when_checking_duplicates()
     {
         await using var dbContext = CreateDbContext();
