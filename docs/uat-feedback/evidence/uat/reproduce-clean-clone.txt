@@ -1,121 +1,369 @@
-================================================================================
-BẢN GHI KIỂM TRA TÁI LẬP GÓI PHÁT HÀNH TỪ BẢN CLONE SẠCH (CLEAN CLONE REPRODUCE)
-================================================================================
-Người thực hiện: Reviewer & QA Độc lập (TAB 2)
-Thời gian thực thi: 2026-11-03 10:44:00 - 10:47:00
-Môi trường kiểm tra: Windows 11, .NET 8 SDK (9.0.308), Node.js v22.19.0, npm 10.9.2, SQL Server LocalDB/localhost
-Nhánh kiểm tra: feature/uat-feedback (Commit HEAD: 6b5a950)
-Thư mục clone sạch: C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2 (Không chứa bin, obj, node_modules, .agent)
-Tài liệu hướng dẫn đối chiếu: RELEASE/uat-round/README-REPRODUCE-UAT.md
+﻿=== CLEAN CLONE REPRODUCTION VERIFICATION (STRICT README-REPRODUCE-UAT.MD) ===
+Timestamp: 2026-11-03 13:57:58
+Clone Path: C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2
 
---------------------------------------------------------------------------------
-BƯỚC 1: KHỞI TẠO BẢN CLONE SẠCH TỪ GIT
---------------------------------------------------------------------------------
-Lệnh thực hiện:
-git clone -b feature/uat-feedback "D:\baitapthuctap\duanquanlythuctapsinh" "C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2"
+--- 1.2 Checkout feature/uat-feedback ---
+Your branch is up to date with 'origin/feature/uat-feedback'.
+git : Already on 'feature/uat-feedback'
+At line:12 char:5
++     git checkout feature/uat-feedback 2>&1 | Out-File $logFile -Appen ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Already on 'feature/uat-feedback':String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+e8dec7b docs(uat): resolve DOC-01 and update changelog and known issues for CR-03
+--- 2.1 dotnet restore & build ---
+  Determining projects to restore...
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\StudentInternshipMgmt.Domain.csproj (in 68 ms).
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Application\StudentInternshipMgmt.Application.csproj (in 1.94 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj (in 2.02 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Api\StudentInternshipMgmt.Api.csproj (in 2.03 sec).
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\tests\PlacementAcceptance.Tests\PlacementAcceptance.Tests.csproj (in 2.2 sec).
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(118,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(119,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(120,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(121,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(122,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(123,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(169,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(170,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(171,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(172,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(173,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(394,44): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Contains(string item)'. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(410,29): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Add(string item)'. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(414,28): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(415,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(416,31): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(417,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(418,29): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+  StudentInternshipMgmt.Infrastructure -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  PlacementAcceptance.Tests -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+  StudentInternshipMgmt.Api -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
 
-Kết quả:
-Cloning into 'C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2'...
-done.
-Xác nhận kiểm tra:
-- Thư mục .agent: Không tồn tại (False)
-- Thư mục node_modules: Không tồn tại (False)
-- Thư mục bin/obj: Không tồn tại (False)
-Đánh giá: BẢN CLONE HOÀN TOÀN SẠCH.
-
---------------------------------------------------------------------------------
-BƯỚC 2: KIỂM TRA BẢN DỰNG VÀ BỘ TEST TỰ ĐỘNG THEO MỤC 2 README
---------------------------------------------------------------------------------
-
-[2.1] Biên dịch Solution:
-Lệnh: dotnet build DuAnQuanLyThucTapSinh.sln
-Kết quả:
-Restored projects: 5/5
 Build succeeded.
-18 Warning(s) (Cảnh báo gán null compiler CS8601/CS8604 vốn có từ baseline)
-0 Error(s)
-Time Elapsed 00:00:12.93
-Đánh giá: ĐẠT (PASS) - Khớp 100% kỳ vọng "Build succeeded. 0 Error(s)".
 
-[2.2] Chạy Backend Tests:
-Lệnh: dotnet test InternshipManagement/backend/InternshipManagement.sln -m:1
-Kết quả:
-- StudentInternshipMgmt.Infrastructure.Tests: Passed: 264, Skipped: 1 (theo thiết kế Collation Tiếng Việt), Total: 265
-- StudentInternshipMgmt.Tests: Passed: 116, Skipped: 0, Total: 116
-- PlacementAcceptance.Tests: Passed: 22, Skipped: 0, Total: 22
-Tổng cộng: 402 Passed, 1 Skipped, 0 Failed (Thời gian chạy: ~10 giây)
-Đánh giá: ĐẠT (PASS) - Khớp 100% kỳ vọng 402 Passed, 1 Skipped, 0 Failed.
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(118,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(119,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(120,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(121,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(122,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(123,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(169,24): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(170,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(171,27): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(172,21): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(173,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(394,44): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Contains(string item)'. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(410,29): warning CS8604: Possible null reference argument for parameter 'item' in 'bool HashSet<string>.Add(string item)'. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(414,28): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(415,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(416,31): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(417,25): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\Services\StudentService.cs(418,29): warning CS8601: Possible null reference assignment. [C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\StudentInternshipMgmt.Infrastructure.csproj]
+    18 Warning(s)
+    0 Error(s)
 
-[2.3] Chạy Frontend Tests và Production Build:
-Thao tác: cd InternshipManagement/frontend
+Time Elapsed 00:00:08.37
+--- 2.2 dotnet test (Backend) ---
+  Determining projects to restore...
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\StudentInternshipMgmt.Tests.csproj (in 739 ms).
+  Restored C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\StudentInternshipMgmt.Infrastructure.Tests.csproj (in 739 ms).
+  5 of 7 projects are up-to-date for restore.
+  StudentInternshipMgmt.Domain -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Domain\bin\Debug\net8.0\StudentInternshipMgmt.Domain.dll
+  StudentInternshipMgmt.Application -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Application\bin\Debug\net8.0\StudentInternshipMgmt.Application.dll
+  StudentInternshipMgmt.Infrastructure -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.dll
+  StudentInternshipMgmt.Api -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\src\StudentInternshipMgmt.Api\bin\Debug\net8.0\StudentInternshipMgmt.Api.dll
+  StudentInternshipMgmt.Infrastructure.Tests -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
 
-* Thử nghiệm 1: Chạy ĐÚNG NGUYÊN VĂN theo hướng dẫn trong README (không bổ sung lệnh ngầm):
-Lệnh: npm test
-Kết quả:
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.10]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
+  Skipped StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [1 ms]
+
+Passed!  - Failed:     0, Passed:   264, Skipped:     1, Total:   265, Duration: 7 s - StudentInternshipMgmt.Infrastructure.Tests.dll (net8.0)
+  StudentInternshipMgmt.Tests -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Debug\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   116, Skipped:     0, Total:   116, Duration: 29 ms - StudentInternshipMgmt.Tests.dll (net8.0)
+  PlacementAcceptance.Tests -> C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll
+Test run for C:\Users\PHAT\AppData\Local\Temp\clean-clone-uat2\tests\PlacementAcceptance.Tests\bin\Debug\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    22, Skipped:     0, Total:    22, Duration: 1 s - PlacementAcceptance.Tests.dll (net8.0)
+--- 2.3 npm install ---
+
+added 106 packages, and audited 107 packages in 8s
+
+24 packages are looking for funding
+  run `npm fund` for details
+
+3 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+--- 2.3 npm test ---
+
 > frontend@0.0.0 test
 > vitest run
-'vitest' is not recognized as an internal or external command, operable program or batch file.
-Exit Code: 1
 
-Lệnh: npm run build
-Kết quả:
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90mC:/Users/PHAT/AppData/Local/Temp/clean-clone-uat2/InternshipManagement/frontend[39m
+
+ [32mΓ£ô[39m src/utils/apiError.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/companyAccountValidation.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/companyJobPositionValidation.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/companyFormValidation.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/studentEditValidation.test.js [2m([22m[2m17 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/aboutContent.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/applicationValidation.test.js [2m([22m[2m56 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/companyPlacementRequest.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/jobPosition.test.js [2m([22m[2m24 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/authNavigation.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/pageTitle.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+node.exe : [90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView 
+(CR-03 saving guard)[2m > [22m[2mresets saving flag to false when client validation produces invalid fields
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([90mstderr[2m... invalid fields:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+[Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+
+ [32mΓ£ô[39m src/utils/dateTime.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 
+saving guard)[2m > [22m[2mresets saving flag to false even if client validation throws an unexpected exception
+[22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+[Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+
+[90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 
+saving guard)[2m > [22m[2mresets saving flag to false when submission succeeds
+[22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+[Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+
+[90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 
+saving guard)[2m > [22m[2mresets saving flag to false when server request rejects with an error
+[22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+[Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle 
+injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register 
+lifecycle hooks before the first await statement.
+
+ [32mΓ£ô[39m src/views/job-positions/JobPositionApplyView.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/roleRoutes.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m src/utils/passwordPolicy.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32mΓ£ô[39m src/stores/accountResult.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32mΓ£ô[39m src/api/axiosClient.test.js [2m([22m[2m3 tests[22m[2m)[22m[33m 1432[2mms[22m[39m
+   [32mΓ£ô[39m axiosClient GET retries [2m(3)[22m
+     [33m[2mΓ£ô[22m[39m retries a network-failed GET twice and marks the final error[33m 1426[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+[2m      Tests [22m [1m[32m194 passed[39m[22m[90m (194)[39m
+[2m   Start at [22m 13:59:03
+[2m   Duration [22m 4.73s[2m (import 72%, transform 19%, tests 8%, worker 1%)[22m
+
+[2m    Isolate [22m [33m17 workers spawned[39m[2m ┬╖ ~719ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~392ms faster with [22m[33misolate: false[39m[2m ΓÇö reuses workers across files instead of one per file[22m
+
+--- 2.3 npm run build ---
+
 > frontend@0.0.0 build
 > vite build
-[vite]: Rollup failed to resolve import "primevue/config" from ".../src/main.js".
-Exit Code: 1
 
---> PHÁT HIỆN LỖI TÀI LIỆU (DOC-01 / P3):
-Mục 2.3 trong README-REPRODUCE-UAT.md bỏ quên bước tiên quyết `npm install` (hoặc `npm ci`). Trên bản clone sạch từ git, thư mục `node_modules` không tồn tại, khiến lệnh `npm test` và `npm run build` thất bại vì thiếu dependencies. Đã ghi nhận vào Sổ lỗi (Mức P3 - Tài liệu hướng dẫn thiếu bước).
+[36mvite v8.3.0 [32mbuilding client environment for production...[36m[39m
+transforming...
+Γ£ô 513 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                    1.54 kB Γöé gzip:   0.61 kB
+dist/assets/newsreader-vietnamese-500-normal-CL6a8tp2.woff2        5.43 kB
+dist/assets/newsreader-vietnamese-600-normal-CaH84vfx.woff2        5.49 kB
+dist/assets/be-vietnam-pro-vietnamese-400-normal-BuGn0gnm.woff     6.56 kB
+dist/assets/be-vietnam-pro-vietnamese-600-normal-DkpCIyan.woff     6.88 kB
+dist/assets/be-vietnam-pro-vietnamese-500-normal-CfdwVo8-.woff     6.88 kB
+dist/assets/newsreader-vietnamese-500-normal-BEAbKU8A.woff         7.03 kB
+dist/assets/newsreader-vietnamese-600-normal-CVAR0otO.woff         7.06 kB
+dist/assets/be-vietnam-pro-latin-ext-400-normal-DYBYyMQr.woff      8.90 kB
+dist/assets/be-vietnam-pro-latin-ext-500-normal-CK0UkkKf.woff      9.20 kB
+dist/assets/be-vietnam-pro-latin-ext-600-normal-BeUwKxhG.woff      9.22 kB
+dist/assets/be-vietnam-pro-vietnamese-400-normal-CRcqvyg1.woff2   11.53 kB
+dist/assets/be-vietnam-pro-vietnamese-500-normal-DREgrEoJ.woff2   12.17 kB
+dist/assets/be-vietnam-pro-vietnamese-600-normal-nyU-ZL2p.woff2   12.17 kB
+dist/assets/be-vietnam-pro-latin-ext-400-normal-CiZNW1ec.woff2    13.05 kB
+dist/assets/be-vietnam-pro-latin-ext-500-normal-h0Fp6aX0.woff2    13.54 kB
+dist/assets/be-vietnam-pro-latin-ext-600-normal-BNd8euf0.woff2    13.60 kB
+dist/assets/newsreader-latin-ext-500-normal-BNHmvKvI.woff2        15.06 kB
+dist/assets/newsreader-latin-ext-600-normal-BXv5iMHi.woff2        15.16 kB
+dist/assets/be-vietnam-pro-latin-400-normal-bXgqVju9.woff         16.43 kB
+dist/assets/be-vietnam-pro-latin-500-normal-BJkVuMHw.woff         16.99 kB
+dist/assets/be-vietnam-pro-latin-600-normal-5IO4e7bK.woff         17.01 kB
+dist/assets/newsreader-latin-ext-500-normal-CZruMFou.woff         19.29 kB
+dist/assets/newsreader-latin-ext-600-normal-BrbfzHZ5.woff         19.39 kB
+dist/assets/be-vietnam-pro-latin-400-normal-PpnXBOrz.woff2        21.16 kB
+dist/assets/be-vietnam-pro-latin-500-normal-B6LVzGNe.woff2        21.89 kB
+dist/assets/be-vietnam-pro-latin-600-normal-BZDkUTrt.woff2        22.03 kB
+dist/assets/newsreader-latin-500-normal-B66TYsaK.woff2            23.62 kB
+dist/assets/newsreader-latin-600-normal-30OJ_TG_.woff2            23.87 kB
+dist/assets/newsreader-latin-500-normal-DFwuUcdu.woff             29.63 kB
+dist/assets/newsreader-latin-600-normal-DUnT2r2g.woff             29.78 kB
+dist/assets/primeicons-C6QP2o4f.woff2                             35.14 kB
+dist/assets/primeicons-MpK4pl85.ttf                               84.98 kB
+dist/assets/primeicons-WjwUDZjB.woff                              85.05 kB
+dist/assets/primeicons-DMOk5skT.eot                               85.15 kB
+dist/assets/primeicons-Dr5RGzOO.svg                              342.52 kB Γöé gzip: 108.35 kB
+dist/assets/NotFoundView-C0xEXPdT.css                              0.07 kB Γöé gzip:   0.09 kB
+dist/assets/CompanyEditView-BFgOA85m.css                           0.15 kB Γöé gzip:   0.13 kB
+dist/assets/StudentImportView-CS1u1tzk.css                         0.30 kB Γöé gzip:   0.21 kB
+dist/assets/StudentAssignCompanyView-h0JxvvPF.css                  0.46 kB Γöé gzip:   0.23 kB
+dist/assets/StudentStatusView-CSxrZRIn.css                         0.47 kB Γöé gzip:   0.25 kB
+dist/assets/JobPositionRejectView-CD8yrcGQ.css                     0.61 kB Γöé gzip:   0.30 kB
+dist/assets/CompanyPlacementRequestRejectView-DLddf7yd.css         0.61 kB Γöé gzip:   0.31 kB
+dist/assets/PlacementRequestCancelAcceptedView-Bk3pFlZH.css        0.67 kB Γöé gzip:   0.32 kB
+dist/assets/AdminJobPositionFormView-_6F4JbNY.css                  0.68 kB Γöé gzip:   0.28 kB
+dist/assets/PlacementRequestConfirmResultView-DO9JmAP1.css         0.71 kB Γöé gzip:   0.31 kB
+dist/assets/CompanyPlacementRequestResultView-KaJIsA7u.css         0.75 kB Γöé gzip:   0.32 kB
+dist/assets/CompanyPlacementRequestInviteView-B4NFWw1o.css         0.75 kB Γöé gzip:   0.33 kB
+dist/assets/FormField-CPaX-bVW.css                                 0.80 kB Γöé gzip:   0.30 kB
+dist/assets/CreateAccountsView-PUKU8cCd.css                        0.82 kB Γöé gzip:   0.35 kB
+dist/assets/CompanyAccountView-Bbp4cQl4.css                        1.07 kB Γöé gzip:   0.44 kB
+dist/assets/CompanyJobPositionsView-Ce8KKPab.css                   1.15 kB Γöé gzip:   0.44 kB
+dist/assets/PlacementRequestsView-BDtiMnx3.css                     1.17 kB Γöé gzip:   0.44 kB
+dist/assets/StudentsListView-V2b1DNOy.css                          1.19 kB Γöé gzip:   0.43 kB
+dist/assets/CompanyJobPositionFormView-BSoal-4H.css                1.19 kB Γöé gzip:   0.42 kB
+dist/assets/CompaniesAccountsView-CGh8iuS_.css                     1.36 kB Γöé gzip:   0.49 kB
+dist/assets/AccountResultView-CKLYqkJ-.css                         1.45 kB Γöé gzip:   0.58 kB
+dist/assets/CompanyHomeView-BAKAjTYk.css                           1.56 kB Γöé gzip:   0.54 kB
+dist/assets/FormActionBar-DZV4dIDR.css                             1.57 kB Γöé gzip:   0.56 kB
+dist/assets/StudentCreateView-kZL6Vuc3.css                         1.74 kB Γöé gzip:   0.51 kB
+dist/assets/NotificationsView-DOMR5xst.css                         1.83 kB Γöé gzip:   0.61 kB
+dist/assets/CompanyPlacementRequestsView-Bf0ILmot.css              2.27 kB Γöé gzip:   0.66 kB
+dist/assets/FormSection-D0fT6LTe.css                               2.53 kB Γöé gzip:   0.78 kB
+dist/assets/AboutEditView-DOUTYAxo.css                             2.69 kB Γöé gzip:   0.80 kB
+dist/assets/ChangePasswordView-0KPzwrtj.css                        3.19 kB Γöé gzip:   0.87 kB
+dist/assets/StudentDetailView-D0xkGAFT.css                         3.67 kB Γöé gzip:   0.97 kB
+dist/assets/CompanyCreateView-Bi-JZpvo.css                         4.39 kB Γöé gzip:   1.11 kB
+dist/assets/StudentEditView-BI_TkBia.css                           4.60 kB Γöé gzip:   1.09 kB
+dist/assets/ProfileView-Bl6szMNA.css                               4.63 kB Γöé gzip:   1.04 kB
+dist/assets/LoginView-QP_UiI8Z.css                                 5.26 kB Γöé gzip:   1.53 kB
+dist/assets/DashboardView-BCA5juPV.css                             5.79 kB Γöé gzip:   1.37 kB
+dist/assets/CompaniesView-MaLRBk5O.css                             6.61 kB Γöé gzip:   1.58 kB
+dist/assets/JobPositionsView-D0WPKIwX.css                          7.71 kB Γöé gzip:   1.78 kB
+dist/assets/JobPositionApplyView-DBt6NDgP.css                      8.75 kB Γöé gzip:   1.83 kB
+dist/assets/AboutView-gV10ORCx.css                                11.46 kB Γöé gzip:   2.29 kB
+dist/assets/CompanyPlacementRequestDetailView-BkZvCce0.css        13.06 kB Γöé gzip:   2.57 kB
+dist/assets/index-BW6QQTmz.css                                    40.57 kB Γöé gzip:   8.23 kB
+dist/assets/utils-D4uDbPx0.js                                      0.21 kB Γöé gzip:   0.15 kB
+dist/assets/about-BJrWxQ5b.js                                      0.25 kB Γöé gzip:   0.15 kB
+dist/assets/accountResult-BXKpshBJ.js                              0.28 kB Γöé gzip:   0.21 kB
+dist/assets/FormActionBar-CqBywVGi.js                              0.37 kB Γöé gzip:   0.28 kB
+dist/assets/dateTime-Tt465zer.js                                   0.38 kB Γöé gzip:   0.27 kB
+dist/assets/studentStatus-DUeCpJbn.js                              0.45 kB Γöé gzip:   0.24 kB
+dist/assets/me-CvV14-Dk.js                                         0.47 kB Γöé gzip:   0.22 kB
+dist/assets/NotFoundView-CU10To1c.js                               0.49 kB Γöé gzip:   0.39 kB
+dist/assets/apiError-Bc6GQwSW.js                                   0.54 kB Γöé gzip:   0.40 kB
+dist/assets/jobPosition-w_wkgAxN.js                                0.59 kB Γöé gzip:   0.36 kB
+dist/assets/job-positions-_kbpflnK.js                              0.68 kB Γöé gzip:   0.28 kB
+dist/assets/placementRequestStatus-B9s7Qjvs.js                     0.70 kB Γöé gzip:   0.38 kB
+dist/assets/students-SvbGXWZL.js                                   1.21 kB Γöé gzip:   0.43 kB
+dist/assets/companies-DxJ9bDTg.js                                  1.22 kB Γöé gzip:   0.35 kB
+dist/assets/FormField-CHnekDUJ.js                                  1.22 kB Γöé gzip:   0.65 kB
+dist/assets/company-me-DeU-Ie6c.js                                 1.25 kB Γöé gzip:   0.35 kB
+dist/assets/chevronup-vIXJFZRm.js                                  1.70 kB Γöé gzip:   1.02 kB
+dist/assets/FormSection-D3QUaw5U.js                                1.70 kB Γöé gzip:   0.78 kB
+dist/assets/chevronright-DSg4ptZ6.js                               1.76 kB Γöé gzip:   1.05 kB
+dist/assets/chevrondown-BYofQBTS.js                                1.77 kB Γöé gzip:   1.07 kB
+dist/assets/emailValidation-COqXUs4r.js                            2.03 kB Γöé gzip:   1.01 kB
+dist/assets/card-CJ2Y0yJI.js                                       2.07 kB Γöé gzip:   0.73 kB
+dist/assets/axiosClient-DMWbgDSl.js                                2.07 kB Γöé gzip:   1.21 kB
+dist/assets/inputicon-DPIlMBIe.js                                  2.36 kB Γöé gzip:   0.77 kB
+dist/assets/companyPlacementRequest-BM0PGWJX.js                    2.40 kB Γöé gzip:   1.07 kB
+dist/assets/spinner-Dp-zAH_l.js                                    2.43 kB Γöé gzip:   1.40 kB
+dist/assets/NotificationsView-B25UVZtL.js                          2.64 kB Γöé gzip:   1.41 kB
+dist/assets/CompanyHomeView-fGw4rzsf.js                            3.01 kB Γöé gzip:   1.47 kB
+dist/assets/baseinput-BlfWkZ2b.js                                  3.07 kB Γöé gzip:   0.93 kB
+dist/assets/skeleton-BHzB9jrW.js                                   3.10 kB Γöé gzip:   1.23 kB
+dist/assets/tag-DefxG28L.js                                        3.41 kB Γöé gzip:   1.27 kB
+dist/assets/JobPositionRejectView-B6kP77K9.js                      4.10 kB Γöé gzip:   1.89 kB
+dist/assets/inputtext-BWqjsmdY.js                                  4.55 kB Γöé gzip:   1.47 kB
+dist/assets/PlacementRequestCancelAcceptedView-BnaFnLPJ.js         4.75 kB Γöé gzip:   2.15 kB
+dist/assets/focustrap-BYgh1sb7.js                                  4.78 kB Γöé gzip:   1.61 kB
+dist/assets/CreateAccountsView-CZFoze37.js                         4.86 kB Γöé gzip:   2.11 kB
+dist/assets/CompanyPlacementRequestRejectView-DyMjc6_c.js          4.89 kB Γöé gzip:   2.25 kB
+dist/assets/progressbar-DtAGRYLp.js                                4.98 kB Γöé gzip:   1.28 kB
+dist/assets/CompanyPlacementRequestsView-B6LhR9Qu.js               5.10 kB Γöé gzip:   2.18 kB
+dist/assets/textarea-B4OHMuhG.js                                   5.22 kB Γöé gzip:   1.73 kB
+dist/assets/overlayeventbus-C7JbfvFR.js                            5.76 kB Γöé gzip:   2.12 kB
+dist/assets/LoginView-nC0H45nE.js                                  5.83 kB Γöé gzip:   2.44 kB
+dist/assets/StudentAssignCompanyView-jgi69MS-.js                   5.86 kB Γöé gzip:   2.32 kB
+dist/assets/StudentStatusView-BJmVQWou.js                          5.88 kB Γöé gzip:   2.44 kB
+dist/assets/CompanyPlacementRequestResultView-vpTiOKRS.js          6.27 kB Γöé gzip:   2.64 kB
+dist/assets/CompanyPlacementRequestInviteView-5bHRHoBb.js          6.38 kB Γöé gzip:   2.64 kB
+dist/assets/CompanyJobPositionsView-DIhzFvSj.js                    6.67 kB Γöé gzip:   2.52 kB
+dist/assets/PlacementRequestConfirmResultView-CnygVjsU.js          6.71 kB Γöé gzip:   2.68 kB
+dist/assets/StudentsListView-CKhKvtGM.js                           6.80 kB Γöé gzip:   2.87 kB
+dist/assets/CompaniesAccountsView-BhFul9xB.js                      6.89 kB Γöé gzip:   2.71 kB
+dist/assets/PlacementRequestsView-CH2GoURI.js                      6.91 kB Γöé gzip:   2.74 kB
+dist/assets/dayjs.min-CC87CmNu.js                                  7.17 kB Γöé gzip:   3.09 kB
+dist/assets/StudentDetailView-BLBD_KSg.js                          7.49 kB Γöé gzip:   2.81 kB
+dist/assets/CompanyEditView-spWowyL9.js                            7.56 kB Γöé gzip:   2.67 kB
+dist/assets/StudentCreateView-DXXAPUx_.js                          8.35 kB Γöé gzip:   3.08 kB
+dist/assets/CompanyAccountView-DBpxc1Ev.js                         8.64 kB Γöé gzip:   2.95 kB
+dist/assets/CompanyJobPositionFormView-5CFpqAgj.js                 9.05 kB Γöé gzip:   3.36 kB
+dist/assets/ProfileView-C5HWKu81.js                               10.36 kB Γöé gzip:   3.82 kB
+dist/assets/StudentEditView-eMoYuPTA.js                           11.06 kB Γöé gzip:   3.84 kB
+dist/assets/AccountResultView-YYfIXLAX.js                         11.09 kB Γöé gzip:   3.34 kB
+dist/assets/checkbox-BvXR_cOy.js                                  11.99 kB Γöé gzip:   3.42 kB
+dist/assets/CompanyCreateView-CzwToLC9.js                         12.85 kB Γöé gzip:   3.95 kB
+dist/assets/JobPositionsView-CrmmZHR7.js                          12.95 kB Γöé gzip:   4.68 kB
+dist/assets/CompanyPlacementRequestDetailView-LUKNkQFT.js         13.01 kB Γöé gzip:   4.01 kB
+dist/assets/message-DoW2U76-.js                                   14.78 kB Γöé gzip:   3.05 kB
+dist/assets/JobPositionApplyView-CAPiVOrW.js                      17.86 kB Γöé gzip:   5.62 kB
+dist/assets/ChangePasswordView-BVFEUzW2.js                        25.52 kB Γöé gzip:   8.68 kB
+dist/assets/StudentImportView-H1ckBZn1.js                         26.36 kB Γöé gzip:   8.05 kB
+dist/assets/paginator-8bVw1iJb.js                                 29.85 kB Γöé gzip:   8.09 kB
+dist/assets/AboutView-CfKEG-HS.js                                 30.29 kB Γöé gzip:   8.39 kB
+dist/assets/button-nipxGf53.js                                    31.34 kB Γöé gzip:   4.51 kB
+dist/assets/times-BsmUSrC2.js                                     33.76 kB Γöé gzip:  11.37 kB
+dist/assets/inputnumber-Czsn_OBK.js                               35.87 kB Γöé gzip:   8.92 kB
+dist/assets/AboutEditView-D4CDAHG-.js                             51.58 kB Γöé gzip:  10.88 kB
+dist/assets/_plugin-vue_export-helper-CNo2AaDb.js                 53.61 kB Γöé gzip:  15.30 kB
+dist/assets/auth-B8fBwD1U.js                                      60.74 kB Γöé gzip:  23.11 kB
+dist/assets/runtime-core.esm-bundler-3-rcpsRf.js                  64.72 kB Γöé gzip:  25.42 kB
+dist/assets/select-gcMnsLpX.js                                    65.67 kB Γöé gzip:  16.37 kB
+dist/assets/CompaniesView-CD9v-J52.js                             86.70 kB Γöé gzip:  20.23 kB
+dist/assets/AdminJobPositionFormView-BRXVP5yC.js                 106.01 kB Γöé gzip:  22.76 kB
+dist/assets/DashboardView-BF5rE5nK.js                            163.19 kB Γöé gzip:  56.34 kB
+dist/assets/datatable-Db3hRRph.js                                227.59 kB Γöé gzip:  46.47 kB
+dist/assets/index-DZ2AlNxZ.js                                    288.90 kB Γöé gzip:  62.84 kB
 
-* Thử nghiệm 2: Chạy sau khi thực hiện `npm install`:
-Lệnh: npm install
-Kết quả: added 106 packages, audited 107 packages in 7s. Exit Code 0.
-
-Lệnh: npm test
-Kết quả:
-Test Files: 16 passed (16)
-Tests: 190 passed (190)
-Duration: 4.16s
-Exit Code: 0.
-
-Lệnh: npm run build
-Kết quả:
-✓ 513 modules transformed.
-dist/index.html 1.54 kB
-dist/assets/...
-✓ built in 2.39s
-Exit Code: 0.
-Đánh giá: ĐẠT (PASS) khi có `npm install`.
-
---------------------------------------------------------------------------------
-BƯỚC 3: KIỂM TRA THỬ NGHIỆM THỰC TẾ THEO MỤC 3 README
---------------------------------------------------------------------------------
-
-[3.1] Tự động hóa bằng PowerShell Script:
-Lệnh: powershell -ExecutionPolicy Bypass -File docs/uat-feedback/evidence/before-after/capture-after-evidence.ps1
-Kết quả:
-Khoi dong Backend API ket noi toi StudentInternshipMgmtDb_UATBuild...
-API san sang tai http://127.0.0.1:5018.
-Dang thu thap bang chung FB-01 (After)...
-Da ghi FB-01-after.txt
-Dang thu thap bang chung FB-02 (After)...
-Da ghi FB-02-after.txt
-Dang thu thap bang chung FB-03 (After)...
-Da ghi FB-03-after.txt
-Dang thu thap bang chung FB-04 (After)...
-Da ghi FB-04-after.txt
-Dang thu thap bang chung FB-10 (After)...
-Da ghi FB-10-after.txt
-TOAN BO BANG CHUNG SAU (AFTER) DA DUOC THU THAP THANH CONG!
-Dung API job...
-API da dung.
-Exit Code: 0.
-Đánh giá: ĐẠT (PASS) - Quy trình tự động hóa chạy mượt mà, thu thập đầy đủ 5 bằng chứng sau sửa đổi trên CSDL kiểm nghiệm `StudentInternshipMgmtDb_UATBuild`.
-
---------------------------------------------------------------------------------
-KẾT LUẬN NGHIỆM THU TÁI LẬP
---------------------------------------------------------------------------------
-- Tính tái lập: TOÀN BỘ GIẢI PHÁP TÁI LẬP THÀNH CÔNG TỪ BẢN CLONE SẠCH.
-- Số test backend độc lập: 402 passed, 1 skipped, 0 failed.
-- Số test frontend độc lập: 190 passed, 0 failed.
-- Điểm không khớp tài liệu: Mục 2.3 thiếu hướng dẫn chạy `npm install` trước `npm test`. Cần bổ sung vào tài liệu hướng dẫn ở bản release hoàn thiện.
+[32mΓ£ô built in 2.36s[39m

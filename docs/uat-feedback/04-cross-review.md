@@ -22,6 +22,7 @@
 | **FB-03** (Trim khoảng trắng CV URL) | `CreatePlacementRequestDtoValidator.cs`, `CreatePlacementRequestDtoValidatorTests.cs`, `applicationValidation.js`, `applicationValidation.test.js` | **Đúng phạm vi** (Cắt tỉa khoảng trắng đầu/cuối, giữ nguyên quy tắc chặn khoảng trắng giữa và scheme nguy hiểm) |
 | **FB-04** (Sửa font tiếng Việt README) | `InternshipManagement/README.md` | **Đúng phạm vi** (Sửa lỗi mojibake dòng cuối) |
 | **FB-10** (Khống chế race condition nộp đơn đúp) | `PlacementRequestService.cs`, `JobPositionApplyView.vue`, `PlacementRequestServiceTests.cs` | **Đúng phạm vi** (Bổ sung row-lock SQL Server, transaction bảo vệ và disable button) |
+| **CR-03** (Bảo vệ cờ `saving` hàm submit ứng tuyển) | `JobPositionApplyView.vue`, `JobPositionApplyView.test.js` | **Đúng phạm vi** (Bọc try...finally toàn bộ submit() và bổ sung 4 ca kiểm thử vitest chuyên sâu) |
 
 > [!NOTE]
 > Toàn bộ các thay đổi trong mã nguồn đều thuộc 5 phản hồi đã chọn. Không có sửa đổi lan man, không có commit rác hay can thiệp vào các module khác ngoài phạm vi.
@@ -38,10 +39,10 @@ TAB 2 tự biên dịch và thực thi toàn bộ test suites độc lập trên
    - Test bỏ qua: `StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters` (được thiết kế bỏ qua khi chạy unit test vì cần SQL Server Collation thật).
 2. **Frontend Tests (Vitest)**:
    - Lệnh: `npm test` trong thư mục `InternshipManagement/frontend`
-   - Kết quả: **16 test files passed, 190 passed, 0 failed** (khớp 100% với số lượng TAB 1 báo cáo).
+   - Kết quả: **17 test files passed, 194 passed, 0 failed** (bao gồm 4 ca kiểm thử saving guard mới tại `JobPositionApplyView.test.js`, khớp 100% với số lượng TAB 1 báo cáo).
 3. **Frontend Production Build**:
    - Lệnh: `npm run build`
-   - Kết quả: Biên dịch Vite hoàn tất thành công trong 706ms - 967ms, 0 lỗi, 0 cảnh báo nghiêm trọng.
+   - Kết quả: Biên dịch Vite hoàn tất thành công trong 955ms, 0 lỗi, 0 cảnh báo nghiêm trọng.
 
 ---
 
@@ -76,15 +77,16 @@ TAB 2 tự biên dịch và thực thi toàn bộ test suites độc lập trên
 ---
 
 ### CR-03: Cờ trạng thái `saving` ở hàm submit nộp đơn cần bao bọc bảo vệ toàn diện
-- **Vị trí**: [`JobPositionApplyView.vue:122-135`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.vue#L122-L135)
+- **Vị trí**: [`JobPositionApplyView.vue:122-155`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.vue#L122-L155)
 - **Mức ưu tiên**: **P3 (Trung bình)**
 - **Phân loại**: *Frontend Exception Handling*
-- **Mô tả**:
+- **Mô tả ban đầu**:
   Hàm `submit()` gán `saving.value = true` ngay từ đầu để vô hiệu hóa nút bấm và reset `saving.value = false` nếu phát hiện lỗi validation client. Tuy nhiên, khối `try ... finally` chỉ bao bọc đoạn gọi API bên dưới. Nếu trong tương lai có thêm logic hoặc ngoại lệ phát sinh trong quá trình validate/focus trước khối `try`, nút bấm có thể bị kẹt ở trạng thái loading.
-- **Bằng chứng**:
-  Dòng 122 đặt `saving.value = true`, sau đó dòng 126 kiểm tra `if (invalidFieldCount.value > 0) { saving.value = false; ... }` rồi mới vào `try { ... } finally { saving.value = false; }`.
-- **Đề xuất khắc phục**:
-  Chuyển toàn bộ phần thân hàm `submit()` vào trong `try ... finally` để luôn bảo đảm `saving.value` được giải phóng kể cả khi có ngoại lệ ngoài ý muốn.
+- **Biện pháp xử lý của TAB 1**:
+  Tại commit `6588fb3`, TAB 1 đã chuyển toàn bộ phần thân hàm `submit()` (bao gồm validation phía client và focus ô nhập lỗi) vào trong khối `try ... finally`. Cờ `saving.value = true` được đặt đồng bộ ngay dòng đầu để ngăn chặn double-submit; khối `finally` đảm bảo `saving.value = false` luôn luôn được gọi ở mọi kịch bản (validation lỗi, validation exception, API thành công, API lỗi). Đồng thời bổ sung 4 unit test chuyên sâu trong [`JobPositionApplyView.test.js`](file:///d:/baitapthuctap/duanquanlythuctapsinh/InternshipManagement/frontend/src/views/job-positions/JobPositionApplyView.test.js).
+- **Kết quả kiểm chứng của TAB 2**:
+  Đã kiểm tra mã nguồn và chạy toàn bộ test: 4/4 test saving guard PASS, toàn bộ 194 test frontend PASS. Tính năng chống gửi đúp của FB-10 được bảo toàn nguyên vẹn.
+- **Trạng thái**: **ĐÃ SỬA DỨT ĐIỂM (ĐÓNG)** tại commit `6588fb3`.
 - **Độ chắc chắn**: **Chắc chắn**.
 
 ---
@@ -121,8 +123,9 @@ TAB 2 tự biên dịch và thực thi toàn bộ test suites độc lập trên
 ---
 
 ## 4. Tổng Kết Đánh Giá Chéo
-- **Tổng số phát hiện**: 5 (0 lỗi P1, 0 lỗi P2, 1 lưu ý P3, 4 lưu ý P4).
+- **Tổng số phát hiện**: 5 (0 lỗi P1, 0 lỗi P2, 1 lưu ý P3 - đã sửa dứt điểm, 4 lưu ý P4 - đã đóng/đạt chuẩn/backlog).
+- **Số lỗi còn mở**: **0 lỗi**.
 - **Đánh giá giải quyết phản hồi**:
   - FB-01, FB-02, FB-03, FB-04: Đã xử lý tận gốc vấn đề, không che triệu chứng.
-  - FB-10: Đã giải quyết bằng kiến trúc Transaction + Row Lock vững chắc trên SQL Server, đi kèm chặn bấm nhanh ở Frontend.
-- **Kết luận**: Mã nguồn của TAB 1 đạt chất lượng tốt, không vi phạm an toàn, sẵn sàng cho việc chạy kiểm thử UAT 10 kịch bản thực tế.
+  - FB-10 & CR-03: Đã giải quyết bằng kiến trúc Transaction + Row Lock vững chắc trên SQL Server, đi kèm khối `try...finally` toàn diện và chặn bấm nhanh ở Frontend.
+- **Kết luận**: Mã nguồn của TAB 1 đạt chất lượng cao, kiểm thử tự động xanh 100% (402 backend, 194 frontend), không có lỗi chặn phát hành, đạt chuẩn chất lượng nghiêm ngặt.

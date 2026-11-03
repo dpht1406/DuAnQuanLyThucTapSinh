@@ -66,3 +66,16 @@
 - **Số kịch bản KHÔNG ĐẠT (FAIL)**: **0/10 (0%)**
 - **Số kịch bản CHƯA CHẠY**: **0/10 (0%)**
 - **Đánh giá chất lượng vận hành**: Toàn bộ các phản hồi người dùng đã chọn (FB-01, FB-02, FB-03, FB-04, FB-10) đều được kiểm chứng giải quyết triệt để trên môi trường chạy thật. Các luồng hồi quy cho Sinh viên, Doanh nghiệp, Quản trị viên và các chốt chặn an toàn bảo mật, phân quyền đa người thuê đều vận hành chính xác và ổn định.
+
+---
+
+## 4. Kết Quả Xác Minh Tái Lập Từ Bản Clone Sạch (Clean Clone Verification)
+
+TAB 2 đã tiến hành kiểm tra độc lập quy trình tái lập dự án từ thư mục tạm sạch hoàn toàn (`clean-clone-uat2`), thực hiện tuần tự và nghiêm ngặt theo đúng tài liệu hướng dẫn [`README-REPRODUCE-UAT.md`](file:///d:/baitapthuctap/duanquanlythuctapsinh/RELEASE/uat-round/README-REPRODUCE-UAT.md):
+- **Biên dịch Backend (`dotnet restore && dotnet build`)**: `Build succeeded. 0 Error(s)`.
+- **Kiểm thử Backend (`dotnet test -m:1`)**: **402 Passed, 1 Skipped (theo thiết kế Collation), 0 Failed** (Tổng: 403).
+- **Cài đặt thư viện Frontend (`npm install`)**: Hoàn tất thành công (khắc phục dứt điểm phát hiện DOC-01).
+- **Kiểm thử Frontend (`npm test`)**: **17 test files passed, 194 passed, 0 failed** (bao gồm 4 ca kiểm thử mới cho cờ saving guard CR-03).
+- **Đóng gói Frontend (`npm run build`)**: Vite production build tạo thư mục `dist` thành công trong 2.36s, 0 lỗi.
+- **Tệp bằng chứng đầy đủ**: [`evidence/uat/reproduce-clean-clone.txt`](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/evidence/uat/reproduce-clean-clone.txt).
+- **Kết luận**: Gói phát hành UAT Sprint 2 hoàn toàn có thể tái lập độc lập 100% từ bản clone sạch, đáp ứng trọn vẹn tiêu chí phát hành.
