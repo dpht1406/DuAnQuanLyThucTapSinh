@@ -62,6 +62,29 @@ public class StudentValidatorTests
         Assert.Contains(result.Errors, error => error.PropertyName == nameof(dto.ClassName));
     }
 
+    [Fact]
+    public void Create_student_validator_returns_standard_vietnamese_messages()
+    {
+        var dto = new CreateStudentDto
+        {
+            StudentCode = "",
+            FullName = "",
+            Major = "",
+            ClassName = "",
+            Email = "",
+            PhoneNumber = ""
+        };
+
+        var result = new CreateStudentDtoValidator().Validate(dto);
+
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.StudentCode) && e.ErrorMessage == "Mã số sinh viên không được để trống.");
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.FullName) && e.ErrorMessage == "Họ tên không được để trống.");
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.Major) && e.ErrorMessage == "Ngành không được để trống.");
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.ClassName) && e.ErrorMessage == "Lớp không được để trống.");
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.Email) && e.ErrorMessage == "Email không được để trống.");
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(dto.PhoneNumber) && e.ErrorMessage == "Số điện thoại không được để trống.");
+    }
+
     private static CreateStudentDto CreateStudent() => new()
     {
         StudentCode = "SV001",

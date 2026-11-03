@@ -123,26 +123,26 @@ public class StudentService : IStudentService
         dto.ClassName = dto.ClassName?.Trim();
 
         if (string.IsNullOrWhiteSpace(dto.StudentCode))
-            return (false, "StudentCode là bắt buộc.", null);
+            return (false, "Mã số sinh viên không được để trống.", null);
         if (string.IsNullOrWhiteSpace(dto.FullName))
-            return (false, "FullName là bắt buộc.", null);
+            return (false, "Họ tên không được để trống.", null);
         if (string.IsNullOrWhiteSpace(dto.Email))
-            return (false, "Email là bắt buộc.", null);
+            return (false, "Email không được để trống.", null);
         if (!EmailAddressValidator.IsValid(dto.Email))
             return (false, EmailAddressValidator.GetErrorMessage(dto.Email), null);
         if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
-            return (false, "PhoneNumber là bắt buộc.", null);
+            return (false, "Số điện thoại không được để trống.", null);
         if (!PhoneRegex.IsMatch(dto.PhoneNumber))
-            return (false, "PhoneNumber phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).", null);
+            return (false, "Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).", null);
         if (string.IsNullOrWhiteSpace(dto.Major))
-            return (false, "Major là bắt buộc.", null);
+            return (false, "Ngành không được để trống.", null);
         if (string.IsNullOrWhiteSpace(dto.ClassName))
-            return (false, "ClassName là bắt buộc.", null);
+            return (false, "Lớp không được để trống.", null);
 
         var normalizedCode = dto.StudentCode;
         var codeExists = await _db.Students.AnyAsync(s => s.StudentCode != null && s.StudentCode.ToLower() == normalizedCode.ToLower());
         if (codeExists)
-            return (false, $"StudentCode '{dto.StudentCode}' đã tồn tại.", null);
+            return (false, $"Mã số sinh viên '{dto.StudentCode}' đã tồn tại.", null);
 
         var student = new Student
         {
@@ -177,19 +177,19 @@ public class StudentService : IStudentService
             return (false, "Không tìm thấy sinh viên.");
 
         if (string.IsNullOrWhiteSpace(dto.FullName))
-            return (false, "FullName là bắt buộc.");
+            return (false, "Họ tên không được để trống.");
         if (string.IsNullOrWhiteSpace(dto.Email))
-            return (false, "Email là bắt buộc.");
+            return (false, "Email không được để trống.");
         if (!EmailAddressValidator.IsValid(dto.Email))
             return (false, EmailAddressValidator.GetErrorMessage(dto.Email));
         if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
-            return (false, "PhoneNumber là bắt buộc.");
+            return (false, "Số điện thoại không được để trống.");
         if (!PhoneRegex.IsMatch(dto.PhoneNumber))
-            return (false, "PhoneNumber phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).");
+            return (false, "Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).");
         if (string.IsNullOrWhiteSpace(dto.Major))
-            return (false, "Major là bắt buộc.");
+            return (false, "Ngành không được để trống.");
         if (string.IsNullOrWhiteSpace(dto.ClassName))
-            return (false, "ClassName là bắt buộc.");
+            return (false, "Lớp không được để trống.");
 
         // Chỉ sửa thông tin cơ bản — không đụng StudentCode, Status, CompanyId, JobPositionId.
         student.FullName = dto.FullName;
@@ -387,14 +387,14 @@ public class StudentService : IStudentService
             }
 
             if (!string.IsNullOrWhiteSpace(row.PhoneNumber) && !PhoneRegex.IsMatch(row.PhoneNumber))
-                errors.Add("PhoneNumber không đúng định dạng (10 số, bắt đầu bằng 0).");
+                errors.Add("Số điện thoại không đúng định dạng (10 số, bắt đầu bằng 0).");
 
             if (errors.Count == 0)
             {
                 if (existingCodes.Contains(row.StudentCode))
-                    errors.Add($"StudentCode '{row.StudentCode}' đã tồn tại trong hệ thống.");
+                    errors.Add($"Mã số sinh viên '{row.StudentCode}' đã tồn tại trong hệ thống.");
                 else if (codesInFile.Contains(row.StudentCode))
-                    errors.Add($"StudentCode '{row.StudentCode}' bị trùng ngay trong file import.");
+                    errors.Add($"Mã số sinh viên '{row.StudentCode}' bị trùng ngay trong file import.");
             }
 
             if (errors.Count > 0)

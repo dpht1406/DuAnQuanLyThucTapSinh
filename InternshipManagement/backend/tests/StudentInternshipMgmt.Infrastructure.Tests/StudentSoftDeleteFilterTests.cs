@@ -84,7 +84,7 @@ public class StudentSoftDeleteFilterTests
         invalidEmailResult.Success.Should().BeFalse();
         invalidEmailResult.Error.Should().Contain("Email");
         invalidPhoneResult.Success.Should().BeFalse();
-        invalidPhoneResult.Error.Should().Contain("PhoneNumber");
+        invalidPhoneResult.Error.Should().Contain("Số điện thoại");
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class StudentSoftDeleteFilterTests
         invalidEmail.Success.Should().BeFalse();
         invalidEmail.Error.Should().Contain("Email");
         invalidPhone.Success.Should().BeFalse();
-        invalidPhone.Error.Should().Contain("PhoneNumber");
+        invalidPhone.Error.Should().Contain("Số điện thoại");
         updated.Success.Should().BeTrue();
         (await dbContext.Students.SingleAsync()).FullName.Should().Be("Updated Name");
         student.Email.Should().Be("updated@example.com");
