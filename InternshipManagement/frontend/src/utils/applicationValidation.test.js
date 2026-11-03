@@ -54,6 +54,8 @@ describe('validateApplication', () => {
     ['cv-not-url', { cvUrl: 'not a url' }, 'cvUrl'],
     ['cv-space', { cvUrl: 'https://a.com/cv file.pdf' }, 'cvUrl'],
     ['cv-too-long', { cvUrl: `https://a.com/${'x'.repeat(487)}` }, 'cvUrl'],
+    ['cv-relative', { cvUrl: '/files/cv.pdf' }, 'cvUrl'],
+    ['cv-internal-space-with-trim', { cvUrl: '  https://example.com/cv space.pdf  ' }, 'cvUrl'],
     ['cover-letter-short', { coverLetter: 'x'.repeat(19) }, 'coverLetter'],
     ['cover-letter-too-long', { coverLetter: 'x'.repeat(2001) }, 'coverLetter']
   ])('rejects invalid case %s', (_name, values, field) => {
@@ -71,6 +73,8 @@ describe('validateApplication', () => {
     ['CV http', { cvUrl: 'http://x.com/cv' }],
     ['CV maximum', { cvUrl: `https://x.com/${'x'.repeat(486)}` }],
     ['CV https', { cvUrl: 'https://drive.google.com/file/d/abc/view' }],
+    ['CV with leading and trailing spaces', { cvUrl: '   https://example.com/cv.pdf   ' }],
+    ['CV http with spaces', { cvUrl: '  http://x.com/cv  ' }],
     ['cover letter minimum', { coverLetter: 'x'.repeat(LIMITS.coverLetter[0]) }],
     ['cover letter maximum', { coverLetter: 'x'.repeat(LIMITS.coverLetter[1]) }]
   ])('accepts boundary case %s', (_name, values) => {

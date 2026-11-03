@@ -33,11 +33,13 @@ function hasLength(value, [minimum, maximum]) {
   return value.length >= minimum && value.length <= maximum
 }
 
-function validCvUrl(value) {
-  if (value.length > LIMITS.cvUrl || /\s/.test(value)) return false
+export function validCvUrl(value) {
+  if (typeof value !== 'string') return false
+  const trimmedValue = value.trim()
+  if (!trimmedValue || trimmedValue.length > LIMITS.cvUrl || /\s/.test(trimmedValue)) return false
 
   try {
-    const url = new URL(value)
+    const url = new URL(trimmedValue)
     return url.protocol === 'http:' || url.protocol === 'https:'
   } catch {
     return false
@@ -59,7 +61,7 @@ export function validateApplication(form) {
     ['applicantPhone', form?.applicantPhone, 10, false],
     ['applicantSchool', form?.applicantSchool, LIMITS.school[1], false],
     ['applicantMajor', form?.applicantMajor, LIMITS.major[1], false],
-    ['cvUrl', form?.cvUrl, LIMITS.cvUrl, false],
+    ['cvUrl', cvUrl, LIMITS.cvUrl, false],
     ['coverLetter', form?.coverLetter, LIMITS.coverLetter[1], true]
   ]
   for (const [field, value, maximumLength, allowLineBreaks] of stringChecks) {
