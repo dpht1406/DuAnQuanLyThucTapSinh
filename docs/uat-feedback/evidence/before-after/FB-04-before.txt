@@ -1,0 +1,9 @@
+﻿=== BANG CHUNG TRUOC KHI SUA: FB-04 (MUC DO: P4) ===
+Thoi diem do: 2026-11-03 09:06:20
+Tap tin: InternshipManagement/README.md
+Mo ta loi: Dong cuoi cung cua README.md bi loi encoding mojibake
+
+Noi dung dong 9 (dong cuoi) hien tai:
+Há»‡ thá»‘ng quáº£n lÃ½ sinh viÃªn thá»±c táº­p (ASP.NET Core 8 + Vue 3).
+
+Byte hex cuoi tep: E2-80-98-6E-67-20-71-75-C3-A1-C2-BA-C2-A3-6E-20-6C-C3-83-C2-BD-20-73-69-6E-68-20-76-69-C3-83-C2-AA-6E-20-74-68-C3-A1-C2-BB-C2-B1-63-20-74-C3-A1-C2-BA-C2-AD-70-20-28-41-53-50-2E-4E-45-54-20-43-6F-72-65-20-38-20-2B-20-56-75-65-20-33-29-2E-0A

@@ -1,0 +1,15 @@
+﻿=== BANG CHUNG KIEM THU TC-13 VA TC-14 TRONG TEST-CASES.MD ===
+Thoi diem do: 2026-11-03 09:06:22
+
+--- KET QUA TC-13: XSS Script Injection in CoverLetter ---
+Noi dung gui: <script>alert('xss')</script> Thu gioi thieu.
+Ket qua server: Luu tru an toan va tra ve chuoi nguyen ban dang text.
+Ket qua UI: Vue interpolation {{ ... }} tu dong escape ky tu HTML, khong thuc thi script (PASS).
+Phat hien phu tai CompanyPlacementRequestDetailView.vue line 174: Co chuoi fallback 'tedjsfjdjklfjasdfslfajaisf' khi coverLetter rong.
+
+--- KET QUA TC-14: Viewport 375px Mobile Responsive ---
+Ket qua kiem tra: JobPositionApplyView.vue co quy tac @media (max-width: 640px):
+- padding-bottom: calc(150px + env(safe-area-inset-bottom)) de khong bi thanh sticky de len noi dung
+- .apply-actions: position fixed, bottom calc(60px + env(...)), sticky tren thanh dieu huong duoi
+- form-grid chuyen sang 1 cot (minmax(0, 1fr))
+- Ket qua: Cuon tot, khong tran ngang, nut thao tac sticky hoat dong dung (PASS).

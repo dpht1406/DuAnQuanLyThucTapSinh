@@ -1,0 +1,14 @@
+﻿=== BANG CHUNG SAU KHI SUA: FB-01 (MUC DO: P3) ===
+Thoi diem do: 2026-11-03 09:25:45
+Endpoint: POST /api/students va PUT /api/students/{id}
+Ket qua mong doi: Thong bao loi bang tieng Viet tu nhien (Ho ten khong duoc de trong, So dien thoai khong duoc de trong, Ma so sinh vien '{code}' da ton tai), khong con chuoi tieng Anh nhu FullName la bat buoc.
+
+--- Truong hop 1: Bo trong cac truong bat buoc ---
+HTTP Status: 400
+Response Body:
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Email":["Email không được để trống."],"Major":["Ngành không được để trống."],"FullName":["Họ tên không được để trống."],"ClassName":["Lớp không được để trống."],"PhoneNumber":["Số điện thoại không được để trống.","Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0)."],"StudentCode":["Mã số sinh viên không được để trống."]},"traceId":"00-fa96bbaddfd9e050d29410a315e5a9ee-472b13ea4692d119-00"}
+
+--- Truong hop 2: Trung ma so sinh vien ---
+HTTP Status: 400
+Response Body: {"success":false,"message":"Mã số sinh viên 'SV001' đã tồn tại.","data":null,"errors":null}
+

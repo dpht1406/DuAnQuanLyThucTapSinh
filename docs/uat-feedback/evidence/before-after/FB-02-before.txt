@@ -1,0 +1,13 @@
+﻿=== BANG CHUNG TRUOC KHI SUA: FB-02 (MUC DO: P3) ===
+Thoi diem do: 2026-11-03 09:06:18
+Endpoint: POST /api/company-me/job-positions va companyJobPositionValidation.js
+Mo ta loi: Thong bao co tu tieng Anh trong ngoac don: TiÃªu Ä‘á» (Title) lÃ  báº¯t buá»™c., Sá»‘ lÆ°á»£ng tuyá»ƒn (Quantity) pháº£i lÃ  sá»‘ nguyÃªn lá»›n hÆ¡n 0.
+
+--- Truong hop 1: So luong tuyen = 0 ---
+HTTP Status: 400
+Response Body: {"success":false,"message":"Số lượng tuyển (Quantity) phải lớn hơn 0.","data":null,"errors":null}
+
+--- Truong hop 2: Tieu de bo trong ---
+HTTP Status: 400
+Response Body: {"success":false,"message":"Tiêu đề (Title) là bắt buộc.","data":null,"errors":null}
+

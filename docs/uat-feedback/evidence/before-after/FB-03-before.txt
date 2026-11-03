@@ -1,0 +1,25 @@
+﻿=== BANG CHUNG TRUOC KHI SUA: FB-03 (MUC DO: P3) ===
+Thoi diem do: 2026-11-03 09:06:18
+Endpoint: POST /api/me/placement-requests va applicationValidation.js
+Mo ta loi: Khi dan link CV co khoang trang o cuoi (vi du 'https://example.com/cv '), he thong chan khong cho nop don
+
+--- Truong hop 1: CV URL co khoang trang o cuoi bi chan boi backend ---
+Gia tri CvUrl: 'https://example.com/cv/fb03   '
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"CvUrl":["Liên kết CV phải là URL tuyệt đối bắt đầu bằng http:// hoặc https:// và không chứa khoảng trắng."]},"traceId":"00-c8604ba700d75a3e1233553edc74d738-c65616b8809de6f8-00"}
+
+--- Truong hop 2: CV URL chua scheme javascript: bi chan hop le ---
+Gia tri CvUrl: 'javascript:alert(1)'
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"CvUrl":["Liên kết CV phải là URL tuyệt đối bắt đầu bằng http:// hoặc https:// và không chứa khoảng trắng."]},"traceId":"00-090c68ec0f7bd1150d8a2884c60e6f86-0ec72efa9ad6043a-00"}
+
+--- Truong hop 3: CV URL la duong dan tuong doi bi chan hop le ---
+Gia tri CvUrl: '/files/mycv.pdf'
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"CvUrl":["Liên kết CV phải là URL tuyệt đối bắt đầu bằng http:// hoặc https:// và không chứa khoảng trắng."]},"traceId":"00-b96bbef096e9de78422d7da41576a750-5c62dc9ffa2d1651-00"}
+
+--- Truong hop 4: CV URL chua khoang trang o giua bi chan hop le ---
+Gia tri CvUrl: 'https://example.com/my cv/view'
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"CvUrl":["Liên kết CV phải là URL tuyệt đối bắt đầu bằng http:// hoặc https:// và không chứa khoảng trắng."]},"traceId":"00-c9c233be50d2ce09d554c6188d4bd0e0-ea7e9552e89b9f45-00"}
+

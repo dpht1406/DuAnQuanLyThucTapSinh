@@ -1,0 +1,17 @@
+﻿=== BANG CHUNG TRUOC KHI SUA: FB-01 (MUC DO: P3) ===
+Thoi diem do: 2026-11-03 09:06:18
+Endpoint: POST /api/students va PUT /api/students/{id}
+Mo ta loi: Thong bao validation kem tieng Anh (FullName la bat buoc, PhoneNumber la bat buoc, StudentCode da ton tai...)
+
+--- Truong hop 1: Bo trong FullName ---
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"FullName":["FullName là bắt buộc."]},"traceId":"00-a031c26ff3796034864820253ea8eebe-52591d38da047309-00"}
+
+--- Truong hop 2: PhoneNumber sai dinh dang ---
+HTTP Status: 400
+Response Body: {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"PhoneNumber":["PhoneNumber phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0)."]},"traceId":"00-bcf0136617cc7d1ebbbaf73018e3e793-462f68678f618a97-00"}
+
+--- Truong hop 3: Trung StudentCode ---
+HTTP Status: 400
+Response Body: {"success":false,"message":"StudentCode 'BF01_829363' đã tồn tại.","data":null,"errors":null}
+

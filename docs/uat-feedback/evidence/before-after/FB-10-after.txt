@@ -1,0 +1,11 @@
+﻿=== BANG CHUNG SAU KHI SUA: FB-10 (MUC DO: P2) ===
+Thoi diem do: 2026-11-03 09:25:48
+Nguon phat hien: Ca kiem thu TC-12 trong InternshipManagement/docs/evidence/TEST-CASES.md
+Endpoint: POST /api/me/placement-requests
+Ket qua mong doi: Khi gui 2 yeu cau nop don dong thoi (double submit nhanh), database transaction va row lock se dam bao chi co 1 yeu cau thanh cong, yeu cau thu hai bi chan ngay lap tuc boi kiem tra trung lap va tra ve ma loi ro rang.
+
+Ket qua yeu cau 1: HTTP Status 200 (Tao thanh cong don Id: 10)
+Ket qua yeu cau 2: HTTP Status 400 (Loi chan trung lap: {"success":false,"message":"Bạn đã có đơn đang mở cho doanh nghiệp và vị trí này.","data":null,"errors":null})
+Tong so don ung tuyen duoc tao trong CSDL cho sinh vien nay: 1
+Danh gia sau khi sua: DAT (PASS) - Chi co duy nhat 1 don duoc tao, request thu hai bi chan thanh cong voi loi DuplicateOpenRequest!
+
