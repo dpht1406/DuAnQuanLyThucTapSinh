@@ -1,4 +1,4 @@
-﻿# Internship Management
+# Internship Management
 
 ## Trang Vị trí thực tập
 
@@ -6,4 +6,4 @@ Tạo migration từ thư mục `backend` bằng lệnh `dotnet ef migrations ad
 
 Chạy giao diện từ thư mục `frontend` bằng `npm install` và `npm run dev`. Trang đăng nhập `/job-positions` yêu cầu tài khoản Admin hoặc User.
 
-Há»‡ thá»‘ng quáº£n lÃ½ sinh viÃªn thá»±c táº­p (ASP.NET Core 8 + Vue 3).
+Hệ thống quản lý sinh viên thực tập (ASP.NET Core 8 + Vue 3).
