@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [ValidateSet("Setup", "Cleanup")]
     [string]$Action = "Setup",
