@@ -130,7 +130,7 @@ async function submit() {
     }
 
     const payload = Object.fromEntries(
-      Object.entries(form.value).map(([field, value]) => [field, value.trim()])
+      Object.entries(form.value).map(([field, value]) => [field, typeof value === 'string' ? value.trim() : value])
     )
     await createPlacementRequest({
       companyId: position.value.companyId,

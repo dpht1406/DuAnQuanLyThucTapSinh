@@ -75,6 +75,10 @@ export function validateCompanyPlacementResult(isPassed, note) {
   return ''
 }
 
+export function formatCoverLetter(coverLetter, note) {
+  return coverLetter || note || 'Chưa có thư giới thiệu.'
+}
+
 export function getEmbedCvUrl(url) {
   if (!url || typeof url !== 'string') return ''
   const trimmed = url.trim()

@@ -154,4 +154,33 @@ describe('JobPositionApplyView (CR-03 saving guard)', () => {
     expect(vm.saving.value).toBe(false)
     expect(vm.formError.value).toBe('Đã nộp đơn trước đó.')
   })
+
+  it('safely trims only string values and preserves non-string attributes on submit (P4-02)', async () => {
+    const vm = await instantiate()
+    vm.form.value = {
+      applicantFullName: '  Nguyễn Văn SafeTrim  ',
+      applicantEmail: 'safetrim@example.com',
+      applicantPhone: '0901234567',
+      applicantSchool: 'Đại học Bách Khoa',
+      applicantMajor: 'CNTT',
+      cvUrl: 'https://example.com/cv.pdf',
+      coverLetter: 'Kính gửi quý công ty, tôi mong muốn thực tập tại vị trí này.',
+      customNull: null,
+      customUndefined: undefined,
+      customNumber: 42,
+      customBool: false
+    }
+    mocks.createPlacementRequest.mockResolvedValueOnce({ id: 101 })
+
+    await vm.submit()
+    expect(vm.saving.value).toBe(false)
+    expect(mocks.createPlacementRequest).toHaveBeenCalledTimes(1)
+    expect(mocks.createPlacementRequest).toHaveBeenCalledWith(expect.objectContaining({
+      applicantFullName: 'Nguyễn Văn SafeTrim',
+      customNull: null,
+      customUndefined: undefined,
+      customNumber: 42,
+      customBool: false
+    }))
+  })
 })

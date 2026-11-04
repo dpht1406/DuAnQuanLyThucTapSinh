@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  formatCoverLetter,
   mapPlacementRequestDueStatus,
   mapPlacementRequestStatus,
   validateCompanyInterviewForm,
@@ -79,5 +80,14 @@ describe('placement request form validation', () => {
     expect(validateCompanyPlacementResult(true, '')).toBe('')
     expect(validateCompanyPlacementResult(false, 'N'.repeat(1001)))
       .toBe('Ghi chú kết quả không được vượt quá 1000 ký tự.')
+  })
+
+  it('formats cover letter with proper fallbacks for null or empty content (P4-02)', () => {
+    expect(formatCoverLetter('Thư giới thiệu của em', 'Ghi chú thêm')).toBe('Thư giới thiệu của em')
+    expect(formatCoverLetter('', 'Ghi chú thay thế')).toBe('Ghi chú thay thế')
+    expect(formatCoverLetter(null, 'Ghi chú thay thế')).toBe('Ghi chú thay thế')
+    expect(formatCoverLetter('', '')).toBe('Chưa có thư giới thiệu.')
+    expect(formatCoverLetter(null, null)).toBe('Chưa có thư giới thiệu.')
+    expect(formatCoverLetter(undefined, undefined)).toBe('Chưa có thư giới thiệu.')
   })
 })

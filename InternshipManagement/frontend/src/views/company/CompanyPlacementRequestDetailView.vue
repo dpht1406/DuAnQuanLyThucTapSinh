@@ -6,6 +6,7 @@ import { getCompanyPlacementRequestById } from '../../api/company-me.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import { formatServerDateTime } from '../../utils/dateTime.js'
 import {
+  formatCoverLetter,
   getEmbedCvUrl,
   mapPlacementRequestDueStatus,
   mapPlacementRequestStatus
@@ -171,7 +172,7 @@ watch(() => route.params.id, loadDetail, { immediate: true })
             <div class="applicant-field field-letter">
               <span class="field-label">Thư giới thiệu</span>
               <div class="letter-box">
-                {{ detail.coverLetter || detail.note || 'tedjsfjdjklfjasdfslfajaisf' }}
+                {{ formatCoverLetter(detail.coverLetter, detail.note) }}
               </div>
             </div>
           </div>
