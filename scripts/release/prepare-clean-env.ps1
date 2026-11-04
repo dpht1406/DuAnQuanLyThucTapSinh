@@ -153,6 +153,29 @@ try {
 }
 Write-Host "Export complete. Extracted clean source code."
 
+# Configure local package cache in temp directory for offline/locked reproducibility
+$globalPackages = ""
+try {
+    $rawLocals = (& dotnet nuget locals global-packages -l | Out-String)
+    if ($rawLocals -match 'global-packages:\s*(.+)') {
+        $globalPackages = $matches[1].Trim()
+    }
+} catch {}
+if ([string]::IsNullOrWhiteSpace($globalPackages) -or -not (Test-Path $globalPackages)) {
+    $globalPackages = "C:\Users\PHAT\.nuget\packages\"
+}
+
+$nugetConfigContent = @"
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="local-cache" value="$globalPackages" />
+  </packageSources>
+</configuration>
+"@
+Set-Content -Path (Join-Path $tempRoot "nuget.config") -Value $nugetConfigContent -Encoding UTF8
+
 # Step 2: Create isolated database in SQL Server
 Write-Host "Creating fresh demo database '$dbName' on SQL Server localhost..."
 $createDbSql = @"
@@ -195,7 +218,7 @@ try {
     Write-Host "Restoring Frontend npm dependencies via npm ci..."
     Push-Location "InternshipManagement\frontend"
     try {
-        & npm ci
+        & npm ci --prefer-offline
         if ($LASTEXITCODE -ne 0) { throw "npm ci failed." }
 
         Write-Host "Building Frontend production bundle..."
@@ -235,7 +258,7 @@ $apiProcess = Start-Process -FilePath "dotnet" `
 
 Write-Host "Backend API started with PID: $($apiProcess.Id)"
 
-Write-Host "Starting Frontend Vite preview/dev on port $fePort..."
+Write-Host "Starting Frontend Vite on port $fePort..."
 $feProcess = Start-Process -FilePath "cmd.exe" `
     -ArgumentList "/c npx vite --port $fePort --host 127.0.0.1" `
     -WorkingDirectory (Join-Path $tempRoot "InternshipManagement\frontend") `
