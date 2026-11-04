@@ -3,7 +3,7 @@
 Tài liệu này theo dõi và quản lý tập trung toàn bộ các vấn đề phát hiện trong suốt vòng đời dự án từ:
 1. Các vấn đề trước tái cấu trúc (Pre-refactor Known Issues)
 2. Kết quả đánh giá chéo mã nguồn độc lập (Cross-Review)
-3. Toàn bộ 10 phản hồi quan sát người dùng thực tế (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md))
+3. 10 phản hồi quan sát người dùng thực tế (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md): khắc phục 5, từ chối 2, hoãn 3)
 4. Kết quả thực thi 10 kịch bản UAT tự động hóa trên môi trường sạch biệt lập.
 
 ---

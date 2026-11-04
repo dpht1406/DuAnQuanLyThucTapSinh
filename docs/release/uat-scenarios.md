@@ -1,8 +1,8 @@
-﻿# Báo Cáo Kết Quả Kiểm Thử Chấp Nhận Người Dùng (UAT Scenarios Report - Release v1.0.0)
+# Báo Cáo Kết Quả Kiểm Thử Chấp Nhận Người Dùng (UAT Scenarios Report - Release v1.0.0)
 
 > [!IMPORTANT]
 > **Môi trường thực thi**: Bộ kịch bản được thực thi hoàn toàn tự động trên môi trường demo sạch biệt lập (CSDL: StudentInternshipMgmt_ReleaseDemo_20261104_092356, API: http://127.0.0.1:5028, Frontend: http://127.0.0.1:5183).
-> **Ghi nhận nguồn phản hồi người dùng thực tế**: Đợt phát hành Release v1.0.0 kế thừa và giải quyết dứt điểm toàn bộ 10 phản hồi quan sát người thật (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md)). Bộ 10 kịch bản tự động dưới đây là phương án kiểm chứng tự động độc lập nghiêm ngặt, không giả tạo người dùng.
+> **Ghi nhận nguồn phản hồi người dùng thực tế**: Đợt phát hành Release kế thừa và xử lý minh bạch 10 phản hồi quan sát người thật (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md)) theo đúng [KNOWN-ISSUES.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/RELEASE/uat-round/KNOWN-ISSUES.md): trong đó **khắc phục 5 vấn đề bằng mã nguồn** (FB-01..04, FB-10), **từ chối 2 yêu cầu** vi phạm quy chế quản lý/an toàn (FB-05, FB-06), và **hoãn 3 yêu cầu mở rộng sang các giai đoạn sau** (FB-07, FB-08, FB-09). Bộ 10 kịch bản tự động dưới đây là phương án kiểm chứng tự động độc lập nghiêm ngặt, không giả tạo người dùng.
 
 ---
 

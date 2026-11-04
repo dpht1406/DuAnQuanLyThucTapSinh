@@ -29,7 +29,7 @@ Trong vai trò kỹ sư trưởng phát hành và phụ trách chất lượng, 
 ### 2. Những Hạn Chế Thật Sự Còn Lại
 
 Dù hệ thống đã vượt qua toàn bộ các tiêu chuẩn kiểm thử kỹ thuật tự động, vẫn tồn tại một số hạn chế khách quan cần ghi nhận minh bạch:
-- **Chưa có khảo sát người thật trên diện rộng**: Bộ 10 kịch bản UAT hiện tại được thực thi tự động hóa bằng script mô phỏng API và chụp ảnh màn hình giao diện. Do không thể thay thế con người thật, các phản hồi người dùng hiện tại là sự kế thừa từ quan sát thực nghiệm trước đó (FB-01 đến FB-10). Cần tổ chức một đợt thử nghiệm thực tế với sinh viên và cán bộ khoa tại trường.
+- **Chưa có khảo sát người thật trên diện rộng**: Bộ 10 kịch bản UAT hiện tại được thực thi tự động hóa bằng script mô phỏng API và chụp ảnh màn hình giao diện. Do không thể thay thế con người thật, các phản hồi người dùng hiện tại là sự kế thừa từ quan sát thực nghiệm trước đó (FB-01 đến FB-10: khắc phục 5, từ chối 2, hoãn 3 theo KNOWN-ISSUES.md). Cần tổ chức một đợt thử nghiệm thực tế với sinh viên và cán bộ khoa tại trường.
 - **Cơ chế gửi email chưa áp dụng Transactional Outbox**: Sau khi giao dịch đăng ký thực tập được commit vào CSDL, hệ thống mới tiến hành gửi email thông báo qua SMTP. Nếu máy chủ gặp sự cố sập nguồn đúng thời điểm này, đơn ứng tuyển đã được lưu nhưng email có thể chưa được gửi đi.
 - **Một ca kiểm thử tìm kiếm tiếng Việt đang tạm bỏ qua (`[Skip]`)**: Ca test `StudentSearchTests` phụ thuộc vào cấu hình collation Accent-Insensitive cụ thể của SQL Server nên đang được giữ nguyên theo thiết kế ban đầu để tránh false-negative.
 

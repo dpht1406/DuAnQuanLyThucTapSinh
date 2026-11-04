@@ -37,7 +37,7 @@
   - Do môi trường thực thi có thể bị cô lập mạng ngoài (không thể kết nối tới `api.nuget.org:443`), script tự động khai thác bộ đệm cục bộ (`local-cache` tại `C:\Users\PHAT\.nuget\packages\`) và cờ `npm ci --prefer-offline` nhằm đảm bảo tính tái lập 100% trong mọi điều kiện mạng.
   - Chạy từng dự án kiểm thử hoặc chỉ định file dự án cụ thể để tránh xung đột cổng socket nội bộ của trình điều phối VSTest trên Windows.
 - **Phương Án Nghiệm Thu UAT & Dữ Liệu Khảo Sát**:
-  - Tôn trọng nguyên tắc trung thực nghề nghiệp: Không giả tạo tên người dùng hoặc bịa đặt khảo sát. Toàn bộ 10 phản hồi mẫu người thật từ vòng UAT trước (FB-01 đến FB-10 trong `docs/uat-feedback`) được kế thừa làm căn cứ nghiệp vụ gốc.
+  - Tôn trọng nguyên tắc trung thực nghề nghiệp: Không giả tạo tên người dùng hoặc bịa đặt khảo sát. 10 phản hồi mẫu người thật từ vòng UAT trước (FB-01 đến FB-10 trong `docs/uat-feedback`) được kế thừa làm căn cứ nghiệp vụ gốc: khắc phục 5 (FB-01..04, FB-10), từ chối 2 (FB-05, FB-06) và hoãn 3 (FB-07, FB-08, FB-09).
   - 10 kịch bản UAT tự động hóa chuyên sâu (`scripts/release/run-uat-scenarios.ps1`) được sử dụng làm phương án kiểm chứng kỹ thuật toàn trình thay thế hợp lệ, kiểm tra tương tác API thật và chụp ảnh màn hình giao diện thật.
 - **Quy Trình Xử Lý Lỗi & Tiêu Chuẩn Phát Hành**:
   - Áp dụng nguyên tắc zero P1/P2: Chỉ cho phép phát hành khi 0 lỗi P1 và 0 lỗi P2 còn mở. Lỗi P2 race condition duy nhất đã được khắc phục hoàn toàn bằng Row Lock và DB Transaction, kiểm chứng thực tế đạt 100%.
