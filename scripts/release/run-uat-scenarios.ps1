@@ -145,8 +145,8 @@ function Capture-Screen {
         $chrome = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
     }
     if (Test-Path $chrome) {
-        $cmd = "`"$chrome`" --headless=new --disable-gpu --window-size=1280,800 --screenshot=`"$outPath`" `"$url`""
-        cmd.exe /c $cmd 2>&1 | Out-Null
+        $cmd = "`"$chrome`" --headless=new --disable-gpu --window-size=1280,800 --screenshot=`"$outPath`" `"$url`" >nul 2>nul"
+        cmd.exe /c $cmd
         if (Test-Path $outPath) {
             Write-Host "Captured UI screenshot: $FileName"
         }
