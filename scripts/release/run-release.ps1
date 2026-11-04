@@ -291,7 +291,8 @@ try {
     [void]$timingReport.AppendLine("Total Duration: $totalSeconds seconds`n")
     [void]$timingReport.AppendLine("Step Breakdowns:")
     foreach ($k in $stepTimings.Keys) {
-        [void]$timingReport.AppendLine("  - {0,-28}: {1,8} s" -f $k, $stepTimings[$k])
+        $timingLine = "  - {0,-28}: {1,8} s" -f $k, $stepTimings[$k]
+        [void]$timingReport.AppendLine($timingLine)
     }
     $timingFilePath = Join-Path $evidenceDir "timing.txt"
     [System.IO.File]::WriteAllText($timingFilePath, $timingReport.ToString(), [System.Text.Encoding]::UTF8)
