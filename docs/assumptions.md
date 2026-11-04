@@ -24,3 +24,21 @@
 - **Chế độ kiểm thử UAT**:
   - Máy chủ có dịch vụ `MSSQLSERVER` đang chạy và cơ sở dữ liệu `StudentInternshipMgmtDb` đã tồn tại sẵn trên `localhost`.
   - Quyết định bảo thủ: Thực thi UAT trực tiếp với máy chủ backend thật và CSDL SQL Server thật trên cổng `5018`, không dùng in-memory mô phỏng. Bằng chứng được lưu độc lập dưới dạng raw request/response và direct SQL query tại `docs/evidence/uat/`.
+
+
+---
+
+## Release v1.0.0 Decisions (Release Engineer & QA Lead)
+- **Thiết kế Môi trường Sạch Biệt Lập (Clean Environment Isolation)**:
+  - Môi trường chạy thử demo phát hành được dựng hoàn toàn bên ngoài repository tại thư mục tạm `StudentInternshipMgmt_ReleaseDemo_<timestamp>` (trích xuất qua `git archive` để bảo đảm 0 file thừa, 0 binary, 0 node_modules).
+  - Tên cơ sở dữ liệu tạm có tiền tố bắt buộc `StudentInternshipMgmt_ReleaseDemo_<timestamp>` và được bảo vệ bởi chốt chặn an toàn (Safety Interlock) từ chối thực thi nếu trùng tên với cơ sở dữ liệu chính `StudentInternshipMgmtDb`.
+  - Toàn bộ chuỗi kết nối, khóa JWT bí mật tạm thời và cổng mạng đều được truyền qua biến môi trường của tiến trình (`Process Environment Variables`), tuyệt đối không chỉnh sửa hay ghi đè các tệp cấu hình đã commit (`appsettings*.json`).
+- **Chiến lược Tái lập Không phụ thuộc Mạng Ngoài (Offline/Locked Reproducibility)**:
+  - Do môi trường thực thi có thể bị cô lập mạng ngoài (không thể kết nối tới `api.nuget.org:443`), script tự động khai thác bộ đệm cục bộ (`local-cache` tại `C:\Users\PHAT\.nuget\packages\`) và cờ `npm ci --prefer-offline` nhằm đảm bảo tính tái lập 100% trong mọi điều kiện mạng.
+  - Chạy từng dự án kiểm thử hoặc chỉ định file dự án cụ thể để tránh xung đột cổng socket nội bộ của trình điều phối VSTest trên Windows.
+- **Phương Án Nghiệm Thu UAT & Dữ Liệu Khảo Sát**:
+  - Tôn trọng nguyên tắc trung thực nghề nghiệp: Không giả tạo tên người dùng hoặc bịa đặt khảo sát. Toàn bộ 10 phản hồi mẫu người thật từ vòng UAT trước (FB-01 đến FB-10 trong `docs/uat-feedback`) được kế thừa làm căn cứ nghiệp vụ gốc.
+  - 10 kịch bản UAT tự động hóa chuyên sâu (`scripts/release/run-uat-scenarios.ps1`) được sử dụng làm phương án kiểm chứng kỹ thuật toàn trình thay thế hợp lệ, kiểm tra tương tác API thật và chụp ảnh màn hình giao diện thật.
+- **Quy Trình Xử Lý Lỗi & Tiêu Chuẩn Phát Hành**:
+  - Áp dụng nguyên tắc zero P1/P2: Chỉ cho phép phát hành khi 0 lỗi P1 và 0 lỗi P2 còn mở. Lỗi P2 race condition duy nhất đã được khắc phục hoàn toàn bằng Row Lock và DB Transaction, kiểm chứng thực tế đạt 100%.
+  - Quản lý phiên bản SemVer nghiêm ngặt: Nâng phiên bản toàn hệ thống lên `1.0.0`, sử dụng file `VERSION` làm nguồn duy nhất đồng bộ sang `Directory.Build.props` và `frontend/package.json`.
