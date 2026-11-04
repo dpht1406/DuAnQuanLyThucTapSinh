@@ -1,0 +1,24 @@
+﻿=== ITEM 6: FAST SECURITY AUDIT ===
+1. Secret Scan in Repo and Package (No secret values printed):
+   - Category A: Seed Credentials & Default Passwords
+     * Location: docs/manual-tests/, scripts/release/run-uat-scenarios.ps1, RELEASE/v1.0.0/README-REPRODUCE.md, InternshipManagement/backend/README.md.
+     * Type: Known demo/seed credentials for initial admin login.
+     * Mitigation: Enforced 'MustChangePassword = true' at migration level.
+   - Category B: Password Hash in Migrations
+     * Location: InternshipManagement/backend/src/StudentInternshipMgmt.Infrastructure/Migrations/AppDbContextModelSnapshot.cs & Migration designer files.
+     * Type: BCrypt password hash corresponding to seed demo user.
+   - Category C: Dummy JWT Secret Keys in Automated Test Projects
+     * Location: InternshipManagement/backend/tests/StudentInternshipMgmt.Infrastructure.Tests/ (AuthPasswordChangeTests.cs, AuthServiceCompanyRoleTests.cs, AuthorizationMatrixTests.cs, CompanyAccountServiceTests.cs, LoginAttemptTrackerTests.cs).
+     * Type: Hardcoded non-production JWT test signing keys (>= 32 chars).
+   - Category D: Sample JWT Keys in Reproduce Documentation
+     * Location: RELEASE/v1.0.0/README-REPRODUCE.md, RELEASE/uat-round/README-REPRODUCE-UAT.md.
+     * Type: Example environment variable assignment strings for local testing.
+   - Production Secrets Status:
+     * No production passwords, live SMTP passwords, private certificates, or production connection strings committed in repo or package.
+     * appsettings.json uses Windows Integrated Security and leaves Smtp/Jwt empty for environment-based injection.
+
+2. .gitignore Audit:
+   - Recent change in commit 5a3bc91: Added '!RELEASE/**/*.zip'.
+   - Purpose: Allow release package (RELEASE/v1.0.0/DuAnQuanLyThucTapSinh-v1.0.0.zip) to be committed while maintaining root '*.zip' exclusion.
+   - Verification: No required source files (.cs, .vue, .js, .json, .props, .sln, docs) are inadvertently excluded.
+Conclusion: ĐÚNG - No live secrets exposed; .gitignore modification is safe and intentional.

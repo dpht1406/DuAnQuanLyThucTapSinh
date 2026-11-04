@@ -1,0 +1,23 @@
+﻿=== REAL REPRODUCTION VERIFICATION REPORT ===
+Timestamp: 2026-11-04 09:47:22
+Temp repro directory created: C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReviewRepro_e8f205079a81479bb73288a8afdf8327
+Extraction completed successfully.
+--> Running: dotnet restore DuAnQuanLyThucTapSinh.sln
+dotnet restore exit code: 0
+--> Running: dotnet build DuAnQuanLyThucTapSinh.sln --no-restore -c Release
+dotnet build DuAnQuanLyThucTapSinh.sln exit code: 0
+--> Test tests\PlacementAcceptance.Tests\PlacementAcceptance.Tests.csproj exit code: 1
+--> Test InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\StudentInternshipMgmt.Tests.csproj exit code: 1
+    Output preview: Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReviewRepro_e8f205079a81479bb73288a8afdf8327\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Release\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0) VSTest version 17.14.1 (x64) dotnet.exe : The test source file "C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReviewRepro_e8f205079a81479bb
+--> Building InternshipManagement.sln to verify all test projects
+--> Test InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\StudentInternshipMgmt.Tests.csproj after building InternshipManagement.sln exit code: 0
+    Passed: 116
+--> Test InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\StudentInternshipMgmt.Infrastructure.Tests.csproj after building InternshipManagement.sln exit code: 0
+    Passed: 264
+    Skipped: 1
+--> Running npm test in frontend
+    Frontend exit code: 1
+    Contrast check: Số cặp màu không đạt: 0
+    Labels check: PASS
+Temp directory cleanup verified (Exists = False).
+Total reproduction time: 38.2 seconds.

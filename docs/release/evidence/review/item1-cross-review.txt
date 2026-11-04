@@ -1,0 +1,17 @@
+﻿=== ITEM 1: CROSS-REVIEW AUDIT ===
+1. Timing analysis in run-release.ps1:
+   Step 'CROSS-REVIEW-AND-BUG-LOG' in scripts/release/run-release.ps1 executes:
+   if (-not (Test-Path $crossReviewFile)) { ... }
+   Because docs/release/cross-review.md already existed, execution time was 0.00s / 0.02s.
+   Conclusion: Generated dynamically by script? NO. It was statically pre-authored.
+
+2. Commit history of cross-review.md:
+   Committed at 08:55:52 in commit f4d3d69 before release runs at 09:22 - 09:26.
+
+3. Git diff baseline..HEAD analysis:
+   - Risk 1: T-SQL dialect lock coupling ([Students], [PlacementRequests], [JobPositions] dummy updates). Tightly coupled to SQL Server, would fail or behave unpredictably on other providers.
+   - Risk 2: Implicit rollback via transaction Dispose on early Reject() returns in PlacementRequestService rather than structured RollbackWithResultAsync.
+   - Risk 3: In JobPositionApplyView.vue, Object.entries(form.value).map(([field, value]) => [field, value.trim()]) assumes all values are strings; null/undefined/number types would cause unhandled TypeError crash.
+
+4. Comparison with docs/release/cross-review.md:
+   The report in docs/release/cross-review.md only praises fixes and claims 0 open issues without mentioning dialect coupling or potential type assumptions.

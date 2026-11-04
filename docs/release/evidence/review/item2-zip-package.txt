@@ -1,0 +1,15 @@
+﻿=== ITEM 2: ZIP PACKAGE VS TAG AUDIT ===
+1. Zip file location: RELEASE/v1.0.0/DuAnQuanLyThucTapSinh-v1.0.0.zip (Size: 9,173,684 bytes)
+2. Version Verification inside zip:
+   - VERSION: 1.0.0 (MATCH)
+   - InternshipManagement/backend/Directory.Build.props: <Version>1.0.0</Version> (MATCH)
+   - InternshipManagement/frontend/package.json: "version": "1.0.0" (MATCH)
+3. Checksum verification:
+   - Computed SHA256: C7516D2E92E3CAD95977120E441C98E2D4F510792E08C704A6626483A61F6CEB
+   - Listed in RELEASE/v1.0.0/checksums.sha256: C7516D2E92E3CAD95977120E441C98E2D4F510792E08C704A6626483A61F6CEB
+   - Result: 100% MATCH.
+4. Origin commit of the zip:
+   - Tag v1.0.0 points to commit 5a3bc912da2b7eeb781c747f41a5295a816d15de.
+   - Comparison with commit 34ec28470ce29faab7ef8f00703c1def20ac09d2: 0 differences (689/689 files match exact git tree).
+   - Comparison with commit 5a3bc91 (tag v1.0.0): 32 differences.
+   - Conclusion: The zip was created from commit 34ec284 (immediately preceding commit 5a3bc91) via 'git archive HEAD', before the release artifacts, evidence logs, and tag were committed into 5a3bc91.

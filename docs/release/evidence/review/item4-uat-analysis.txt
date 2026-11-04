@@ -1,0 +1,21 @@
+﻿=== ITEM 4: UAT AUDIT ===
+1. Raw logs inspection (UAT-01 to UAT-10):
+   - UAT-01: Asserts payload property mustChangePassword transitions from True to False. (PASS)
+   - UAT-02: Asserts HTTP 400/200 AND regex matches Vietnamese error strings, absence of English technical field names. (PASS)
+   - UAT-03: Asserts HTTP 200, Content.Length > 0, logs CSV headers. Note: Log states 'Kiểm tra UTF-8 BOM: False' because PowerShell string re-encoding dropped BOM in script check, but script passed due to HTTP 200 + Content.Length > 0. (PASS)
+   - UAT-04: Asserts HTTP 200 AND created accounts count == 2. (PASS)
+   - UAT-05: Asserts HTTP 400 AND absence of '(Title)', '(Quantity)' in error payload, presence of Vietnamese error message, jobPositionId > 0. (PASS)
+   - UAT-06: Asserts HTTP 200, executes direct sqlcmd query against database to assert trimmed CvUrl in DB, asserts HTTP 400 on ftp:// scheme. (PASS)
+   - UAT-07: Concurrency test with 2 parallel PowerShell jobs. Asserts exactly one 200 and one 400, AND executes direct sqlcmd query to assert exactly 1 record created in database. (PASS)
+   - UAT-08: Asserts HTTP 200 on interview invite & result update, asserts request status is Accepted/4. (PASS)
+   - UAT-09: Asserts student status after acceptance (Accepted/3) and after cancellation (NoCompany/0) with companyId reset. (PASS)
+   - UAT-10: Asserts HTTP 401 (anonymous), HTTP 403 (student to admin), HTTP 403/404 (cross-tenant update), HTTP 400 (negative quantity), and asserts error body contains no stack trace. (PASS)
+   Summary: The UAT scenarios do NOT merely check HTTP response status codes. They perform deep payload assertions, regex validations, SQL Server database state checks, and multi-threaded concurrency assertions.
+
+2. Discrepancy analysis on 'giải quyết 10 phản hồi FB-01..FB-10':
+   - Claim in docs/release/uat-scenarios.md: 'kế thừa và giải quyết dứt điểm toàn bộ 10 phản hồi quan sát người thật (FB-01 đến FB-10)'.
+   - Reality recorded in RELEASE/uat-round/KNOWN-ISSUES.md and docs/uat-feedback/01-feedback-log.md:
+     * Only 5 feedbacks were resolved/fixed in code: FB-01, FB-02, FB-03, FB-04, FB-10.
+     * 2 feedbacks were REJECTED by design: FB-05 (rejected limit increase to keep 5-request cap), FB-06 (rejected skipping first-time password change for security).
+     * 3 feedbacks were DEFERRED to later phases: FB-07 (SMS integration deferred), FB-08 (UI style overhaul deferred), FB-09 (Tax code API deferred).
+   - Conclusion: The phrase 'giải quyết dứt điểm toàn bộ 10 phản hồi' is an exaggeration / deviation (nói quá/lệch). It conflates 'triage decision reached' with 'resolved in product code'.

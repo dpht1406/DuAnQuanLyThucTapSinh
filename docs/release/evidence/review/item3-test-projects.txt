@@ -1,0 +1,26 @@
+﻿=== ITEM 3: TEST PROJECTS AUDIT ===
+1. Listing of test projects:
+   Under InternshipManagement/backend/tests:
+     - Application.Tests (Empty/skeleton project, 0 test files)
+     - StudentInternshipMgmt.Infrastructure.Tests
+     - StudentInternshipMgmt.Tests
+   Under root tests/:
+     - PlacementAcceptance.Tests
+
+2. Inclusion in Solution files:
+   - DuAnQuanLyThucTapSinh.sln: Includes ONLY PlacementAcceptance.Tests. (Does NOT include Application.Tests, StudentInternshipMgmt.Tests, StudentInternshipMgmt.Infrastructure.Tests).
+   - InternshipManagement/backend/InternshipManagement.sln: Includes PlacementAcceptance.Tests, StudentInternshipMgmt.Infrastructure.Tests, StudentInternshipMgmt.Tests. (Does NOT include Application.Tests).
+   Conclusion for Application.Tests: Exists on disk as an orphaned empty project, not included in any solution file, and was NOT run.
+
+3. Total test counts:
+   Backend tests run by run-release.ps1:
+     - PlacementAcceptance.Tests: 22 passed, 0 skipped, 0 failed.
+     - StudentInternshipMgmt.Tests: 116 passed, 0 skipped, 0 failed.
+     - StudentInternshipMgmt.Infrastructure.Tests: 264 passed, 1 skipped, 0 failed.
+     -> Total Backend: 402 passed, 1 skipped, 0 failed.
+   Report claim of 402 pass, 1 skip: 100% MATCH.
+
+4. Skipped test real reason:
+   - Test name: StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters
+   - Attribute: [StudentSqlServerFact]
+   - Real reason: The test requires an actual SQL Server database connection to test SQL Server collation/LIKE accent-insensitive behavior against a live database instance. Because the environment variable 'STUDENT_TEST_SQLSERVER' is not set during normal CI/test runs, the custom Fact attribute StudentSqlServerFactAttribute automatically marks the test as skipped with message: 'Set STUDENT_TEST_SQLSERVER to a dedicated SQL Server test database to run this test.'
