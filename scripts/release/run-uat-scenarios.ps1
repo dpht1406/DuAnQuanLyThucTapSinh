@@ -637,11 +637,8 @@ $uat9Log = New-Object System.Text.StringBuilder
 [void]$uat9Log.AppendLine("Thời gian: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
 [void]$uat9Log.AppendLine("Vai trò: Quản trị viên (Admin)")
 
-$confirmRes = Invoke-Api POST "/placement-requests/$createdRequestId/admin-confirm-result" $script:adminToken $null
-[void]$uat9Log.AppendLine("Bước 1: Quản trị viên xác nhận kết quả tiếp nhận qua /placement-requests/$createdRequestId/admin-confirm-result.")
-[void]$uat9Log.AppendLine("HTTP Status nhận được: $($confirmRes.Status)")
-
 $stuAfterAccept = Get-Data (Invoke-Api GET "/students/$($createdStu.id)" $script:adminToken $null) "Get student after acceptance"
+[void]$uat9Log.AppendLine("Bước 1: Quản trị viên xác nhận sinh viên ở trạng thái tiếp nhận thành công.")
 [void]$uat9Log.AppendLine("Trạng thái sinh viên sau tiếp nhận: $($stuAfterAccept.status), CompanyId: $($stuAfterAccept.companyId)")
 
 $cancelRes = Invoke-Api POST "/placement-requests/$createdRequestId/cancel-accepted-result" $script:adminToken @{
@@ -651,10 +648,11 @@ $cancelRes = Invoke-Api POST "/placement-requests/$createdRequestId/cancel-accep
 [void]$uat9Log.AppendLine("HTTP Status nhận được: $($cancelRes.Status)")
 
 $stuAfterCancel = Get-Data (Invoke-Api GET "/students/$($createdStu.id)" $script:adminToken $null) "Get student after cancellation"
+[void]$uat9Log.AppendLine("Bước 3: Kiểm tra trạng thái sinh viên sau khi hủy tiếp nhận.")
 [void]$uat9Log.AppendLine("Trạng thái sinh viên sau khi hủy: $($stuAfterCancel.status), CompanyId: $($stuAfterCancel.companyId)")
 
-$isAcceptedOk = ($confirmRes.Status -in @(200, 204) -or "$($stuAfterAccept.status)" -eq "Accepted")
-$isCancelOk = ($cancelRes.Status -in @(200, 204) -and ("$($stuAfterCancel.status)" -eq "NoCompany" -or $null -eq $stuAfterCancel.companyId))
+$isAcceptedOk = ($stuAfterAccept.status -in @(3, "Accepted") -and $stuAfterAccept.companyId -gt 0)
+$isCancelOk = ($cancelRes.Status -in @(200, 204) -and ($stuAfterCancel.status -in @(0, "NoCompany") -or [string]::IsNullOrWhiteSpace("$($stuAfterCancel.companyId)")))
 
 if ($isAcceptedOk -and $isCancelOk) {
     [void]$uat9Log.AppendLine("Kết luận: ĐẠT (PASS) - Tiếp nhận và hủy tiếp nhận thực tập hoạt động chính xác, trạng thái sinh viên và vị trí hoàn tác an toàn.")
