@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [string]$DescriptorPath = ""
 )
@@ -747,7 +747,7 @@ Write-Host "SUMMARY: $passCount PASS / $failCount FAIL out of $($script:results.
 $doc = New-Object System.Text.StringBuilder
 [void]$doc.AppendLine("# Báo Cáo Kết Quả Kiểm Thử Chấp Nhận Người Dùng (UAT Scenarios Report - Release v1.0.0)`n")
 [void]$doc.AppendLine("> [!IMPORTANT]")
-[void]$doc.AppendLine("> **Môi trường thực thi**: Bộ kịch bản được thực thi hoàn toàn tự động trên môi trường demo sạch biệt lập (CSDL: `$DatabaseName`, API: `$BaseUrl`, Frontend: `$feUrl`).")
+[void]$doc.AppendLine("> **Môi trường thực thi**: Bộ kịch bản được thực thi hoàn toàn tự động trên môi trường demo sạch biệt lập (CSDL: $DatabaseName, API: $BaseUrl, Frontend: $feUrl).")
 [void]$doc.AppendLine("> **Ghi nhận nguồn phản hồi người dùng thực tế**: Đợt phát hành Release v1.0.0 kế thừa và giải quyết dứt điểm toàn bộ 10 phản hồi quan sát người thật (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md)). Bộ 10 kịch bản tự động dưới đây là phương án kiểm chứng tự động độc lập nghiêm ngặt, không giả tạo người dùng.`n")
 [void]$doc.AppendLine("---`n")
 [void]$doc.AppendLine("## 1. Bảng Tổng Hợp Kết Quả 10 Kịch Bản UAT`n")
@@ -772,9 +772,9 @@ for ($i = 1; $i -le 10; $i++) {
     if (Test-Path $logFile) {
         $content = Get-Content -LiteralPath $logFile -Raw -Encoding UTF8
         [void]$doc.AppendLine("### Kịch bản UAT-$cStr`n")
-        [void]$doc.AppendLine("```text")
+        [void]$doc.AppendLine('```text')
         [void]$doc.AppendLine($content.Trim())
-        [void]$doc.AppendLine("````n")
+        [void]$doc.AppendLine('```' + "`n")
     }
 }
 

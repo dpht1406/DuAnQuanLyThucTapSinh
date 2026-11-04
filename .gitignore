@@ -17,4 +17,5 @@ dist/
 .DS_Store
 Thumbs.db
 *.zip
+!RELEASE/**/*.zip
 .agent/

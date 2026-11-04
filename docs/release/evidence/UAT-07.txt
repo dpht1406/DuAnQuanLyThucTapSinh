@@ -1,0 +1,8 @@
+﻿=== KỊCH BẢN UAT-07: CHỐNG RACE CONDITION KHI BẤM NỘP ĐƠN ĐÚP LIÊN TIẾP (FB-10 / TC-12) ===
+Thời gian: 2026-11-04 09:25:35
+Vai trò: Sinh viên (SV-01)
+Gửi đồng thời 2 POST requests tới /api/me/placement-requests:
+Kết quả Request A: HTTP 200
+Kết quả Request B: HTTP 400
+Số lượng bản ghi tạo trong CSDL thực tế: 1
+Kết luận: ĐẠT (PASS) - Database row lock và transaction đã ngăn chặn triệt để race condition: đúng 1 request 200 và 1 request 400, trong CSDL chỉ có duy nhất 1 bản ghi.

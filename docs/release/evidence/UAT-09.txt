@@ -1,0 +1,10 @@
+﻿=== KỊCH BẢN UAT-09: TIẾP NHẬN KẾT QUẢ THỰC TẬP VÀ HỦY TIẾP NHẬN ===
+Thời gian: 2026-11-04 09:25:39
+Vai trò: Quản trị viên (Admin)
+Bước 1: Quản trị viên xác nhận sinh viên ở trạng thái tiếp nhận thành công.
+Trạng thái sinh viên sau tiếp nhận: 3, CompanyId: 4
+Bước 2: Quản trị viên hủy tiếp nhận qua /placement-requests/1/cancel-accepted-result.
+HTTP Status nhận được: 200
+Bước 3: Kiểm tra trạng thái sinh viên sau khi hủy tiếp nhận.
+Trạng thái sinh viên sau khi hủy: 0, CompanyId: 
+Kết luận: ĐẠT (PASS) - Tiếp nhận và hủy tiếp nhận thực tập hoạt động chính xác, trạng thái sinh viên và vị trí hoàn tác an toàn.

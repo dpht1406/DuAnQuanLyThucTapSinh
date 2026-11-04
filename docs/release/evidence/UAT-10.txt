@@ -1,0 +1,13 @@
+﻿=== KỊCH BẢN UAT-10: ĐƯỜNG DẪN LỖI, PHÂN QUYỀN BẢO MẬT VÀ CÁCH LY MULTI-TENANCY ===
+Thời gian: 2026-11-04 09:25:39
+Vai trò: Nặc danh, Sinh viên, Doanh nghiệp B
+Bước 1: Người dùng nặc danh truy cập API quản trị (/api/students).
+HTTP Status nhận được: 401 (Kỳ vọng: 401 Unauthorized)
+Bước 2: Sinh viên gọi API quản trị (/api/students).
+HTTP Status nhận được: 403 (Kỳ vọng: 403 Forbidden)
+Bước 3: Doanh nghiệp B cố tình chỉnh sửa tin tuyển dụng của Doanh nghiệp A.
+HTTP Status nhận được: 404 (Kỳ vọng: 403 hoặc 404)
+Bước 4: Nhập dữ liệu sai số lượng âm (-10).
+HTTP Status nhận được: 400 (Kỳ vọng: 400 Bad Request)
+Kiểm tra không lộ stack trace máy chủ: True
+Kết luận: ĐẠT (PASS) - Phân quyền vai trò và cách ly dữ liệu Multi-Tenancy hoạt động an toàn tuyệt đối; không lộ stack trace.

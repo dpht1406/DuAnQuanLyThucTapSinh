@@ -1,0 +1,10 @@
+﻿=== KỊCH BẢN UAT-01: ĐĂNG NHẬP VÀ ĐỔI MẬT KHẨU LẦN ĐẦU CHO ADMIN ===
+Thời gian: 2026-11-04 09:25:25
+Vai trò: Quản trị viên (Admin)
+Bước 1: Đăng nhập admin với mật khẩu seed 'Admin@123'.
+Kết quả: HTTP 200, mustChangePassword = True
+Bước 2: Gọi POST /api/auth/change-password với mật khẩu mới an toàn.
+Kết quả: HTTP 200 Đổi mật khẩu thành công.
+Bước 3: Đăng nhập lại với mật khẩu mới.
+Kết quả: HTTP 200, mustChangePassword = False
+Kết luận: ĐẠT (PASS) - Quản trị viên hoàn tất đăng nhập ban đầu và đổi mật khẩu thành công.

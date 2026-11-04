@@ -1,0 +1,13 @@
+﻿=== KỊCH BẢN UAT-05: DOANH NGHIỆP ĐĂNG NHẬP, ĐỔI MẬT KHẨU & TẠO TIN TUYỂN DỤNG (FB-02) ===
+Thời gian: 2026-11-04 09:25:32
+Vai trò: Đại diện Doanh nghiệp (DN-01)
+Bước 1: Doanh nghiệp đăng nhập với mật khẩu tạm thời. mustChangePassword = True
+Bước 2: Doanh nghiệp đổi mật khẩu lần đầu thành công.
+Bước 3: Doanh nghiệp đăng nhập lại với mật khẩu mới. Token xác thực sẵn sàng.
+Bước 4: Gửi form tạo vị trí với tiêu đề rỗng và số lượng = 0.
+HTTP Status nhận được: 400
+Nội dung thông báo lỗi:
+{"success":false,"message":"Tiêu đề là bắt buộc.","data":null,"errors":null}
+Bước 5: Tạo vị trí tuyển dụng hợp lệ ID: 1005.
+Bước 6: Doanh nghiệp submit tin tuyển dụng và Admin duyệt tin thành công.
+Kết luận: ĐẠT (PASS) - Không còn mã định danh kỹ thuật (Title)/(Quantity), tạo và duyệt tin tuyển dụng thành công.

@@ -1,0 +1,11 @@
+﻿=== KỊCH BẢN UAT-06: SINH VIÊN ĐĂNG NHẬP, ĐỔI MẬT KHẨU & TỰ ĐỘNG CẮT TỈA CV URL (FB-03) ===
+Thời gian: 2026-11-04 09:25:33
+Vai trò: Sinh viên (SV-02)
+Bước 1: Sinh viên đăng nhập lần đầu với mật khẩu khởi tạo. mustChangePassword = True
+Bước 2: Sinh viên đổi mật khẩu thành công.
+Bước 3: Sinh viên đăng nhập lại với mật khẩu mới. Token xác thực sẵn sàng.
+Bước 4: Sinh viên nộp đơn với CV URL có khoảng trắng ở đầu và cuối: '   https://drive.google.com/file/d/cv-candidate-3bf670/view   '
+Kết quả: HTTP 200, Mã đơn tạo thành công: 1
+Giá trị CvUrl thực tế lưu trữ trong CSDL: 'https://drive.google.com/file/d/cv-candidate-3bf670/view'
+Bước 5: Thử nghiệm nộp đơn với scheme không cho phép ftp://. HTTP Status: 400
+Kết luận: ĐẠT (PASS) - Hệ thống tự động cắt tỉa khoảng trắng CV URL chính xác và chặn scheme lạ.

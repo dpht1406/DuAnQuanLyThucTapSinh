@@ -1,0 +1,9 @@
+﻿=== KỊCH BẢN UAT-08: DOANH NGHIỆP MỜI PHỎNG VẤN VÀ GHI NHẬN KẾT QUẢ ĐẠT ===
+Thời gian: 2026-11-04 09:25:38
+Vai trò: Doanh nghiệp (DN-01)
+Bước 1: Doanh nghiệp gửi lời mời phỏng vấn qua POST /company-me/placement-requests/1/invite-interview.
+Kết quả: HTTP 200 thành công.
+Bước 2: Doanh nghiệp cập nhật kết quả phỏng vấn (IsPassed = true).
+Kết quả: HTTP 200 thành công.
+Bước 3: Quản trị viên kiểm tra trạng thái đơn: 4
+Kết luận: ĐẠT (PASS) - Doanh nghiệp thực hiện hoàn chỉnh luồng mời phỏng vấn và đánh giá kết quả.
