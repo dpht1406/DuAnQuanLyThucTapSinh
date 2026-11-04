@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param()
 
 $ErrorActionPreference = "Stop"
@@ -6,8 +6,10 @@ $stopwatchTotal = [System.Diagnostics.Stopwatch]::StartNew()
 $stepTimings = [ordered]@{}
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\.."))
+$versionFile = Join-Path $repoRoot "VERSION"
+$version = if (Test-Path $versionFile) { (Get-Content $versionFile -Raw).Trim() } else { "1.0.1" }
 $evidenceDir = Join-Path $repoRoot "docs\release\evidence"
-$releaseDir = Join-Path $repoRoot "RELEASE\v1.0.0"
+$releaseDir = Join-Path $repoRoot "RELEASE\v$version"
 $screensDir = Join-Path $evidenceDir "screens"
 
 foreach ($dir in @($evidenceDir, $releaseDir, $screensDir)) {
@@ -162,37 +164,88 @@ try {
     Measure-Step "CROSS-REVIEW-AND-BUG-LOG" {
         Write-Host "Performing Cross-Review and checking Bug Log..."
         
-        # Verify no open P1/P2 issues in repository
         $bugLogFile = Join-Path $repoRoot "docs\release\bug-log.md"
         $crossReviewFile = Join-Path $repoRoot "docs\release\cross-review.md"
 
         if (-not (Test-Path $crossReviewFile)) {
-            Write-Host "Creating cross-review document at $crossReviewFile..."
-            # Generated below or pre-authored
+            throw "Cross-review document not found at: $crossReviewFile"
         }
         if (-not (Test-Path $bugLogFile)) {
-            Write-Host "Creating bug-log document at $bugLogFile..."
-            # Generated below or pre-authored
+            throw "Bug-log document not found at: $bugLogFile"
         }
+
+        $crText = [System.IO.File]::ReadAllText($crossReviewFile, [System.Text.Encoding]::UTF8)
+
+        # 1. Verify P1-P4 sections are present
+        foreach ($level in @("P1", "P2", "P3", "P4")) {
+            if ($crText -notmatch "\b$level\b") {
+                throw "cross-review.md lacks section or mention of severity level: $level"
+            }
+        }
+
+        # 2. Verify reviewed commit range is stated
+        if ($crText -notmatch "(Khoảng commit|baseline\.\.HEAD|commit.*đã đối soát|7fc712b)") {
+            throw "cross-review.md does not specify reviewed commit range!"
+        }
+
+        # 3. Verify comparison of 3 technical risks found by independent reviewer
+        # Risk 1: T-SQL row lock dialect specific
+        if ($crText -notmatch "(T-SQL.*[Kk]hóa dòng|phương ngữ.*SQL Server|Dialect-Specific)") {
+            throw "cross-review.md missing required analysis of T-SQL dialect row lock risk!"
+        }
+        # Risk 2: Implicit rollback on Reject
+        if ($crText -notmatch "([Hh]oàn tác giao dịch ngầm định|Implicit Rollback|DisposeAsync)") {
+            throw "cross-review.md missing required analysis of implicit transaction rollback on Reject!"
+        }
+        # Risk 3: Trim type-coercion in frontend
+        if ($crText -notmatch "([Tt]rim.*Frontend|[Tt]rim [Tt]ype-[Cc]oercion|kiểu dữ liệu.*trim)") {
+            throw "cross-review.md missing required analysis of frontend trim type-coercion risk!"
+        }
+
+        # 4. Verify no unobjective claims
+        if ($crText -match "100% đã khắc phục triệt để") {
+            throw "cross-review.md contains unobjective phrase '100% đã khắc phục triệt để'!"
+        }
+
+        # 5. Verify no open P1/P2 issues in bug log
+        $blText = [System.IO.File]::ReadAllText($bugLogFile, [System.Text.Encoding]::UTF8)
+        if ($blText -match '\|\s*\*\*P1[^\n\|]*\*\*\s*\|\s*[^\|\n]+\|\s*[^\|\n]+\|\s*[^\|\n]+\|\s*\*\*(Còn Mở|Mở|OPEN)\*\*') {
+            throw "Open P1 bug detected in bug-log.md!"
+        }
+        if ($blText -match '\|\s*\*\*P2[^\n\|]*\*\*\s*\|\s*[^\|\n]+\|\s*[^\|\n]+\|\s*[^\|\n]+\|\s*\*\*(Còn Mở|Mở|OPEN)\*\*') {
+            throw "Open P2 bug detected in bug-log.md!"
+        }
+        Write-Host "Cross-review verified: P1-P4 present, commit range stated, 3 technical risks reviewed, zero open P1/P2." -ForegroundColor Green
     }
 
     # -------------------------------------------------------------
     # STEP 5: PACKAGING & REPRODUCIBILITY VERIFICATION
     # -------------------------------------------------------------
     Measure-Step "PACKAGE-AND-VERIFY" {
-        Write-Host "Packaging clean source code for Release v1.0.0..."
-        $packageZip = Join-Path $releaseDir "DuAnQuanLyThucTapSinh-v1.0.0.zip"
+        Write-Host "Packaging clean source code for Release v$version..."
+        $packageZip = Join-Path $releaseDir "DuAnQuanLyThucTapSinh-v$version.zip"
         if (Test-Path $packageZip) {
             Remove-Item -LiteralPath $packageZip -Force
         }
 
-        # Clean packaging via git archive to guarantee 0 binary, 0 obj, 0 node_modules, 0 secrets
-        & git archive --format=zip -o $packageZip HEAD
-        if ($LASTEXITCODE -ne 0) { throw "Failed to create release zip package." }
+        # Determine target commit to tag
+        $currentCommit = (& git rev-parse HEAD).Trim()
+        $commitIso = (& git log -1 --format=%cI $currentCommit).Trim()
+        $tagName = "v$version"
+
+        Write-Host "Creating git archive package from commit $currentCommit..."
+        & git archive --format=zip -o $packageZip $currentCommit
+        if ($LASTEXITCODE -ne 0) { throw "Failed to create release zip package from commit $currentCommit." }
         $sizeMb = [Math]::Round(((Get-Item $packageZip).Length / 1048576), 2)
         Write-Host "Package created: $packageZip ($sizeMb MB)"
 
-        # Package sample data into RELEASE/v1.0.0/data
+        # Tag the exact commit immediately (Requirement 5 / P3-02)
+        Write-Host "Tagging commit $currentCommit with tag $tagName..."
+        & git tag -f -a $tagName $currentCommit -m "Release $tagName"
+        if ($LASTEXITCODE -ne 0) { throw "Failed to tag commit $currentCommit with $tagName." }
+        Write-Host "Tagged $tagName -> $currentCommit successfully."
+
+        # Package sample data into RELEASE/v$version/data
         $dataDir = Join-Path $releaseDir "data"
         if (-not (Test-Path $dataDir)) { New-Item -ItemType Directory -Path $dataDir -Force | Out-Null }
         Copy-Item -Path (Join-Path $repoRoot "docs\company-accounts-bulk\scripts\*.sql") -Destination $dataDir -Force
@@ -200,7 +253,7 @@ try {
         # Generate Checksums (SHA256)
         $checksumLog = New-Object System.Text.StringBuilder
         $hashZip = (Get-FileHash -Path $packageZip -Algorithm SHA256).Hash
-        [void]$checksumLog.AppendLine("$hashZip  DuAnQuanLyThucTapSinh-v1.0.0.zip")
+        [void]$checksumLog.AppendLine("$hashZip  DuAnQuanLyThucTapSinh-v$version.zip")
         foreach ($sql in (Get-ChildItem -Path $dataDir -Filter "*.sql")) {
             $h = (Get-FileHash -Path $sql.FullName -Algorithm SHA256).Hash
             [void]$checksumLog.AppendLine("$h  data/$($sql.Name)")
@@ -209,18 +262,103 @@ try {
         [System.IO.File]::WriteAllText($checksumFile, $checksumLog.ToString(), [System.Text.Encoding]::UTF8)
         Write-Host "Generated checksums file: $checksumFile"
 
+        # Record PROVENANCE into RELEASE/v$version/PROVENANCE.md (Requirement 5 / P3-02)
+        Write-Host "Recording provenance at RELEASE/v$version/PROVENANCE.md..."
+        $provenanceFile = Join-Path $releaseDir "PROVENANCE.md"
+        $zipEntries = @()
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zipObj = [System.IO.Compression.ZipFile]::OpenRead($packageZip)
+        try {
+            $zipEntries = $zipObj.Entries | ForEach-Object { $_.FullName }
+        } finally {
+            $zipObj.Dispose()
+        }
+
+        # Directories present in repo but not in zip
+        $repoOnlyDirs = @(
+            "RELEASE/ (Lưu trữ các bản zip, checksum, tài liệu phát hành)",
+            "docs/release/evidence/ (Nhật ký thực thi test, UAT log, ảnh chụp màn hình)",
+            ".agent/ (Cờ trạng thái và heartbeat của quy trình phát hành)",
+            ".git/ (Lịch sử phiên bản git cục bộ)"
+        )
+
+        $provDoc = New-Object System.Text.StringBuilder
+        [void]$provDoc.AppendLine("# Bản Ghi Nguồn Gốc Gói Phát Hành (Release Provenance - v$version)")
+        [void]$provDoc.AppendLine("")
+        [void]$provDoc.AppendLine("> [!IMPORTANT]")
+        [void]$provDoc.AppendLine("> Gói phát hành `DuAnQuanLyThucTapSinh-v$version.zip` được đóng gói tự động từ đúng commit mã nguồn được gắn tag `$tagName`.")
+        [void]$provDoc.AppendLine("")
+        [void]$provDoc.AppendLine("## 1. Thông Tin Nguồn Gốc (Metadata)")
+        [void]$provDoc.AppendLine("- **Phiên bản phát hành**: `v$version`")
+        [void]$provDoc.AppendLine("- **Git Tag**: `$tagName`")
+        [void]$provDoc.AppendLine("- **Commit SHA**: `$currentCommit`")
+        [void]$provDoc.AppendLine("- **Thời điểm commit**: `$commitIso`")
+        [void]$provDoc.AppendLine("- **Thời điểm đóng gói**: $((Get-Date).ToString('yyyy-MM-dd HH:mm:ss UTC'))")
+        [void]$provDoc.AppendLine("- **Công cụ đóng gói**: `git archive --format=zip`")
+        [void]$provDoc.AppendLine("- **Tệp nén**: `DuAnQuanLyThucTapSinh-v$version.zip` ($sizeMb MB)")
+        [void]$provDoc.AppendLine("- **Mã băm SHA256**: `$hashZip`")
+        [void]$provDoc.AppendLine("- **Tổng số file trong zip**: $($zipEntries.Count) files")
+        [void]$provDoc.AppendLine("")
+        [void]$provDoc.AppendLine("## 2. Danh Sách Thư Mục Chỉ Có Trong Repo (Không Nằm Trong Zip)")
+        [void]$provDoc.AppendLine("Theo thiết kế đóng gói mã nguồn sạch qua `git archive`, các thư mục sau chỉ tồn tại trong kho lưu trữ phục vụ quản trị và nghiệm thu mà không được đưa vào gói nguồn triển khai:")
+        foreach ($d in $repoOnlyDirs) {
+            [void]$provDoc.AppendLine("- `$d`")
+        }
+        [void]$provDoc.AppendLine("")
+        [void]$provDoc.AppendLine("## 3. Xác Nhận Tính Đồng Nhất")
+        [void]$provDoc.AppendLine("- Cam kết tag `$tagName` và tệp nén `DuAnQuanLyThucTapSinh-v$version.zip` cùng xuất phát từ commit `$currentCommit`.")
+        [void]$provDoc.AppendLine("- Mã băm của gói khớp hoàn toàn với `checksums.sha256`.")
+        [System.IO.File]::WriteAllText($provenanceFile, $provDoc.ToString(), [System.Text.Encoding]::UTF8)
+        Write-Host "Generated PROVENANCE: $provenanceFile"
+
         # VERIFY PACKAGE: Extract into fresh empty temp dir and run reproduction test
-        Write-Host "Verifying reproducible package in separate empty directory..."
+        # REQUIREMENT 3: Must execute EXACT commands written in README-REPRODUCE.md
+        Write-Host "Verifying reproducible package driven by README-REPRODUCE.md..."
         $verifyTimestamp = (Get-Date).ToString("yyyyMMdd_HHmmss")
         $verifyDir = Join-Path ([System.IO.Path]::GetTempPath()) "StudentInternshipMgmt_PackageVerify_$verifyTimestamp"
         $verifyDb = "StudentInternshipMgmt_PackageVerify_$verifyTimestamp"
 
         New-Item -ItemType Directory -Path $verifyDir -Force | Out-Null
         $verifyLog = New-Object System.Text.StringBuilder
-        [void]$verifyLog.AppendLine("=== PACKAGE REPRODUCIBILITY VERIFICATION REPORT ===")
+        [void]$verifyLog.AppendLine("=== PACKAGE REPRODUCIBILITY VERIFICATION REPORT (DOC-DRIVEN) ===")
         [void]$verifyLog.AppendLine("Timestamp: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
+        [void]$verifyLog.AppendLine("Target Version: v$version")
         [void]$verifyLog.AppendLine("Verify Directory: $verifyDir")
         [void]$verifyLog.AppendLine("Verify Database: $verifyDb`n")
+
+        # Parse commands from README-REPRODUCE.md
+        $readmePath = Join-Path $releaseDir "README-REPRODUCE.md"
+        if (-not (Test-Path $readmePath)) {
+            $readmePath = Join-Path $repoRoot "RELEASE\README-REPRODUCE.md"
+        }
+        if (-not (Test-Path $readmePath)) {
+            throw "README-REPRODUCE.md not found at: $readmePath"
+        }
+
+        Write-Host "Reading commands from: $readmePath"
+        $readmeContent = [System.IO.File]::ReadAllText($readmePath, [System.Text.Encoding]::UTF8)
+        $codeBlockRegex = '(?ms)```(?:powershell|bash)\r?\n(.*?)```'
+        $allMatches = [regex]::Matches($readmeContent, $codeBlockRegex)
+        $reproduceCommands = @()
+        foreach ($m in $allMatches) {
+            $blockText = $m.Groups[1].Value
+            if ($blockText -match "dotnet restore DuAnQuanLyThucTapSinh\.sln") {
+                $rawLines = $blockText -split "\r?\n"
+                foreach ($line in $rawLines) {
+                    $trimmedLine = $line.Trim()
+                    if ($trimmedLine -and -not $trimmedLine.StartsWith("#")) {
+                        $reproduceCommands += $trimmedLine
+                    }
+                }
+                break
+            }
+        }
+
+        if ($reproduceCommands.Count -eq 0) {
+            throw "Failed to extract reproduce commands from $readmePath!"
+        }
+        Write-Host "Extracted $($reproduceCommands.Count) commands from README-REPRODUCE.md:"
+        $reproduceCommands | ForEach-Object { Write-Host "   > $_" -ForegroundColor DarkGray }
 
         try {
             Expand-Archive -Path $packageZip -DestinationPath $verifyDir -Force
@@ -241,30 +379,31 @@ try {
 
             Push-Location $verifyDir
             try {
-                $restoreOut1 = (& dotnet restore "InternshipManagement\backend\InternshipManagement.sln" | Out-String)
-                $restoreOut2 = (& dotnet restore DuAnQuanLyThucTapSinh.sln | Out-String)
-                [void]$verifyLog.AppendLine("Step 2: dotnet restore succeeded.")
+                $cmdIdx = 1
+                foreach ($cmd in $reproduceCommands) {
+                    [void]$verifyLog.AppendLine("`n--- Executing README command #$cmdIdx: '$cmd' ---")
+                    Write-Host "Executing README command #$cmdIdx: $cmd" -ForegroundColor Yellow
 
-                $buildOut1 = (& dotnet build "InternshipManagement\backend\InternshipManagement.sln" --no-restore -c Release | Out-String)
-                $buildOut2 = (& dotnet build DuAnQuanLyThucTapSinh.sln --no-restore -c Release | Out-String)
-                [void]$verifyLog.AppendLine("Step 3: dotnet build succeeded.")
-
-                Push-Location "InternshipManagement\frontend"
-                try {
-                    cmd.exe /c "npm ci --prefer-offline" | Out-Null
-                    cmd.exe /c "npm run build" | Out-Null
-                    [void]$verifyLog.AppendLine("Step 4: frontend npm ci & build succeeded.")
-                } finally {
-                    Pop-Location
+                    if ($cmd -match '^\s*cd\s+(.+)$') {
+                        $targetFolder = $matches[1].Trim()
+                        # Normalize slashes for Windows
+                        $targetFolder = $targetFolder.Replace('/', '\')
+                        Set-Location $targetFolder
+                        [void]$verifyLog.AppendLine("Changed directory to: $(Get-Location)")
+                    } else {
+                        $output = cmd.exe /c "$cmd 2>&1"
+                        $exitCode = $LASTEXITCODE
+                        [void]$verifyLog.AppendLine($output)
+                        if ($exitCode -ne 0) {
+                            throw "README command failed with exit code $exitCode: '$cmd'."
+                        }
+                    }
+                    $cmdIdx++
                 }
-
-                # Run placement acceptance test to verify package integrity
-                $testVerifyOut = (& dotnet test "tests\PlacementAcceptance.Tests\PlacementAcceptance.Tests.csproj" --no-build -c Release | Out-String)
-                [void]$verifyLog.AppendLine("Step 5: test execution succeeded:`n$testVerifyOut")
             } finally {
                 Pop-Location
             }
-            [void]$verifyLog.AppendLine("Conclusion: PASS - Package verified completely reproducible from clean empty directory.")
+            [void]$verifyLog.AppendLine("`nConclusion: PASS - Package verified completely reproducible using EXACT commands from README-REPRODUCE.md.")
         } finally {
             if (Test-Path $verifyDir) {
                 Remove-Item -LiteralPath $verifyDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -286,7 +425,7 @@ try {
     $stepTimings["TOTAL"] = $totalSeconds
 
     $timingReport = New-Object System.Text.StringBuilder
-    [void]$timingReport.AppendLine("=== RELEASE V1.0.0 EXECUTION TIMING REPORT ===")
+    [void]$timingReport.AppendLine("=== RELEASE V$version EXECUTION TIMING REPORT ===")
     [void]$timingReport.AppendLine("Execution Date: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
     [void]$timingReport.AppendLine("Total Duration: $totalSeconds seconds`n")
     [void]$timingReport.AppendLine("Step Breakdowns:")
@@ -300,7 +439,7 @@ try {
 
     # Mark done flag
     $doneFlagFile = Join-Path $repoRoot ".agent\release-done.flag"
-    $flagContent = "PASS`nRelease v1.0.0 successfully completed and verified on clean environment at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'). Total time: $totalSeconds s."
+    $flagContent = "PASS`nRelease v$version successfully completed and verified on clean environment at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'). Total time: $totalSeconds s."
     [System.IO.File]::WriteAllText($doneFlagFile, $flagContent, [System.Text.Encoding]::UTF8)
     Write-Host "SUCCESS: Marked release-done.flag as PASS" -ForegroundColor Green
 

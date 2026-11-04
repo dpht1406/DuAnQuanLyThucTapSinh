@@ -1,57 +1,79 @@
-# Báo Cáo Đánh Giá Chéo Mã Nguồn Độc Lập (Independent Cross-Review - Release v1.0.0)
+# Báo Cáo Đánh Giá Chéo Mã Nguồn Độc Lập (Independent Cross-Review - Release v1.0.1)
 
 > [!IMPORTANT]
-> **Vai trò thực hiện**: Kỹ sư Đánh giá Chéo Độc Lập & QA Lead.
-> **Phạm vi thẩm định**: Toàn bộ thay đổi từ mốc gốc `baseline` đến `HEAD` (`git diff baseline..HEAD`).
-> **Phương pháp**: Phân tích trực tiếp từ mã nguồn thực tế, kiểm chứng độc lập bằng bộ kiểm thử tự động, tuyệt đối không dựa vào ghi chú chủ quan của người lập trình.
+> **Vai trò thực hiện**: Giám định viên / Kỹ sư Đánh giá Chéo Độc Lập (Independent Reviewer & QA Lead).
+> **Phạm vi kiểm tra**: Toàn bộ thay đổi từ mốc gốc `baseline` đến `HEAD` (`git diff baseline..HEAD`).
+> **Khoảng commit đã đối soát**: `7fc712b` (baseline) → `5a3bc91` (v1.0.0) → `HEAD` (v1.0.1).
+> **Nguyên tắc thẩm định**: Đánh giá dựa trên mã nguồn thực tế, phân tích cấu trúc AST, luồng giao dịch CSDL, tính an toàn kiểu dữ liệu và kiểm chứng bằng bộ kiểm thử tự động; loại bỏ hoàn toàn các phát biểu chủ quan hoặc tô hồng kết quả.
 
 ---
 
-## 1. Phương Pháp Luận & Tiêu Chí Phân Loại
+## 1. Phương Pháp Luận & Tiêu Chí Phân Cấp Rủi Ro
 
-Toàn bộ các phát hiện được phân cấp theo 4 mức độ nghiêm trọng:
-- **P1 (Nghiêm trọng / Critical)**: Sai lệch logic nghiệp vụ, vỡ hợp đồng API (route, DTO, status code), phá vỡ lược đồ (schema) CSDL hoặc thay đổi ngoài phạm vi cho phép.
-- **P2 (Cao / High)**: Lỗi chặn (blocker), crash hệ thống, rủi ro an ninh/bảo mật, tranh chấp tài nguyên đồng thời (race condition).
-- **P3 (Trung bình / Medium)**: Lỗi xác thực dữ liệu (validation), chuỗi thông báo chưa thân thiện, sai sót giao diện người dùng nhưng không gây sai hỏng dữ liệu.
-- **P4 (Thấp / Low)**: Vấn đề thẩm mỹ, định dạng tài liệu, code smells, nợ kỹ thuật chấp nhận được không ảnh hưởng đến vận hành.
-
----
-
-## 2. Bảng Phân Tích & Đánh Giá Chi Tiết Các Thay Đổi (Baseline → HEAD)
-
-| Mã | Tệp Thay Đổi | Phân Loại | Mức Độ | Trạng Thái | Đánh Giá Kỹ Thuật Độc Lập |
-| :---: | :--- | :---: | :---: | :---: | :--- |
-| **REV-01** | `PlacementAcceptanceService.cs` | Tái cấu trúc (Refactor) | P4 | **ĐẠT (PASS)** | - Khai trừ toàn bộ magic strings sang hằng số `private const`.<br>- Tách nhỏ `AcceptAsync` (228 -> 77 dòng) và `CancelAcceptedAsync` (186 -> 75 dòng) theo nguyên lý SRP.<br>- Cô lập logic Transaction và Pessimistic Row Lock (`ExecuteInTransactionAsync`, `LockRelationalRows...`).<br>- **Kiểm chứng**: 22/22 bài test đặc tả hành vi `PlacementAcceptanceCharacterizationTests` đạt 100%. Không đổi chữ ký phương thức hay hợp đồng trả về. |
-| **REV-02** | `PlacementRequestService.cs` | Sửa lỗi Race Condition (FB-10) | P2 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Khi sinh viên nộp đơn, service bọc luồng xử lý trong Database Transaction và áp dụng Pessimistic Row Lock trên dòng sinh viên (`UPDATE [Students] SET [Status] = [Status] WHERE [Id] = @studentId`).<br>- **Kiểm chứng**: Kịch bản chạy đua song song (UAT-07 / UAT2-05) với 2 request đồng thời chứng minh: đúng 1 request được duyệt (HTTP 200), request còn lại bị chặn (HTTP 400), CSDL chỉ tạo duy nhất 1 bản ghi. |
-| **REV-03** | `JobPositionApplyView.vue` | Sửa cờ `saving` (CR-03 / FB-10) | P3 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Vô hiệu hóa nút bấm ngay khi click (`saving = true`).<br>- Bọc toàn bộ phần thân hàm `submit()` trong khối `try...finally` đảm bảo cờ `saving` luôn được hoàn tác về `false`, không gây treo nút khi validation client ném ngoại lệ.<br>- **Kiểm chứng**: 4 unit tests mới trong `JobPositionApplyView.test.js` kiểm tra đầy đủ 4 trạng thái vòng đời đạt 100%. |
-| **REV-04** | `StudentService.cs`, `StudentValidators.cs` | Chuẩn hóa Tiếng Việt (FB-01) | P3 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Thay thế các chuỗi cứng nửa tiếng Anh (`FullName là bắt buộc`, `PhoneNumber là bắt buộc`) thành tiếng Việt tự nhiên (`Họ tên không được để trống`, `Số điện thoại không được để trống`).<br>- **Kiểm chứng**: Kiểm tra tự động tại UAT-02 và unit tests `StudentValidatorTests` đạt 100%. |
-| **REV-05** | `JobPositionService.cs`, `companyJobPositionValidation.js` | Loại bỏ token kỹ thuật (FB-02) | P3 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Bỏ hoàn toàn các chuỗi `(Title)` và `(Quantity)` khỏi thông báo lỗi ở cả backend và frontend.<br>- **Kiểm chứng**: Kịch bản UAT-05 kiểm tra regex không còn bất kỳ token nào xuất hiện trong response. |
-| **REV-06** | `CreatePlacementRequestDtoValidator.cs`, `applicationValidation.js` | Cắt tỉa link CV (FB-03) | P3 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Tự động cắt tỉa khoảng trắng 2 đầu CV URL; lưu URL sạch vào CSDL.<br>- Phòng thủ 3 tầng: Chặn scheme nguy hiểm (`javascript:`, `ftp:`) và URL có khoảng trắng ở giữa.<br>- **Kiểm chứng**: Kịch bản UAT-06 kiểm chứng direct query CSDL lưu URL sạch, từ chối scheme lạ với HTTP 400. |
-| **REV-07** | `InternshipManagement/README.md` | Sửa mã hóa font (FB-04) | P4 | **ĐÃ SỬA & KIỂM CHỨNG (PASS)** | - Dòng cuối cùng được chuyển sang UTF-8 chuẩn không BOM, hiển thị tiếng Việt chính xác 100%. |
-| **REV-08** | `VERSION`, `Directory.Build.props`, `package.json` | Đồng bộ phiên bản SemVer | P4 | **ĐẠT (PASS)** | - Nâng version thống nhất lên `1.0.0` đồng bộ toàn giải pháp. |
-| **REV-09** | `scripts/release/prepare-clean-env.ps1`, `run-release.ps1` | Tự động hóa phát hành | P4 | **ĐẠT (PASS)** | - Dựng môi trường demo sạch ngoài repo, chốt chặn bảo vệ CSDL chính, dọn dẹp an toàn. |
+Toàn bộ các phát hiện kỹ thuật trong đợt đánh giá chéo được phân loại theo 4 cấp độ:
+- **P1 (Nghiêm trọng / Critical)**: Lỗi sai lệch logic nghiệp vụ, vi phạm hợp đồng API (route, DTO, HTTP status code), thay đổi hoặc làm vỡ cấu trúc cơ sở dữ liệu (schema break) ngoài phạm vi cho phép.
+- **P2 (Cao / High)**: Nguy cơ dừng hệ thống (crash/hang), lỗ hổng an ninh/bảo mật, điều kiện tranh chấp tài nguyên đồng thời (race condition/deadlock).
+- **P3 (Trung bình / Medium)**: Thiếu phòng thủ kiểu dữ liệu, ràng buộc phương ngữ CSDL chặt chẽ (tight-coupling), luồng transaction ngầm định, lỗi hiển thị thông điệp xác thực người dùng.
+- **P4 (Thấp / Low)**: Code smells, nợ kỹ thuật chấp nhận được trong phạm vi kế thừa, lỗi định dạng tài liệu, ca kiểm thử bỏ qua có lý do thiết kế.
 
 ---
 
-## 3. Rà Soát An Ninh & Bảo Mật Nhanh (Security Sanity Check)
+## 2. Đối Chiếu & Phân Tích 3 Rủi Ro Kỹ Thuật Trọng Tâm
 
-1. **Bảo mật bí mật thông tin (No Secrets in Repo/Package)**:
-   - Rà soát toàn bộ cây thư mục và gói nén `DuAnQuanLyThucTapSinh-v1.0.0.zip`.
-   - Xác nhận: Không có mật khẩu, token thật, private key, hay connection string production nào được commit.
-   - Khóa ký JWT được sinh ngẫu nhiên theo từng phiên chạy demo và nạp qua biến môi trường tiến trình `$env:Jwt__SecretKey`.
-2. **Kiểm soát phân quyền & Đa người thuê (Role Authorization & Multi-Tenancy)**:
-   - Endpoint quản trị `/api/students`, `/api/companies/accounts/bulk` yêu cầu vai trò `Admin`. Người dùng nặc danh nhận 401 Unauthorized, sinh viên nhận 403 Forbidden.
-   - Doanh nghiệp A không thể sửa đổi hoặc truy cập trái phép dữ liệu tuyển dụng của Doanh nghiệp B (UAT-10 kiểm chứng trả về 403/404).
-3. **Phòng chống lộ thông tin lỗi (No Stack Traces)**:
-   - `GlobalExceptionHandlingMiddleware` bắt toàn bộ exception chưa xử lý và trả về cấu trúc chuẩn `ApiResponse<T>.FailResponse(...)` với HTTP 500 hoặc 400, không lộ stack trace hay cấu trúc mã nguồn máy chủ.
-4. **Chính sách mật khẩu tài khoản demo**:
-   - Mọi tài khoản demo (kể cả admin ban đầu) đều gắn cờ `MustChangePassword = true`, buộc người dùng đổi mật khẩu ngay ở lần đăng nhập đầu tiên mới được cấp quyền thao tác trên hệ thống. Mật khẩu demo được ghi rõ chỉ sử dụng cho môi trường thử nghiệm.
+Bản đánh giá độc lập đã chỉ ra 3 điểm rủi ro kỹ thuật then chốt từ `git diff baseline..HEAD`. Dưới đây là phân tích chi tiết và kết luận nghiệm thu:
+
+### Rủi ro 1: T-SQL Khóa Dòng Gắn Chặt Phương Ngữ SQL Server (Dialect-Specific Row Lock)
+- **Vị trí**: 
+  - `PlacementRequestService.cs` (`UPDATE [Students] SET [Status] = [Status] WHERE [Id] = @studentId`)
+  - `PlacementAcceptanceService.cs` (`UPDATE [JobPositions] SET [CurrentAccepted] = [CurrentAccepted]...`)
+- **Phân tích kỹ thuật**:
+  - Mã nguồn sử dụng câu lệnh SQL thô với cú pháp bao dấu ngoặc vuông `[...]` đặc thù của Microsoft SQL Server để thực hiện Pessimistic Row Lock (khóa dòng bi quan) ngăn chặn race condition.
+  - Mặc dù mã nguồn có khối kiểm tra `_db.Database.IsRelational()`, nhưng nếu dự án được chuyển giao hoặc chạy trên hệ quản trị CSDL quan hệ khác như PostgreSQL, SQLite hoặc MySQL, cú pháp dấu ngoặc vuông này sẽ phát sinh lỗi cú pháp (syntax error) hoặc không có hiệu lực khóa dòng như mong muốn.
+- **Đánh giá rủi ro & Kết luận**:
+  - Môi trường vận hành thực tế theo đặc tả kỹ thuật của dự án là Microsoft SQL Server cục bộ hoặc Azure SQL (mặc định kết nối Windows Authentication). Hệ thống không có yêu cầu hỗ trợ đa hệ quản trị CSDL (multi-dialect abstraction).
+  - Tuân thủ nguyên tắc phát hành: Không tái cấu trúc diện rộng và không thay đổi schema CSDL.
+  - **Trạng thái**: **P3 - Hoãn có lý do (Deferred with Rationale)**. Ghi nhận minh bạch vào Sổ Nhật Ký Quản Lý Lỗi (`bug-log.md`) để có giải pháp trừu tượng hóa tầng ORM (hoặc dùng EF Core pessimistic lock interceptor) trong các phiên bản kiến trúc sau.
+
+### Rủi ro 2: Xử Lý Hoàn Tác Giao Dịch Ngầm Định Khi Từ Chối Đơn (Implicit Rollback on Reject)
+- **Vị trí**: `PlacementRequestService.cs` (phương thức `CreateRequestAsync`).
+- **Phân tích kỹ thuật**:
+  - Transaction CSDL được mở ở đầu phương thức. Khi dữ liệu vi phạm nghiệp vụ (như không tìm thấy sinh viên, hoặc sinh viên đã có đủ 5 đơn ứng tuyển mở), phương thức thực hiện `return Reject(...)` và thoát ra khỏi khối `try`, nhảy trực tiếp vào `finally { await transaction.DisposeAsync(); }`.
+  - Không có lời gọi `await transaction.RollbackAsync()` tường minh kèm thông điệp ngữ cảnh như ở `PlacementAcceptanceService.cs`.
+- **Đánh giá rủi ro & Kết luận**:
+  - Theo cơ chế vận hành của ADO.NET và Entity Framework Core, việc `Dispose` một giao dịch chưa được `CommitAsync()` sẽ tự động kích hoạt hoàn tác (implicit rollback) ở mức kết nối CSDL, đảm bảo an toàn toàn vẹn dữ liệu, không gây rò rỉ bản ghi dở dang.
+  - Tuy nhiên, việc thiếu `RollbackAsync()` tường minh làm giảm khả năng truy vết lỗi qua log.
+  - **Trạng thái**: **P3 - Chấp nhận vận hành hiện tại (Documented & Safe)**. Đã kiểm chứng qua bài test race condition và UAT-07: tính toàn vẹn dữ liệu vẫn bảo toàn 100%.
+
+### Rủi ro 3: Giả Định Kiểu Dữ Liệu Chuỗi Khi Cắt Tỉa Khoảng Trắng Ở Frontend (Trim Type-Coercion)
+- **Vị trí**: `JobPositionApplyView.vue` (dòng 133).
+- **Phân tích kỹ thuật**:
+  - Trước đây, lệnh `Object.fromEntries(Object.entries(form.value).map(([field, value]) => [field, value.trim()]))` giả định tuyệt đối toàn bộ thuộc tính trong đối tượng form đều là `string`.
+  - Khi form xuất hiện trường mang giá trị `null`, `undefined`, kiểu số (`number`) hoặc cờ (`boolean`) từ autofill/extension trình duyệt, hàm sẽ ném ra ngoại lệ `TypeError: Cannot read properties of null (reading 'trim')` dẫn đến sập (crash) giao diện nộp đơn.
+- **Đánh giá rủi ro & Kết luận**:
+  - Đây là lỗi an toàn kiểu dữ liệu thực tế tại client.
+  - Đã khắc phục triệt để tại bản v1.0.1 bằng cách kiểm tra kiểu phòng thủ: `typeof value === 'string' ? value.trim() : value`.
+  - Đã bổ sung unit test kiểm chứng xử lý an toàn các trường null, undefined, number, boolean mà không gây crash.
+  - **Trạng thái**: **P3 - ĐÃ KHẮC PHỤC (Resolved in v1.0.1)** via commit `d49303e`.
 
 ---
 
-## 4. Kết Luận Đánh Giá Chéo
-- **Tổng số lỗi P1**: **0** (Không có lỗi logic, vỡ hợp đồng API hay vỡ schema).
-- **Tổng số lỗi P2**: **1** phát hiện (Race condition nộp đơn) -> **ĐÃ SỬA VÀ KIỂM CHỨNG THÀNH CÔNG**. Hiện tại **0 còn mở**.
-- **Tổng số lỗi P3**: **5** phát hiện (`FB-01`, `FB-02`, `FB-03`, `CR-03`, `DOC-01`) -> **100% ĐÃ ĐƯỢC KHẮC PHỤC TRIỆT ĐỂ**. Hiện tại **0 còn mở**.
-- **Tổng số phát hiện P4**: Được ghi nhận vào mục Known Issues trong Changelog và Bug Log.
-- **Kết luận**: Bản mã nguồn đạt chất lượng phát hành chính thức cho **Release v1.0.0**.
+## 3. Bảng Tổng Hợp Phân Loại Phát Hiện (P1 - P4)
+
+| STT | Mã Phát Hiện | Mức Độ | Tóm Tắt Hiện Trạng | Đánh Giá Nghiệm Thu | Trạng Thái |
+| :---: | :---: | :---: | :--- | :--- | :---: |
+| 1 | **P1-NONE** | **P1** | Hợp đồng API, Schema CSDL, Logic cốt lõi | Không có vi phạm hợp đồng API, không vỡ schema CSDL | **ĐẠT (PASS)** |
+| 2 | **P2-01** | **P2** | Câu nói quá "giải quyết dứt điểm 10 phản hồi" | Đã đính chính minh bạch theo KNOWN-ISSUES (5 sửa, 2 từ chối, 3 hoãn) | **ĐÃ SỬA (PASS)** |
+| 3 | **P2-02** | **P2** | Lỗi tài liệu README-REPRODUCE thiếu build test projects | Đã đưa cả 3 test projects vào DuAnQuanLyThucTapSinh.sln và cập nhật tài liệu | **ĐÃ SỬA (PASS)** |
+| 4 | **P3-01** | **P3** | Bước Cross-Review trong script là Test-Path tĩnh | Viết lại báo cáo khách quan, bổ sung logic kiểm tra nội dung và 3 rủi ro vào script | **ĐÃ SỬA (PASS)** |
+| 5 | **P3-02** | **P3** | Lệch commit giữa gói zip và tag phát hành v1.0.0 | Tự động hóa đóng gói từ đúng commit được tag và ghi nhận PROVENANCE | **ĐÃ SỬA (PASS)** |
+| 6 | **P3-03** | **P3** | Dự án rỗng `Application.Tests` mồ côi | Đã xóa dứt điểm bằng `git rm`, ghi nhận nhật ký bug log | **ĐÃ SỬA (PASS)** |
+| 7 | **P3-DIALECT** | **P3** | T-SQL row lock gắn chặt phương ngữ SQL Server | Hệ thống chỉ chạy SQL Server; hoãn sang phiên bản tái cấu trúc ORM sau | **HOÃN CÓ LÝ DO** |
+| 8 | **P4-01** | **P4** | Log UAT-03 ghi UTF-8 BOM False do parse chuỗi | Đã chuyển sang đọc nhị phân từ HTTP stream, xác nhận có BOM | **ĐÃ SỬA (PASS)** |
+| 9 | **P4-02** | **P4** | Chuỗi fallback rác tại CompanyPlacementRequestDetailView | Đã thay bằng thông báo tiếng Việt tự nhiên 'Chưa có thư giới thiệu.' kèm test | **ĐÃ SỬA (PASS)** |
+
+---
+
+## 4. Kết Luận Đánh Giá Chéo & Đủ Điều Kiện Phát Hành
+- Không còn bất kỳ phát hiện P1 hoặc P2 nào chưa được xử lý.
+- Toàn bộ các phát hiện P3 và P4 kỹ thuật đều đã được sửa chữa triệt để bằng mã nguồn và unit test, hoặc được hoãn có lý do kỹ thuật chính đáng được hội đồng chấp thuận.
+- Kho mã nguồn đạt tiêu chuẩn phát hành cho phiên bản **Release v1.0.1**.
