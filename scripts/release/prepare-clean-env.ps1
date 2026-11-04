@@ -218,11 +218,11 @@ try {
     Write-Host "Restoring Frontend npm dependencies via npm ci..."
     Push-Location "InternshipManagement\frontend"
     try {
-        & npm ci --prefer-offline
+        cmd.exe /c "npm ci --prefer-offline"
         if ($LASTEXITCODE -ne 0) { throw "npm ci failed." }
 
         Write-Host "Building Frontend production bundle..."
-        & npm run build
+        cmd.exe /c "npm run build"
         if ($LASTEXITCODE -ne 0) { throw "npm run build failed." }
     } finally {
         Pop-Location
