@@ -249,22 +249,31 @@ $uat3Log = New-Object System.Text.StringBuilder
 
 $exportUrl = $api + "/students/export?format=csv"
 $exportHeaders = @{ Authorization = "Bearer $($script:adminToken)" }
-$exportResp = Invoke-WebRequest -Uri $exportUrl -Method Get -Headers $exportHeaders -UseBasicParsing
-[void]$uat3Log.AppendLine("Bước 1: Gọi GET /api/students/export?format=csv.")
-[void]$uat3Log.AppendLine("HTTP Status nhận được: $($exportResp.StatusCode)")
-[void]$uat3Log.AppendLine("Content-Type: $($exportResp.Headers['Content-Type'])")
+$tempCsv = [System.IO.Path]::GetTempFileName()
+try {
+    $exportResp = Invoke-WebRequest -Uri $exportUrl -Method Get -Headers $exportHeaders -OutFile $tempCsv -UseBasicParsing -PassThru
+    $rawBytes = [System.IO.File]::ReadAllBytes($tempCsv)
+    $hasUtf8Bom = ($rawBytes.Length -ge 3 -and $rawBytes[0] -eq 0xEF -and $rawBytes[1] -eq 0xBB -and $rawBytes[2] -eq 0xBF)
+    $csvContent = [System.Text.Encoding]::UTF8.GetString($rawBytes)
 
-$rawBytes = [System.Text.Encoding]::UTF8.GetBytes($exportResp.Content)
-$hasUtf8Bom = ($rawBytes.Length -ge 3 -and $rawBytes[0] -eq 0xEF -and $rawBytes[1] -eq 0xBB -and $rawBytes[2] -eq 0xBF)
-[void]$uat3Log.AppendLine("Kiểm tra UTF-8 BOM: $hasUtf8Bom")
-[void]$uat3Log.AppendLine("Một phần nội dung xuất ra:`n$($exportResp.Content.Substring(0, [Math]::Min(300, $exportResp.Content.Length)))")
+    [void]$uat3Log.AppendLine("Bước 1: Gọi GET /api/students/export?format=csv.")
+    [void]$uat3Log.AppendLine("HTTP Status nhận được: $($exportResp.StatusCode)")
+    [void]$uat3Log.AppendLine("Content-Type: $($exportResp.Headers['Content-Type'])")
+    [void]$uat3Log.AppendLine("Dung lượng nhị phân tải về: $($rawBytes.Length) bytes")
+    [void]$uat3Log.AppendLine("Kiểm tra UTF-8 BOM (0xEF, 0xBB, 0xBF): $hasUtf8Bom")
+    [void]$uat3Log.AppendLine("Một phần nội dung xuất ra:`n$($csvContent.Substring(0, [Math]::Min(300, $csvContent.Length)))")
 
-if ($exportResp.StatusCode -eq 200 -and $exportResp.Content.Length -gt 0) {
-    [void]$uat3Log.AppendLine("Kết luận: ĐẠT (PASS) - Xuất dữ liệu sinh viên CSV thành công, định dạng UTF-8 đầy đủ.")
-    $script:results.Add([pscustomobject]@{ Code = "UAT-03"; Name = "Xuất dữ liệu sinh viên ra file CSV"; Status = "PASS"; Details = "Xuất dữ liệu thành công HTTP 200, Content-Type chính xác, nội dung UTF-8." })
-} else {
-    [void]$uat3Log.AppendLine("Kết luận: KHÔNG ĐẠT (FAIL)")
-    $script:results.Add([pscustomobject]@{ Code = "UAT-03"; Name = "Xuất dữ liệu sinh viên ra file CSV"; Status = "FAIL"; Details = "Xuất file thất bại hoặc nội dung rỗng." })
+    if ($exportResp.StatusCode -eq 200 -and $rawBytes.Length -gt 0 -and $hasUtf8Bom) {
+        [void]$uat3Log.AppendLine("Kết luận: ĐẠT (PASS) - Xuất dữ liệu sinh viên CSV thành công, có UTF-8 BOM chuẩn cho Microsoft Excel.")
+        $script:results.Add([pscustomobject]@{ Code = "UAT-03"; Name = "Xuất dữ liệu sinh viên ra file CSV"; Status = "PASS"; Details = "Xuất dữ liệu thành công HTTP 200, Content-Type chính xác, có UTF-8 BOM nhị phân." })
+    } else {
+        [void]$uat3Log.AppendLine("Kết luận: KHÔNG ĐẠT (FAIL)")
+        $script:results.Add([pscustomobject]@{ Code = "UAT-03"; Name = "Xuất dữ liệu sinh viên ra file CSV"; Status = "FAIL"; Details = "Xuất file thất bại, nội dung rỗng hoặc thiếu UTF-8 BOM." })
+    }
+} finally {
+    if (Test-Path $tempCsv) {
+        Remove-Item -LiteralPath $tempCsv -Force -ErrorAction SilentlyContinue
+    }
 }
 [System.IO.File]::WriteAllText((Join-Path $evidenceDir "UAT-03.txt"), $uat3Log.ToString(), [System.Text.Encoding]::UTF8)
 
