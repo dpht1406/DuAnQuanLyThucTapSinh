@@ -31,7 +31,7 @@ function Kill-ProcessTree {
     param([int]$ProcessId)
     if ($ProcessId -gt 0) {
         Write-Host "Terminating process tree for PID $ProcessId..."
-        & taskkill /PID $ProcessId /T /F 2>&1 | Out-Null
+        cmd.exe /c "taskkill /PID $ProcessId /T /F >nul 2>nul"
     }
 }
 
@@ -42,7 +42,7 @@ function Stop-PortListeners {
         foreach ($c in $connections) {
             if ($c.OwningProcess -gt 0) {
                 Write-Host "Stopping listener PID $($c.OwningProcess) on port $Port..."
-                & taskkill /PID $c.OwningProcess /T /F 2>&1 | Out-Null
+                cmd.exe /c "taskkill /PID $($c.OwningProcess) /T /F >nul 2>nul"
             }
         }
     }
