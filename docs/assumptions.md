@@ -42,3 +42,22 @@
 - **Quy Trình Xử Lý Lỗi & Tiêu Chuẩn Phát Hành**:
   - Áp dụng nguyên tắc zero P1/P2: Chỉ cho phép phát hành khi 0 lỗi P1 và 0 lỗi P2 còn mở. Lỗi P2 race condition duy nhất đã được khắc phục hoàn toàn bằng Row Lock và DB Transaction, kiểm chứng thực tế đạt 100%.
   - Quản lý phiên bản SemVer nghiêm ngặt: Nâng phiên bản toàn hệ thống lên `1.0.0`, sử dụng file `VERSION` làm nguồn duy nhất đồng bộ sang `Directory.Build.props` và `frontend/package.json`.
+
+---
+
+## Release v1.0.1 Decisions (Senior Release Engineer)
+- **Nhánh làm việc**: Tạo nhánh chuyên biệt `release/v1.0.1` tách từ mốc `v1.0.0` để thực hiện toàn bộ các sửa đổi vá lỗi và tái phát hành. Giữ nguyên vẹn tag `v1.0.0` làm lịch sử truy vết phát hành.
+- **Xử lý các phát hiện từ Giám định Độc lập**:
+  - Xử lý dứt điểm 100% 7 phát hiện (2 P2, 3 P3, 2 P4) theo đúng phạm vi:
+    1. Đính chính trung thực câu chữ UAT (FB-01..10) theo `KNOWN-ISSUES.md`.
+    2. Đồng bộ file giải pháp `DuAnQuanLyThucTapSinh.sln` chứa đủ cả 4 dự án src và 3 dự án test; xóa bỏ dự án mồ côi rỗng `Application.Tests` qua `git rm`.
+    3. Nâng cấp bước Cross-Review tự động kiểm tra P1-P4, commit range, và 3 rủi ro kỹ thuật.
+    4. Tự động hóa đóng gói zip từ đúng commit được tag `v1.0.1` và sinh `PROVENANCE.md`.
+    5. Kiểm chứng UTF-8 BOM bằng luồng nhị phân trực tiếp từ HTTP trong UAT-03.
+    6. Thay thế chuỗi fallback rác bằng câu tiếng Việt tự nhiên và áp dụng phòng thủ kiểu dữ liệu khi cắt tỉa chuỗi tại client.
+- **Quyết định đối với Rủi ro T-SQL Khóa dòng gắn chặt SQL Server (P3)**:
+  - Tuân thủ nguyên tắc không refactor diện rộng và không đổi database schema. Do máy chủ production đã được ấn định là SQL Server cục bộ / Azure SQL theo tài liệu kiến trúc, rủi ro này được hoãn lại có lý do (P3 Deferred) và ghi nhận vào Bug Log, không can thiệp mã nguồn.
+- **Cơ chế kiểm chứng tái lập điều khiển bởi tài liệu (Doc-driven execution)**:
+  - Script kiểm tra tính tái lập của gói zip (`run-release.ps1` -> `PACKAGE-AND-VERIFY`) tự động trích xuất các câu lệnh từ chính tệp tài liệu `RELEASE/v1.0.1/README-REPRODUCE.md` (mục 4.1) để thực thi trên thư mục trắng. Nếu tài liệu bị sai lệch hoặc lệnh thất bại, quy trình phát hành sẽ dừng ngay lập tức.
+- **Bảo toàn cơ sở dữ liệu chính**:
+  - Toàn bộ các bước kiểm thử, UAT và demo chỉ thực thi trên các database tạm thời có tiền tố `StudentInternshipMgmt_ReleaseDemo_*` và `StudentInternshipMgmt_PackageVerify_*`. CSDL chính `StudentInternshipMgmtDb` được bảo vệ nguyên vẹn 100%.

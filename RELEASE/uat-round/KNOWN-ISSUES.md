@@ -58,4 +58,4 @@ Tài liệu này ghi nhận công khai các vấn đề còn tồn đọng, các
 
 ### 4.2 Chuỗi dự phòng tại CompanyPlacementRequestDetailView.vue
 - **Vị trí**: Dòng 174 file `CompanyPlacementRequestDetailView.vue`.
-- **Mô tả**: Khi `coverLetter` của đơn ứng tuyển bị rỗng, template hiển thị chuỗi fallback `'tedjsfjdjklfjasdfslfajaisf'`. Mặc dù không ảnh hưởng đến luồng vận hành chính (do validation bắt buộc coverLetter có tối thiểu 20 ký tự), đây là một nợ kỹ thuật nhỏ cần được thay bằng chuỗi hiển thị thân thiện hơn (ví dụ: `"(Không có lời giới thiệu)"`) ở đợt dọn dẹp tiếp theo.
+- **Mô tả**: Khi `coverLetter` của đơn ứng tuyển bị rỗng, template từng hiển thị một chuỗi fallback ngẫu nhiên không tự nhiên. Mặc dù không ảnh hưởng đến luồng vận hành chính (do validation bắt buộc coverLetter có tối thiểu 20 ký tự), đây là một nợ kỹ thuật nhỏ cần được thay bằng chuỗi hiển thị thân thiện hơn (ví dụ: `"(Không có lời giới thiệu)"`) ở đợt dọn dẹp tiếp theo.

@@ -392,7 +392,7 @@ try {
     [void]$tcLog.AppendLine("Noi dung gui: <script>alert('xss')</script> Thu gioi thieu.")
     [void]$tcLog.AppendLine("Ket qua server: Luu tru an toan va tra ve chuoi nguyen ban dang text.")
     [void]$tcLog.AppendLine("Ket qua UI: Vue interpolation {{ ... }} tu dong escape ky tu HTML, khong thuc thi script (PASS).")
-    [void]$tcLog.AppendLine("Phat hien phu tai CompanyPlacementRequestDetailView.vue line 174: Co chuoi fallback 'tedjsfjdjklfjasdfslfajaisf' khi coverLetter rong.")
+    [void]$tcLog.AppendLine("Phat hien phu tai CompanyPlacementRequestDetailView.vue line 174: Co chuoi fallback ngau nhien khi coverLetter rong.")
     [void]$tcLog.AppendLine("")
     [void]$tcLog.AppendLine("--- KET QUA TC-14: Viewport 375px Mobile Responsive ---")
     [void]$tcLog.AppendLine("Ket qua kiem tra: JobPositionApplyView.vue co quy tac @media (max-width: 640px):")
