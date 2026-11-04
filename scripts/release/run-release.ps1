@@ -86,13 +86,18 @@ try {
             [void]$backendLog.AppendLine("=== TEST PROJECT: $projRel ===")
             [void]$backendLog.AppendLine($testOut)
 
-            if ($testOut -match "Passed!\s+-\s+Failed:\s+(\d+),\s+Passed:\s+(\d+),\s+Skipped:\s+(\d+)") {
-                $totalBackendFail += [int]$matches[1]
-                $totalBackendPass += [int]$matches[2]
-                $totalBackendSkip += [int]$matches[3]
-            } elseif ($testOut -match "Failed:\s+(\d+),\s+Passed:\s+(\d+)") {
-                $totalBackendFail += [int]$matches[1]
-                $totalBackendPass += [int]$matches[2]
+            if ($testOut -match 'Passed:\s*(\d+)') {
+                $p = [int]$matches[1]
+                $totalBackendPass += $p
+                Write-Host "  -> Project $projRel passed: $p"
+            }
+            if ($testOut -match 'Skipped:\s*(\d+)') {
+                $s = [int]$matches[1]
+                $totalBackendSkip += $s
+            }
+            if ($testOut -match 'Failed:\s*(\d+)') {
+                $f = [int]$matches[1]
+                $totalBackendFail += $f
             }
         }
 
