@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$DescriptorPath = ""
 )
@@ -754,7 +754,7 @@ $failCount = @($script:results | Where-Object { $_.Status -eq "FAIL" }).Count
 Write-Host "SUMMARY: $passCount PASS / $failCount FAIL out of $($script:results.Count) scenarios."
 
 $doc = New-Object System.Text.StringBuilder
-[void]$doc.AppendLine("# Báo Cáo Kết Quả Kiểm Thử Chấp Nhận Người Dùng (UAT Scenarios Report - Release v1.0.0)`n")
+[void]$doc.AppendLine("# Báo Cáo Kết Quả Kiểm Thử Chấp Nhận Người Dùng (UAT Scenarios Report - Release v1.0.1)`n")
 [void]$doc.AppendLine("> [!IMPORTANT]")
 [void]$doc.AppendLine("> **Môi trường thực thi**: Bộ kịch bản được thực thi hoàn toàn tự động trên môi trường demo sạch biệt lập (CSDL: $DatabaseName, API: $BaseUrl, Frontend: $feUrl).")
 [void]$doc.AppendLine("> **Ghi nhận nguồn phản hồi người dùng thực tế**: Đợt phát hành Release kế thừa và xử lý minh bạch 10 phản hồi quan sát người thật (FB-01 đến FB-10 trong [docs/uat-feedback/01-feedback-log.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/docs/uat-feedback/01-feedback-log.md)) theo đúng [KNOWN-ISSUES.md](file:///d:/baitapthuctap/duanquanlythuctapsinh/RELEASE/uat-round/KNOWN-ISSUES.md): trong đó **khắc phục 5 vấn đề bằng mã nguồn** (FB-01..04, FB-10), **từ chối 2 yêu cầu** vi phạm quy chế quản lý/an toàn (FB-05, FB-06), và **hoãn 3 yêu cầu mở rộng sang các giai đoạn sau** (FB-07, FB-08, FB-09). Bộ 10 kịch bản tự động dưới đây là phương án kiểm chứng tự động độc lập nghiêm ngặt, không giả tạo người dùng.`n")
@@ -792,7 +792,7 @@ for ($i = 1; $i -le 10; $i++) {
 [void]$doc.AppendLine("- **Tổng số kịch bản**: $($script:results.Count)")
 [void]$doc.AppendLine("- **Đạt (PASS)**: $passCount / $($script:results.Count) (100%)")
 [void]$doc.AppendLine("- **Không đạt (FAIL)**: $failCount")
-[void]$doc.AppendLine("- **Kết luận**: Hệ thống đáp ứng toàn bộ các tiêu chí chấp nhận chất lượng cho bản Release v1.0.0.")
+[void]$doc.AppendLine("- **Kết luận**: Hệ thống đáp ứng toàn bộ các tiêu chí chấp nhận chất lượng cho bản Release v1.0.1.")
 
 $uatReportPath = Join-Path $repoRoot "docs\release\uat-scenarios.md"
 [System.IO.File]::WriteAllText($uatReportPath, $doc.ToString(), [System.Text.Encoding]::UTF8)
