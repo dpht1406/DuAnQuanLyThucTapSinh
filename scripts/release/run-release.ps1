@@ -116,22 +116,28 @@ try {
         Write-Host "Running frontend tests & accessibility checks in clean env..."
         Push-Location (Join-Path $tempRoot "InternshipManagement\frontend")
         try {
-            $feTestOut = (cmd.exe /c "npm test" 2>&1 | Out-String)
-            [System.IO.File]::WriteAllText((Join-Path $evidenceDir "frontend-test.log"), $feTestOut, [System.Text.Encoding]::UTF8)
-            if ($feTestOut -notmatch "17 passed" -and $feTestOut -notmatch "passed") {
-                throw "Frontend vitest failed!"
+            $feTestLog = Join-Path $evidenceDir "frontend-test.log"
+            $contrastLog = Join-Path $evidenceDir "frontend-contrast.log"
+            $labelsLog = Join-Path $evidenceDir "frontend-labels.log"
+
+            # Execute via cmd with redirection to avoid PowerShell NativeCommandError on stderr (Vue warnings)
+            cmd.exe /c "npm test > `"$feTestLog`" 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Frontend vitest failed with exit code $LASTEXITCODE! Check $feTestLog"
+            }
+            $feTestOut = [System.IO.File]::ReadAllText($feTestLog, [System.Text.Encoding]::UTF8)
+            if ($feTestOut -notmatch "passed") {
+                throw "Frontend vitest did not report passed tests!"
             }
 
-            $contrastOut = (cmd.exe /c "npm run check:contrast" 2>&1 | Out-String)
-            [System.IO.File]::WriteAllText((Join-Path $evidenceDir "frontend-contrast.log"), $contrastOut, [System.Text.Encoding]::UTF8)
-            if ($contrastOut -match "không đạt:\s*([1-9]\d*)") {
-                throw "Frontend color contrast check failed!"
+            cmd.exe /c "npm run check:contrast > `"$contrastLog`" 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Frontend color contrast check failed with exit code $LASTEXITCODE! Check $contrastLog"
             }
 
-            $labelsOut = (cmd.exe /c "npm run check:labels" 2>&1 | Out-String)
-            [System.IO.File]::WriteAllText((Join-Path $evidenceDir "frontend-labels.log"), $labelsOut, [System.Text.Encoding]::UTF8)
-            if ($labelsOut -match "phát hiện" -and $labelsOut -notmatch "Không phát hiện") {
-                throw "Frontend labels check failed!"
+            cmd.exe /c "npm run check:labels > `"$labelsLog`" 2>&1"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Frontend labels check failed with exit code $LASTEXITCODE! Check $labelsLog"
             }
         } finally {
             Pop-Location
