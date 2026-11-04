@@ -82,7 +82,7 @@ try {
         foreach ($projRel in $testProjects) {
             $projFull = Join-Path $tempRoot $projRel
             Write-Host "Testing project: $projRel..."
-            $testOut = (& dotnet test $projFull --no-restore -v normal | Out-String)
+            $testOut = (& dotnet test $projFull --no-build -c Release -v normal 2>&1 | Out-String)
             [void]$backendLog.AppendLine("=== TEST PROJECT: $projRel ===")
             [void]$backendLog.AppendLine($testOut)
 
@@ -230,10 +230,12 @@ try {
 
             Push-Location $verifyDir
             try {
-                $restoreOut = (& dotnet restore DuAnQuanLyThucTapSinh.sln | Out-String)
+                $restoreOut1 = (& dotnet restore "InternshipManagement\backend\InternshipManagement.sln" | Out-String)
+                $restoreOut2 = (& dotnet restore DuAnQuanLyThucTapSinh.sln | Out-String)
                 [void]$verifyLog.AppendLine("Step 2: dotnet restore succeeded.")
 
-                $buildOut = (& dotnet build DuAnQuanLyThucTapSinh.sln --no-restore -c Release | Out-String)
+                $buildOut1 = (& dotnet build "InternshipManagement\backend\InternshipManagement.sln" --no-restore -c Release | Out-String)
+                $buildOut2 = (& dotnet build DuAnQuanLyThucTapSinh.sln --no-restore -c Release | Out-String)
                 [void]$verifyLog.AppendLine("Step 3: dotnet build succeeded.")
 
                 Push-Location "InternshipManagement\frontend"

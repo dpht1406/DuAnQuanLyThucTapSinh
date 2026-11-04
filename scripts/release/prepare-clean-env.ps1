@@ -212,8 +212,11 @@ $env:VITE_API_BASE_URL = "http://127.0.0.1:$apiPort/api"
 Write-Host "Restoring .NET dependencies locked to solution..."
 Push-Location $tempRoot
 try {
+    Write-Host "Restoring .NET dependencies locked to solutions..."
+    & dotnet restore "InternshipManagement\backend\InternshipManagement.sln"
+    if ($LASTEXITCODE -ne 0) { throw "dotnet restore InternshipManagement.sln failed." }
     & dotnet restore DuAnQuanLyThucTapSinh.sln
-    if ($LASTEXITCODE -ne 0) { throw "dotnet restore failed." }
+    if ($LASTEXITCODE -ne 0) { throw "dotnet restore DuAnQuanLyThucTapSinh.sln failed." }
 
     Write-Host "Restoring Frontend npm dependencies via npm ci..."
     Push-Location "InternshipManagement\frontend"
@@ -232,9 +235,11 @@ try {
     & dotnet ef database update --project "InternshipManagement\backend\src\StudentInternshipMgmt.Infrastructure" --startup-project "InternshipManagement\backend\src\StudentInternshipMgmt.Api"
     if ($LASTEXITCODE -ne 0) { throw "dotnet ef database update failed." }
 
-    Write-Host "Building Backend solution in Release configuration..."
+    Write-Host "Building Backend solutions in Release configuration..."
+    & dotnet build "InternshipManagement\backend\InternshipManagement.sln" --no-restore -c Release
+    if ($LASTEXITCODE -ne 0) { throw "dotnet build InternshipManagement.sln failed." }
     & dotnet build DuAnQuanLyThucTapSinh.sln --no-restore -c Release
-    if ($LASTEXITCODE -ne 0) { throw "dotnet build failed." }
+    if ($LASTEXITCODE -ne 0) { throw "dotnet build DuAnQuanLyThucTapSinh.sln failed." }
 } finally {
     Pop-Location
 }
