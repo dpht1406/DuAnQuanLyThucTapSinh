@@ -305,15 +305,15 @@ $bulkRes = Invoke-Api POST "/companies/accounts/bulk" $script:adminToken @{
 }
 $bulkData = Get-Data $bulkRes "Bulk create company accounts"
 [void]$uat4Log.AppendLine("Bước 2: Tạo tài khoản doanh nghiệp hàng loạt qua POST /api/companies/accounts/bulk.")
-[void]$uat4Log.AppendLine("HTTP Status nhận được: 200, Số tài khoản tạo được: $($bulkData.createdAccounts.Count)")
+[void]$uat4Log.AppendLine("HTTP Status nhận được: 200, Số tài khoản tạo được: $($bulkData.created.Count)")
 
 $exportAccountsRes = Invoke-Api POST "/companies/accounts/export" $script:adminToken @{
-    Accounts = $bulkData.createdAccounts
+    Accounts = $bulkData.created
 }
 [void]$uat4Log.AppendLine("Bước 3: Xuất danh sách tài khoản doanh nghiệp ra CSV qua /api/companies/accounts/export.")
 [void]$uat4Log.AppendLine("HTTP Status nhận được: $($exportAccountsRes.Status)")
 
-if ($bulkRes.Status -eq 200 -and $bulkData.createdAccounts.Count -eq 2 -and $exportAccountsRes.Status -eq 200) {
+if ($bulkRes.Status -eq 200 -and $bulkData.created.Count -eq 2 -and $exportAccountsRes.Status -eq 200) {
     [void]$uat4Log.AppendLine("Kết luận: ĐẠT (PASS) - Tạo doanh nghiệp, phát sinh tài khoản hàng loạt và xuất CSV hoàn tất.")
     $script:results.Add([pscustomobject]@{ Code = "UAT-04"; Name = "Quản lý doanh nghiệp & tạo tài khoản hàng loạt (Bulk Accounts)"; Status = "PASS"; Details = "Tạo 2 doanh nghiệp, cấp tài khoản hàng loạt và xuất file CSV tài khoản thành công." })
 } else {
@@ -332,7 +332,7 @@ $uat5Log = New-Object System.Text.StringBuilder
 [void]$uat5Log.AppendLine("Thời gian: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
 [void]$uat5Log.AppendLine("Vai trò: Đại diện Doanh nghiệp (DN-01)")
 
-$compAcc = $bulkData.createdAccounts[0]
+$compAcc = $bulkData.created[0]
 $compInitLogin = Get-Data (Invoke-Api POST "/auth/login" $null @{
     Username = $compAcc.username
     Password = $compAcc.temporaryPassword
@@ -685,7 +685,7 @@ $stuCallAdmin = Invoke-Api GET "/students" $studentToken $null
 [void]$uat10Log.AppendLine("HTTP Status nhận được: $($stuCallAdmin.Status) (Kỳ vọng: 403 Forbidden)")
 
 # 3. Cross-tenant tampering: Company B tries to edit Company A's job position
-$compBAcc = $bulkData.createdAccounts[1]
+$compBAcc = $bulkData.created[1]
 $compBInit = Get-Data (Invoke-Api POST "/auth/login" $null @{ Username = $compBAcc.username; Password = $compBAcc.temporaryPassword }) "Login B"
 $compBNewPass = New-StrongPassword
 Require-Status (Invoke-Api POST "/auth/change-password" $compBInit.accessToken @{ CurrentPassword = $compBAcc.temporaryPassword; NewPassword = $compBNewPass }) @(200) "Change pass B"
