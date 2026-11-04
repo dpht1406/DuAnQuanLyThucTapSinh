@@ -80,12 +80,9 @@ function Invoke-Api {
             $request.Headers = @{ Authorization = "Bearer $Token" }
         }
         if ($null -ne $Body) {
-            $request.ContentType = "application/json"
-            if ($Body -is [string]) {
-                $request.Body = $Body
-            } else {
-                $request.Body = ConvertTo-Json -InputObject $Body -Depth 15 -Compress
-            }
+            $request.ContentType = "application/json; charset=utf-8"
+            $rawJson = if ($Body -is [string]) { $Body } else { ConvertTo-Json -InputObject $Body -Depth 15 -Compress }
+            $request.Body = [System.Text.Encoding]::UTF8.GetBytes($rawJson)
         }
 
         try {
@@ -101,7 +98,7 @@ function Invoke-Api {
                 try {
                     $stream = $_.Exception.Response.GetResponseStream()
                     if ($null -ne $stream) {
-                        $reader = New-Object System.IO.StreamReader($stream)
+                        $reader = New-Object System.IO.StreamReader($stream, [System.Text.Encoding]::UTF8)
                         $errorBody = $reader.ReadToEnd()
                         $reader.Dispose()
                         $stream.Dispose()
@@ -543,30 +540,31 @@ $racePayload = ConvertTo-Json -Compress @{
 $startTicks = [DateTimeOffset]::UtcNow.AddSeconds(2).UtcTicks
 $targetUrl = $api + "/me/placement-requests"
 $token7 = $stu7Login.accessToken
+$raceBytes = [System.Text.Encoding]::UTF8.GetBytes($racePayload)
 
 $jobA = Start-Job -ScriptBlock {
-    param($Uri, $Token, $Json, $StartAt)
+    param($Uri, $Token, $Bytes, $StartAt)
     while ([DateTimeOffset]::UtcNow.UtcTicks -lt $StartAt) { Start-Sleep -Milliseconds 5 }
     try {
-        $r = Invoke-RestMethod -Method Post -Uri $Uri -Headers @{ Authorization = "Bearer $Token" } -ContentType "application/json" -Body $Json -TimeoutSec 20 -ErrorAction Stop
+        $r = Invoke-RestMethod -Method Post -Uri $Uri -Headers @{ Authorization = "Bearer $Token" } -ContentType "application/json; charset=utf-8" -Body $Bytes -TimeoutSec 20 -ErrorAction Stop
         return [pscustomobject]@{ Status = 200; Body = $r }
     } catch {
         $sc = if ($null -ne $_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
         return [pscustomobject]@{ Status = $sc; Error = $_.Exception.Message }
     }
-} -ArgumentList $targetUrl, $token7, $racePayload, $startTicks
+} -ArgumentList $targetUrl, $token7, $raceBytes, $startTicks
 
 $jobB = Start-Job -ScriptBlock {
-    param($Uri, $Token, $Json, $StartAt)
+    param($Uri, $Token, $Bytes, $StartAt)
     while ([DateTimeOffset]::UtcNow.UtcTicks -lt $StartAt) { Start-Sleep -Milliseconds 5 }
     try {
-        $r = Invoke-RestMethod -Method Post -Uri $Uri -Headers @{ Authorization = "Bearer $Token" } -ContentType "application/json" -Body $Json -TimeoutSec 20 -ErrorAction Stop
+        $r = Invoke-RestMethod -Method Post -Uri $Uri -Headers @{ Authorization = "Bearer $Token" } -ContentType "application/json; charset=utf-8" -Body $Bytes -TimeoutSec 20 -ErrorAction Stop
         return [pscustomobject]@{ Status = 200; Body = $r }
     } catch {
         $sc = if ($null -ne $_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
         return [pscustomobject]@{ Status = $sc; Error = $_.Exception.Message }
     }
-} -ArgumentList $targetUrl, $token7, $racePayload, $startTicks
+} -ArgumentList $targetUrl, $token7, $raceBytes, $startTicks
 
 Wait-Job -Job @($jobA, $jobB) -Timeout 25 | Out-Null
 $resA = Receive-Job -Job $jobA
