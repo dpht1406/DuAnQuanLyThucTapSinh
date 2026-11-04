@@ -1,6 +1,6 @@
-﻿=== CLEANUP REPORT: 2026-11-04 09:26:17 ===
-Killed Api Process PID: 34304
-Killed Frontend Process PID: 46332
-Dropped temporary database: StudentInternshipMgmt_ReleaseDemo_20261104_092356
-Removed temp directory: C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_092356
+﻿=== CLEANUP REPORT: 2026-11-04 10:28:39 ===
+Killed Api Process PID: 11804
+Killed Frontend Process PID: 9188
+Dropped temporary database: StudentInternshipMgmt_ReleaseDemo_20261104_102600
+Removed temp directory: C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_102600
 Cleanup completed successfully.

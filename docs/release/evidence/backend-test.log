@@ -1,150 +1,148 @@
 ﻿=== TEST PROJECT: tests\PlacementAcceptance.Tests\PlacementAcceptance.Tests.csproj ===
-Build started 11/4/2026 9:24:54 AM.
-Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_092356\tests\PlacementAcceptance.Tests\bin\Release\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
+Build started 11/4/2026 10:26:46 AM.
+Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_102600\tests\PlacementAcceptance.Tests\bin\Release\net8.0\PlacementAcceptance.Tests.dll (.NETCoreApp,Version=v8.0)
 VSTest version 17.14.1 (x64)
 
 Starting test execution, please wait...
 A total of 1 test files matched the specified pattern.
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.33)
-[xUnit.net 00:00:01.35]   Discovering: PlacementAcceptance.Tests
-[xUnit.net 00:00:01.37]   Discovered:  PlacementAcceptance.Tests
-[xUnit.net 00:00:01.37]   Starting:    PlacementAcceptance.Tests
+[xUnit.net 00:00:01.36]   Discovering: PlacementAcceptance.Tests
+[xUnit.net 00:00:01.39]   Discovered:  PlacementAcceptance.Tests
+[xUnit.net 00:00:01.39]   Starting:    PlacementAcceptance.Tests
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_ReopensJobPosition_WhenClosedAndCapacityAvailable [1 s]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportDismissed_ReturnsBusinessError [35 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_UnapprovedJobPosition_ReturnsBusinessError [13 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_NotifiesExactlyOnceOnSuccessAndDoesNotNotifyOnFailure [37 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDeleted_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportDismissed_ReturnsBusinessError [38 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_UnapprovedJobPosition_ReturnsBusinessError [15 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_NotifiesExactlyOnceOnSuccessAndDoesNotNotifyOnFailure [41 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDeleted_ReturnsBusinessError [2 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AdminActor_WhenReportNotInterviewInvited_ReturnsBusinessError [1 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_WithoutJobPosition_SetsNullPositionAndCorrectHistoryNote [21 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_WithoutJobPosition_SetsNullPositionAndCorrectHistoryNote [23 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NoteExceeds1000Chars_ReturnsBusinessError [1 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_SaveChangesThrowsDbUpdateException_ReturnsConflictWithoutPersistingChanges [32 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_AdminActor_WithReportedInterview_Succeeds [3 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_StudentAlreadyAcceptedOrInterning_ReturnsConflict [1 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenRequestNotAccepted_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_SaveChangesThrowsDbUpdateException_ReturnsConflictWithoutPersistingChanges [35 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_AdminActor_WithReportedInterview_Succeeds [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_StudentAlreadyAcceptedOrInterning_ReturnsConflict [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenRequestNotAccepted_ReturnsBusinessError [2 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_NonExistentRequest_ReturnsNotFound [1 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_JobPositionCapacityExceeded_ReturnsConflict [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_JobPositionCapacityExceeded_ReturnsConflict [3 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_HappyPath_SucceedsAndRevertsStudentAndRequest [3 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDataMismatch_ReturnsBusinessError [2 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AutoClosesJobPosition_WhenQuotaReached [7 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_WhenStudentDataMismatch_ReturnsBusinessError [1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AutoClosesJobPosition_WhenQuotaReached [6 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_DefaultNote_WhenNoteNullOrWhitespace [1 ms]
-[xUnit.net 00:00:02.68]   Finished:    PlacementAcceptance.Tests
+[xUnit.net 00:00:02.73]   Finished:    PlacementAcceptance.Tests
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_AlreadyProcessedRequest_ReturnsBusinessError [1 ms]
   Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_HappyPath_CompanyActor_SucceedsAndUpdatesStudentAndSideEffects [9 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_WrongScopeCompany_ReturnsNotFound [1 ms]
-  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NonExistentRequest_ReturnsNotFound [< 1 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.AcceptAsync_WrongScopeCompany_ReturnsNotFound [2 ms]
+  Passed PlacementAcceptance.Tests.PlacementAcceptanceCharacterizationTests.CancelAcceptedAsync_NonExistentRequest_ReturnsNotFound [1 ms]
 
 Test Run Successful.
 Total tests: 22
      Passed: 22
- Total time: 3.8272 Seconds
+ Total time: 3.9598 Seconds
 
 Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:04.37
+Time Elapsed 00:00:04.67
 
 === TEST PROJECT: InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\StudentInternshipMgmt.Tests.csproj ===
-Build started 11/4/2026 9:24:58 AM.
-Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_092356\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Release\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
+Build started 11/4/2026 10:26:51 AM.
+Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_102600\InternshipManagement\backend\tests\StudentInternshipMgmt.Tests\bin\Release\net8.0\StudentInternshipMgmt.Tests.dll (.NETCoreApp,Version=v8.0)
 VSTest version 17.14.1 (x64)
 
 Starting test execution, please wait...
 A total of 1 test files matched the specified pattern.
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.5+1caef2f33e (64-bit .NET 8.0.33)
-[xUnit.net 00:00:07.28]   Discovering: StudentInternshipMgmt.Tests
-[xUnit.net 00:00:07.31]   Discovered:  StudentInternshipMgmt.Tests
-[xUnit.net 00:00:07.31]   Starting:    StudentInternshipMgmt.Tests
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat @gmail.com") [2 ms]
-  Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_rejects_empty_secret_key(secretKey: null) [2 ms]
+[xUnit.net 00:00:07.55]   Discovering: StudentInternshipMgmt.Tests
+[xUnit.net 00:00:07.59]   Discovered:  StudentInternshipMgmt.Tests
+[xUnit.net 00:00:07.59]   Starting:    StudentInternshipMgmt.Tests
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat @gmail.com") [1 ms]
+  Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_rejects_empty_secret_key(secretKey: null) [1 ms]
   Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_rejects_empty_secret_key(secretKey: "   ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_rejects_empty_secret_key(secretKey: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_accepts_secret_key_with_at_least_32_characters [< 1 ms]
   Passed StudentInternshipMgmt.Tests.JwtSettingsValidatorTests.Validate_rejects_secret_key_shorter_than_32_characters [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "", password: "weak") [12 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "user", password: "") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "   ", password: "   ") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_only_requires_username_and_password [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmail") [10 ms]
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmail") [7 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmail.co") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmail.con") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: ".phat@gmail.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "", password: "weak") [11 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat..a@gmail.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmial.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@gmail.com\n") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "phat@.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_invalid_addresses(email: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_accepts_valid_addresses(email: "phat@gmail.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_empty_current_password [2 ms]
-  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantEmail", value: "abc") [15 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_valid_password(password: "Abc12345") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "user", password: "") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_rejects_empty_username_or_password(username: "   ", password: "   ") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Login_validator_only_requires_username_and_password [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantEmail", value: "abc") [13 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantEmail", value: "a b@c.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_valid_password(password: "Matkhau2026") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_password_longer_than_128_characters [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "1234567") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_accepts_valid_addresses(email: "sv001@student.edu.vn") [1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "abcdefgh") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_accepts_valid_addresses(email: "sv001@student.edu.vn") [2 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "data:text/html,x") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "        ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_accepts_valid_addresses(email: "a.b+tag@outlook.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "12345678") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_accepts_valid_addresses(email: "  phat@GMAIL.COM  ") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "Abc1234\n") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_whitespace_required_fields [16 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_whitespace_required_fields [14 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CoverLetter", value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"...) [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "+cmd", expected: "'+cmd") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "https://a.com/cv file.pdf") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_returns_standard_vietnamese_messages [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "Nguyen Van A", expected: "Nguyen Van A") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "@SUM(A1)", expected: "'@SUM(A1)") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "ftp://x.com/cv") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "-2", expected: "'-2") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "\tformula", expected: "'\tformula") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "09a1234567") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "=1+1", expected: "'=1+1") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "ftp://x.com/cv") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Spreadsheet_helper_escapes_formula_prefixes(value: "\rformula", expected: "'\rformula") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_addresses_longer_than_254_characters [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "09012345678") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "https://x.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"...) [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "090123456") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "1234567890") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.One_hundred_generated_passwords_satisfy_policy [1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_returns_standard_vietnamese_messages [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "01234567890") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_128_character_password [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "student@") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_new_password_equal_to_current_password [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantFullName", value: "A") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "phat@gmial.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "student @example.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_rejects_addresses_longer_than_254_characters [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantEmail", value: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"...) [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantFullName", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_empty_current_password [3 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "https://a.com/c v") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "09a1234567") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "1234567890") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "０９０１２３４５６７") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "javascript:alert(1)") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "/relative/path/cv.pdf") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "09012345678") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "  https://a.com/c v  ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "not a url") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_valid_password(password: "Abc12345") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "090123456") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CvUrl", value: "file:///c:/cv.pdf") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "٠٩٠١٢٣٤٥٦٧") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_invalid_phone_number(phoneNumber: "1234567890") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantEmail", value: "a@") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_valid_password(password: "Matkhau2026") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "0123") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "ApplicantPhone", value: "012345678a") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_invalid_field_value(field: "CoverLetter", value: "xxxxxxxxxxxxxxxxxxx") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Update_student_validator_rejects_whitespace_required_fields [2 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "student@") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_password_longer_than_128_characters [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "1234567") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "phat@gmial.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Create_student_validator_rejects_mistyped_email(email: "student @example.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "abcdefgh") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "        ") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "12345678") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_invalid_password(password: "Abc1234\n") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantEmail", value: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"...) [1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantMajor", value: "AB") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CvUrl", value: "https://x.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"...) [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantFullName", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantSchool", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [2 ms]
+  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantFullName", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [2 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.One_hundred_generated_passwords_satisfy_policy [3 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_accepts_128_character_password [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantSchool", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.PasswordPolicyTests.Change_password_validator_rejects_new_password_equal_to_current_password [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CvUrl", value: "https://drive.google.com/file/d/abc/view ") [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_suggests_the_corrected_common_domain(email: "phat@gmial.com", suggestion: "phat@gmail.com") [8 ms]
+  Passed StudentInternshipMgmt.Tests.StudentValidatorTests.Update_student_validator_rejects_whitespace_required_fields [4 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantMajor", value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"...) [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CvUrl", value: "http://x.com/cv") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CoverLetter", value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"...) [< 1 ms]
-  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_suggests_the_corrected_common_domain(email: "phat@gmail.co", suggestion: "phat@gmail.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "ApplicantFullName", value: "AB") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CvUrl", value: " https://drive.google.com/file/d/abc/view") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_accepts_valid_boundary_value(field: "CvUrl", value: "https://drive.google.com/file/d/abc/view") [< 1 ms]
@@ -155,15 +153,16 @@ A total of 1 test files matched the specified pattern.
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_complete_application_has_no_errors [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantEmail", value: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantSchool", value: "   ") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_suggests_the_corrected_common_domain(email: "phat@gmial.com", suggestion: "phat@gmail.com") [8 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantMajor", value: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantMajor", value: "   ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantFullName", value: "   ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "CvUrl", value: "   ") [< 1 ms]
+  Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Email_validator_suggests_the_corrected_common_domain(email: "phat@gmail.co", suggestion: "phat@gmail.com") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "CoverLetter", value: "   ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "CoverLetter", value: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantEmail", value: "   ") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "CvUrl", value: "") [< 1 ms]
-[xUnit.net 00:00:07.37]   Finished:    StudentInternshipMgmt.Tests
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantSchool", value: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantPhone", value: "") [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_with_required_field_empty_reports_that_field(field: "ApplicantPhone", value: "   ") [< 1 ms]
@@ -171,264 +170,270 @@ A total of 1 test files matched the specified pattern.
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_missing_or_zero_job_position_id(jobPositionId: null) [< 1 ms]
   Passed StudentInternshipMgmt.Tests.CreatePlacementRequestDtoValidatorTests.Validate_rejects_missing_or_zero_job_position_id(jobPositionId: 0) [< 1 ms]
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Safe_string_preserves_script_markup_as_a_json_string [6 ms]
+[xUnit.net 00:00:07.65]   Finished:    StudentInternshipMgmt.Tests
   Passed StudentInternshipMgmt.Tests.SharedInputSafetyTests.Safe_string_attribute_enforces_length_and_control_character_rules [< 1 ms]
 
 Test Run Successful.
 Total tests: 116
      Passed: 116
- Total time: 8.5917 Seconds
+ Total time: 8.8696 Seconds
 
 Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:09.09
+Time Elapsed 00:00:09.46
 
 === TEST PROJECT: InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\StudentInternshipMgmt.Infrastructure.Tests.csproj ===
-Build started 11/4/2026 9:25:08 AM.
-Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_092356\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Release\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+Build started 11/4/2026 10:27:00 AM.
+Test run for C:\Users\PHAT\AppData\Local\Temp\StudentInternshipMgmt_ReleaseDemo_20261104_102600\InternshipManagement\backend\tests\StudentInternshipMgmt.Infrastructure.Tests\bin\Release\net8.0\StudentInternshipMgmt.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
 VSTest version 17.14.1 (x64)
 
 Starting test execution, please wait...
 A total of 1 test files matched the specified pattern.
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.33)
-[xUnit.net 00:00:02.22]   Discovering: StudentInternshipMgmt.Infrastructure.Tests
-[xUnit.net 00:00:02.27]   Discovered:  StudentInternshipMgmt.Infrastructure.Tests
-[xUnit.net 00:00:02.28]   Starting:    StudentInternshipMgmt.Infrastructure.Tests
-[xUnit.net 00:00:02.32]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
-[xUnit.net 00:00:02.32]       Set STUDENT_TEST_SQLSERVER to a dedicated SQL Server test database to run this test.
+[xUnit.net 00:00:02.03]   Discovering: StudentInternshipMgmt.Infrastructure.Tests
+[xUnit.net 00:00:02.10]   Discovered:  StudentInternshipMgmt.Infrastructure.Tests
+[xUnit.net 00:00:02.10]   Starting:    StudentInternshipMgmt.Infrastructure.Tests
+[xUnit.net 00:00:02.15]     StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [SKIP]
+[xUnit.net 00:00:02.15]       Set STUDENT_TEST_SQLSERVER to a dedicated SQL Server test database to run this test.
   Skipped StudentInternshipMgmt.Infrastructure.Tests.StudentSearchTests.Search_uses_one_field_and_matches_accents_email_student_code_and_literal_like_characters [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.SeedDataRegressionTests.Admin_seed_requires_password_change [31 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.ExportCsv_escapes_formula_injection_and_includes_utf8_bom [23 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.ExportCsv_escapes_formula_injection_and_includes_utf8_bom [570 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.Controller_rejects_empty_or_over_500_ids [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Exception_middleware_hides_unexpected_exception_and_returns_trace_id [68 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Exception_middleware_hides_unexpected_exception_and_returns_trace_id [582 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Exception_middleware_preserves_not_found_message [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Request_logging_writes_one_entry_with_method_path_and_status [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Request_logging_writes_one_entry_with_method_path_and_status [4 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Exception_middleware_hides_argument_exception_details [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.ApiMiddlewareTests.Exception_middleware_preserves_unauthorized_message [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportControllerTests.ImportStudents_returns_413_when_file_exceeds_configured_maximum [114 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@localhost") [899 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_rounds_completion_rate_to_two_decimal_places [903 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_nonblank_note(note: "   ") [904 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.ResetAboutAsync_resets_content_to_default_and_sets_updated_at [911 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_handles_contact_phone_rules(phone: "12345", expectedValid: False) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateJobPositionAsync_WithDepartmentOver100Characters_IsRejected [626 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Change_password_enforces_policy_when_called_without_a_request_validator [626 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportControllerTests.ImportStudents_returns_413_when_file_exceeds_configured_maximum [626 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportLimitRegressionTests.TC_07_1_rejects_csv_with_more_than_5000_data_rows_without_saving_students [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@localhost") [695 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_returns_error_when_student_has_no_account [743 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_nonblank_note(note: "   ") [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionByIdAsync_WithLocation_UsesPositionLocation [707 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.con") [24 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_nonblank_note(note: "") [15 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a#b@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a..b@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@school.edu.vn") [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "x@y.co") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "first.last+tag@outlook.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "user_name@custom-domain.org") [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmial.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.com") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_returns_not_found_for_unknown_position [9 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_1_rejects_popular_gmail_typos_and_invalid_local_part [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CompanyFilter_HasAccount_filters_correctly [797 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Draft) [17 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Rejected) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Approved) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestExpiryServiceTests.ExpireOverdueAsync_expires_only_overdue_pending_requests_and_is_idempotent [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approval_routes_and_admin_controllers_are_admin_only [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_student_not_in_no_company_status [22 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_pending_position_preserves_open_flag_and_clears_note(isOpen: False) [7 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_pending_position_preserves_open_flag_and_clears_note(isOpen: True) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_returns_not_found_for_unknown_position [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Rejected) [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Draft) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Approved) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_pending_position_trims_note_and_preserves_open_flag [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestExpiryServiceTests.ExpireOverdueAsync_processes_requests_in_multiple_batches [39 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_rejects_note_over_1000_characters [7 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithAvailability_ReturnsMatchingOpenAndClosedPositions [125 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.GetCompanyByIdAsync_filters_positions_for_users_but_not_admins [40 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_rejects_invalid_recruiter_phone [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Admin_filter_returns_only_pending_approval_positions [43 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.DeleteCompanyAsync_rejects_company_with_linked_account [21 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_accepts_legacy_fields_without_recruiter_details [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_trims_valid_recruiter_details [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_rejects_invalid_recruiter_email [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Company_can_pass_an_interview_invite_without_a_student_report [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Expired) [48 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Rejected) [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Accepted) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.User_job_position_reads_hide_unapproved_positions_while_admin_can_see_them [87 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Student_not_in_no_company_state_causes_conflict [42 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.PlacementRequestsControllerTests.GetRequestById_returns_the_full_admin_list_dto [89 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.PlacementRequestsControllerTests.GetRequestById_returns_api_failure_response_when_request_does_not_exist [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Swagger_response_does_not_receive_content_security_policy [17 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetRequestsAsync_projects_new_internal_workflow_fields_except_confirmation_source [201 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Api_response_receives_security_and_no_cache_headers [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Existing_export_cache_control_is_not_overwritten [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Development_response_does_not_receive_content_security_policy [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_can_reject_pending_or_interview_invited_request_without_changing_student(initialStatus: InterviewInvited) [50 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateRequestAsync_WithExpiredPosition_IsRejected [47 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Unapproved_position_is_a_business_error [39 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_can_reject_pending_or_interview_invited_request_without_changing_student(initialStatus: Pending) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Change_password_rejects_an_empty_new_password [982 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_duplicate_open_company_and_position(status: InterviewInvited) [44 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_duplicate_open_company_and_position(status: Pending) [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_SearchesCompanyNameAndDepartment [39 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_resubmission_after_closed_request(status: Rejected) [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Unknown_username_is_counted_and_failed_login_log_omits_username [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_resubmission_after_closed_request(status: Expired) [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Company_can_record_not_pass_without_changing_student_or_other_requests [65 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Foreign_company_result_returns_not_found_without_mutation [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Result_endpoint_is_company_authorized [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithRecommendedSort_PrioritizesAvailableAndEarlierDeadlines [29 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Acceptance_enforces_position_quantity_and_closes_when_full(quantity: 2, secondCanPass: True) [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Updating_approved_position_requeues_only_content_changes [83 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_ForUser_DoesNotExposeAcceptedCount [15 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_form_email_without_changing_profile_email [41 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Acceptance_enforces_position_quantity_and_closes_when_full(quantity: 1, secondCanPass: False) [6 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithPastTodayAndNullDeadlines_SetsExpirationByDate [6 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateJobPositionAsync_WithPastDeadline_IsRejected [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetRequestByIdAsync_returns_the_same_full_dto_fields_as_the_admin_list [7 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionByIdAsync_WithoutLocation_UsesCompanyAddress [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_cannot_delete_position_with_linked_student [25 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_cannot_reduce_quantity_below_accepted_count [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Another_company_cannot_accept_a_student_already_accepted [21 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Rejected) [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_resubmit_rejected_position_and_clears_approval_note [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Admin_created_positions_default_to_approved [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Expired) [21 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.UpdateStudentAsync_trims_fields_and_rejects_invalid_email_and_phone_number [25 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Accepted) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.CreateStudentAsync_rejects_invalid_email_and_phone_number [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Passing_without_a_job_position_does_not_change_any_position [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_create_draft_and_submit_it_only_once [16 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_rejects_pending_request [47 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetMyRequestsAsync_reads_legacy_request_without_snapshot_fields [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_compares_null_job_position_when_checking_duplicates [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_when_open_request_limit_is_reached(limit: 5) [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Passing_request_accepts_student_and_rejects_other_open_requests [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_when_open_request_limit_is_reached(limit: 2) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "3", expectedLimit: 3, expectsConfigurationWarning: False) [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.Students_query_excludes_soft_deleted_students [16 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "0", expectedLimit: 5, expectsConfigurationWarning: True) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "-2", expectedLimit: 5, expectsConfigurationWarning: True) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: null, expectedLimit: 5, expectsConfigurationWarning: False) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejection_validator_requires_a_nonblank_reason_within_limit [160 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Result_validator_requires_a_note_for_not_pass_and_enforces_trimmed_length [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_skips_companies_with_individual_reasons_and_does_not_break_valid_ones [390 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_records_report_once_without_changing_status_or_history [35 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "expired", expectedError: "Vị trí này đã hết hạn nhận hồ sơ.") [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.ResetAboutAsync_resets_content_to_default_and_sets_updated_at [103 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "other-company", expectedError: "Vị trí tuyển dụng không thuộc doanh nghiệp đã chọn"···) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_handles_contact_phone_rules(phone: "12345", expectedValid: False) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "closed", expectedError: "Vị trí này đã ngừng tuyển.") [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_handles_contact_phone_rules(phone: "0292-abc-0000", expectedValid: False) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "not-approved", expectedError: "Vị trí này chưa được duyệt.") [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_handles_contact_phone_rules(phone: "+84 (28) 1234.5678", expectedValid: True) [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_handles_contact_phone_rules(phone: "0292 000 0000", expectedValid: True) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 9, expectedValid: False) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 1, expectedValid: True) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "missing-position", expectedError: "Không tìm thấy vị trí tuyển dụng.") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_double_submission_creates_only_one_request_and_rejects_second [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "0", expectedDueDays: 7, expectsConfigurationWarning: True) [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: null, expectedDueDays: 7, expectsConfigurationWarning: False) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 9, expectedValid: False) [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 1, expectedValid: True) [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "-2", expectedDueDays: 7, expectsConfigurationWarning: True) [1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 0, expectedValid: False) [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_facts_count(count: 8, expectedValid: True) [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_typo_or_invalid_email(invalidEmail: "user@gmial.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_typo_or_invalid_email(invalidEmail: "user@gmail.con") [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_typo_or_invalid_email(invalidEmail: "user@gmail.con") [5 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_typo_or_invalid_email(invalidEmail: "not-an-email") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_returns_zero_completion_rate_when_there_are_no_students [32 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.con") [35 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_nonblank_note(note: "") [31 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a#b@gmail.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a..b@gmail.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@school.edu.vn") [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.UpdateAboutAsync_rejects_invalid_content_and_does_not_modify_database [21 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "12", expectedDueDays: 12, expectsConfigurationWarning: False) [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_operations_are_scoped_to_the_claim_company [78 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Admin_status_change_records_admin_actor_type [59 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_always_close_but_can_open_only_approved_positions [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_role_is_not_authorized_for_admin_user_job_position_or_company_endpoints [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.SeedDataRegressionTests.Admin_seed_requires_password_change [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.UpdateAboutAsync_rejects_invalid_content_and_does_not_modify_database [9 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_name_length(length: 201, expectedValid: False) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_returns_not_found_for_unknown_position [9 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_name_length(length: 200, expectedValid: True) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Default_content_passes_validation_and_all_default_icons_are_allowed [12 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_duplicate_checklist_ids [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_excludes_soft_deleted_completed_students [23 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.GetAboutAsync_returns_default_content_with_null_updated_at_when_table_empty [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_control_characters_in_text_fields [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Draft) [18 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Rejected) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_requires_pending_approval_status(status: Approved) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "x@y.co") [26 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "first.last+tag@outlook.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "user_name@custom-domain.org") [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.UpdateAboutAsync_saves_and_retrieves_content_and_keeps_single_row_on_multiple_saves [9 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmial.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_2_import_email_validation_matches_shared_validator(email: "a@gmail.com") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportRegressionTests.TC_05_1_rejects_popular_gmail_typos_and_invalid_local_part [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Expired) [988 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Rejected) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejects_repeat_or_finalized_requests(initialStatus: Accepted) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Admin_status_change_records_admin_actor_type [992 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CompanyFilter_HasAccount_filters_correctly [945 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.PlacementRequestsControllerTests.GetRequestById_returns_the_full_admin_list_dto [891 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.PlacementRequestsControllerTests.GetRequestById_returns_api_failure_response_when_request_does_not_exist [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Direct_company_assignment_records_admin_actor_type [33 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.GetAboutAsync_returns_default_content_when_json_is_corrupted [65 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approval_routes_and_admin_controllers_are_admin_only [71 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_student_not_in_no_company_status [1 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_allows_line_breaks_in_summary_and_faq_answer [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_unallowed_icon [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_can_reject_pending_or_interview_invited_request_without_changing_student(initialStatus: InterviewInvited) [50 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_pending_position_preserves_open_flag_and_clears_note(isOpen: False) [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_can_reject_pending_or_interview_invited_request_without_changing_student(initialStatus: Pending) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_pending_position_preserves_open_flag_and_clears_note(isOpen: True) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_returns_error_when_student_has_no_account [28 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_returns_not_found_for_unknown_position [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Rejected) [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Draft) [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Approve_rejects_positions_not_pending(status: Approved) [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_pending_position_trims_note_and_preserves_open_flag [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Company_can_pass_an_interview_invite_without_a_student_report [1 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Reject_rejects_note_over_1000_characters [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.UpdateStudentAsync_returns_updated_timestamp_in_student_dto [65 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: "-1") [1 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminJobPositionApprovalTests.Admin_filter_returns_only_pending_approval_positions [40 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: null) [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetOverdueRequestsAsync_returns_pending_requests_due_within_alert_window [158 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: "0") [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Admin_status_change_does_not_create_notification [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.UpdateStudentAsync_trims_fields_and_rejects_invalid_email_and_phone_number [8 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Failed_backward_change_does_not_create_notification [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.CreateStudentAsync_rejects_invalid_email_and_phone_number [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Student_not_in_no_company_state_causes_conflict [60 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Unapproved_position_is_a_business_error [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.Students_query_excludes_soft_deleted_students [17 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_accepted_clears_student_assignment_and_records_admin_history [33 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Admin_status_change_preserves_company_in_history_when_returning_to_no_company [68 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_requires_student_report_and_returns_not_found_for_unknown_id [25 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.ExportStudentsAsync_applies_has_account_filter [55 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetRequestsAsync_projects_new_internal_workflow_fields_except_confirmation_source [165 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Company_can_record_not_pass_without_changing_student_or_other_requests [70 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Foreign_company_result_returns_not_found_without_mutation [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Result_endpoint_is_company_authorized [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.CreateStudentAsync_trims_fields_and_rejects_case_insensitive_duplicate_codes [13 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Swagger_response_does_not_receive_content_security_policy [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Api_response_receives_security_and_no_cache_headers [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Existing_export_cache_control_is_not_overwritten [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Acceptance_enforces_position_quantity_and_closes_when_full(quantity: 2, secondCanPass: True) [9 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.SecurityHeadersMiddlewareTests.Development_response_does_not_receive_content_security_policy [1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.RequestStatusContractTests.Placement_requests_controller_does_not_expose_legacy_decision_actions [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_boundary_for_name_length(length: 200, expectedValid: True) [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.RequestStatusContractTests.Placement_request_service_does_not_expose_legacy_decision_methods [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Acceptance_enforces_position_quantity_and_closes_when_full(quantity: 1, secondCanPass: False) [6 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.RequestStatusContractTests.Request_status_does_not_include_legacy_approved [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.RequestStatusContractTests.Request_status_numeric_values_are_unchanged [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Recent_rejection_includes_new_account_and_excludes_pending_request [111 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Another_company_cannot_accept_a_student_already_accepted [16 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Rejected) [5 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Expired) [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Finalized_request_cannot_record_result_again(status: Accepted) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_duplicate_open_company_and_position(status: InterviewInvited) [58 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Passing_without_a_job_position_does_not_change_any_position [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_duplicate_open_company_and_position(status: Pending) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestExpiryServiceTests.ExpireOverdueAsync_expires_only_overdue_pending_requests_and_is_idempotent [35 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_resubmission_after_closed_request(status: Rejected) [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_resubmission_after_closed_request(status: Expired) [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_confirmation_returns_only_reported_undismissed_interview_invites [97 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Passing_request_accepts_student_and_rejects_other_open_requests [14 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_decision_outside_enum [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_does_not_reopen_when_remaining_active_students_fill_quantity [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_reopens_position_when_one_of_two_accepted_students_leaves_quantity_two [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_requires_confirmation_source [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_long_note_and_returns_not_found_for_missing_request [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Marking_notification_read_is_global_and_mark_all_records_reader [52 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_interning_or_soft_deleted_student_without_mutating_data(status: Accepted, isDeleted: True) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_interning_or_soft_deleted_student_without_mutating_data(status: Interning, isDeleted: False) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_form_email_without_changing_profile_email [21 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_non_accepted_request_and_student_assignment_mismatches [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_rejects_a_dismissed_report_without_changing_student_or_request_result [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetRequestByIdAsync_returns_the_same_full_dto_fields_as_the_admin_list [5 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_failed_requires_note [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestExpiryServiceTests.ExpireOverdueAsync_processes_requests_in_multiple_batches [42 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Expired_request_notifies_once_and_delivery_failure_keeps_expiry [31 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_rejects_pending_request [32 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Company_result_sends_once_and_delivery_failure_does_not_undo_result [11 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Message_headers_are_cleaned_and_no_op_sender_does_not_throw [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_failed_rejects_request_without_changing_student_company [28 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportLimitRegressionTests.TC_07_1_rejects_csv_with_more_than_5000_data_rows_without_saving_students [28 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_note_over_1000_characters [1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_reports_csv_missing_required_columns_as_unreadable [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_rejects_unsupported_file_extension [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Admin_failed_result_sends_to_applicant_after_successful_commit [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_rejects_unsupported_file_extension [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Default_content_passes_validation_and_all_default_icons_are_allowed [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_duplicate_checklist_ids [< 1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportFileValidationTests.ImportStudentsAsync_imports_valid_rows_and_reports_mixed_file_errors_by_row [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Company_passed_result_sends_once_to_applicant [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.GetMyRequestsAsync_reads_legacy_request_without_snapshot_fields [12 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateJobPositionAsync_WithDepartmentOver100Characters_IsRejected [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_does_not_reopen_position_unless_it_is_approved_and_closed [10 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_compares_null_job_position_when_checking_duplicates [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_skips_companies_with_individual_reasons_and_does_not_break_valid_ones [347 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_when_open_request_limit_is_reached(limit: 5) [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_when_open_request_limit_is_reached(limit: 2) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "3", expectedLimit: 3, expectsConfigurationWarning: False) [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionByIdAsync_WithLocation_UsesPositionLocation [21 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_rejection_validator_requires_a_nonblank_reason_within_limit [324 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementDecisionTests.Result_validator_requires_a_note_for_not_pass_and_enforces_trimmed_length [92 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "0", expectedLimit: 5, expectsConfigurationWarning: True) [22 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: "-2", expectedLimit: 5, expectsConfigurationWarning: True) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_open_application_limit_or_default(configuredValue: null, expectedLimit: 5, expectsConfigurationWarning: False) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_records_report_once_without_changing_status_or_history [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "expired", expectedError: "Vị trí này đã hết hạn nhận hồ sơ.") [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "other-company", expectedError: "Vị trí tuyển dụng không thuộc doanh nghiệp đã chọn"···) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "closed", expectedError: "Vị trí này đã ngừng tuyển.") [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "not-approved", expectedError: "Vị trí này chưa được duyệt.") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_rejects_unavailable_or_mismatched_position(scenario: "missing-position", expectedError: "Không tìm thấy vị trí tuyển dụng.") [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_double_submission_creates_only_one_request_and_rejects_second [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "0", expectedDueDays: 7, expectsConfigurationWarning: True) [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: null, expectedDueDays: 7, expectsConfigurationWarning: False) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "-2", expectedDueDays: 7, expectsConfigurationWarning: True) [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_uses_valid_response_due_days_or_default(configuredValue: "12", expectedDueDays: 12, expectsConfigurationWarning: False) [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.GetCompanyByIdAsync_filters_positions_for_users_but_not_admins [49 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_rejects_invalid_recruiter_phone [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithAvailability_ReturnsMatchingOpenAndClosedPositions [57 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: null) [92 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: "0") [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: "-1") [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.DeleteCompanyAsync_rejects_company_with_linked_account [24 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_accepts_legacy_fields_without_recruiter_details [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_trims_valid_recruiter_details [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyServiceTests.CreateCompanyAsync_rejects_invalid_recruiter_email [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Change_password_enforces_policy_when_called_without_a_request_validator [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Request_submission_and_interview_invitation_send_to_expected_recipients [122 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_include_dismissed_reports_and_sort_oldest_first_without_mutation [52 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_confirmation_source_over_500_characters [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_confirms_request_student_history_and_other_open_requests [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_without_job_position_succeeds [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_requires_a_student_report [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Dismiss_report_preserves_interview_status_and_company_can_still_record_result [5 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_filter_status_and_due_date_and_sort_earliest_due_first [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_reopens_closed_full_approved_position_after_removing_canceled_student [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.Expired_requests_are_visible_in_admin_filter_and_student_request_list [105 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_hides_request_owned_by_another_student [6 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.User_job_position_reads_hide_unapproved_positions_while_admin_can_see_them [105 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateRequestAsync_WithExpiredPosition_IsRejected [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.GetAboutAsync_returns_default_content_with_null_updated_at_when_table_empty [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_control_characters_in_text_fields [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.UpdateAboutAsync_saves_and_retrieves_content_and_keeps_single_row_on_multiple_saves [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.GetAboutAsync_returns_default_content_when_json_is_corrupted [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_allows_line_breaks_in_summary_and_faq_answer [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_rounds_completion_rate_to_two_decimal_places [15 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AboutServiceTests.Validation_rejects_unallowed_icon [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_returns_zero_completion_rate_when_there_are_no_students [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetSummaryAsync_excludes_soft_deleted_completed_students [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Direct_company_assignment_records_admin_actor_type [36 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.ExportStudentsAsync_applies_has_account_filter [117 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentSoftDeleteFilterTests.CreateStudentAsync_trims_fields_and_rejects_case_insensitive_duplicate_codes [7 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.UpdateStudentAsync_returns_updated_timestamp_in_student_dto [59 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.Expired_requests_are_visible_in_admin_filter_and_student_request_list [101 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.ReportInterviewedAsync_hides_request_owned_by_another_student [4 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_logs_safe_fields_for_success_and_rejection [7 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Updating_approved_position_requeues_only_content_changes [60 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_multiple_requests_for_different_companies_and_sets_default_due_date [46 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_SearchesCompanyNameAndDepartment [50 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_saves_trimmed_snapshots_without_changing_student [5 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_cannot_delete_position_with_linked_student [20 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_cannot_reduce_quantity_below_accepted_count [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_resubmit_rejected_position_and_clears_approval_note [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithRecommendedSort_PrioritizesAvailableAndEarlierDeadlines [29 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Admin_created_positions_default_to_approved [11 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_ForUser_DoesNotExposeAcceptedCount [14 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionsAsync_WithPastTodayAndNullDeadlines_SetsExpirationByDate [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.CreateJobPositionAsync_WithPastDeadline_IsRejected [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_create_draft_and_submit_it_only_once [11 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.JobPositionListTests.GetJobPositionByIdAsync_WithoutLocation_UsesCompanyAddress [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_request_list_is_scoped_filtered_and_excludes_deleted_students [268 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Interview_invitation_validator_requires_a_future_time_and_location [9 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Unknown_username_is_counted_and_failed_login_log_omits_username [518 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_operations_are_scoped_to_the_claim_company [57 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Concurrent_login_attempts_reserve_slots_before_authentication [13 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_can_always_close_but_can_open_only_approved_positions [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyJobPositionServiceTests.Company_role_is_not_authorized_for_admin_user_job_position_or_company_endpoints [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.DashboardServiceTests.GetOverdueRequestsAsync_returns_pending_requests_due_within_alert_window [111 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentStatusHistoryTests.Admin_status_change_preserves_company_in_history_when_returning_to_no_company [50 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: "-1") [87 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: null) [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Admin_status_change_does_not_create_notification [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_allows_multiple_requests_for_different_companies_and_sets_default_due_date [41 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_use_default_five_days_for_invalid_or_missing_configuration(days: "0") [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Failed_backward_change_does_not_create_notification [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.PlacementRequestServiceTests.CreateRequestAsync_saves_trimmed_snapshots_without_changing_student [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Concurrent_login_attempts_reserve_slots_before_authentication [345 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Failed_attempts_are_shared_across_ips_and_trim_username [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Fifth_failure_locks_next_login_until_15_minutes_pass [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Expired_request_notifies_once_and_delivery_failure_keeps_expiry [29 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Fifth_failure_locks_next_login_until_15_minutes_pass [2 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Successful_login_clears_account_failures_across_ips [1 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.LoginAttemptTrackerTests.Login_and_refresh_use_the_auth_rate_limit_policy [< 1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_cannot_read_or_mutate_another_company_request [72 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Company_result_sends_once_and_delivery_failure_does_not_undo_result [10 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Message_headers_are_cleaned_and_no_op_sender_does_not_throw [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_accepted_clears_student_assignment_and_records_admin_history [34 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_request_list_is_scoped_filtered_and_excludes_deleted_students [270 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.ResetPasswordAsync_changes_hash_revokes_tokens_and_preserves_inactive_state [2 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_requires_student_report_and_returns_not_found_for_unknown_id [25 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Interview_invitation_validator_requires_a_future_time_and_location [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Admin_failed_result_sends_to_applicant_after_successful_commit [58 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Recent_rejection_includes_new_account_and_excludes_pending_request [91 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Company_passed_result_sends_once_to_applicant [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_cannot_read_or_mutate_another_company_request [78 ms]
   Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Invite_interview_rejects_non_pending_request [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Invite_interview_updates_only_request_and_stores_interview_time_as_utc [3 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_placement_request_actions_are_company_authorized_and_dtos_exclude_profile_contact_fields [4 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_student_user_includes_student_claim_without_company_claim [1 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_deduplicates_duplicate_company_ids [589 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkByFilterAsync_rejects_more_than_500_companies [38 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_changes_hash_and_requires_password_change [934 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.NotificationWorkflowTests.Marking_notification_read_is_global_and_mark_all_records_reader [56 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Invite_interview_updates_only_request_and_stores_interview_time_as_utc [6 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyPlacementRequestServiceTests.Company_placement_request_actions_are_company_authorized_and_dtos_exclude_profile_contact_fields [6 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_confirmation_returns_only_reported_undismissed_interview_invites [110 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_decision_outside_enum [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_does_not_reopen_when_remaining_active_students_fill_quantity [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_reopens_position_when_one_of_two_accepted_students_leaves_quantity_two [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_requires_confirmation_source [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_long_note_and_returns_not_found_for_missing_request [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_interning_or_soft_deleted_student_without_mutating_data(status: Accepted, isDeleted: True) [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_interning_or_soft_deleted_student_without_mutating_data(status: Interning, isDeleted: False) [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.EmailNotificationTests.Request_submission_and_interview_invitation_send_to_expected_recipients [102 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_rejects_non_accepted_request_and_student_assignment_mismatches [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_rejects_a_dismissed_report_without_changing_student_or_request_result [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_failed_requires_note [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_failed_rejects_request_without_changing_student_company [5 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_note_over_1000_characters [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_does_not_reopen_position_unless_it_is_approved_and_closed [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: null) [112 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: "0") [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_use_default_three_days_for_invalid_or_missing_configuration(days: "-1") [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_changes_hash_and_requires_password_change [1 s]
   Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.Generate_returns_ten_characters_with_uppercase_lowercase_and_digit [< 1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_student_user_includes_student_claim_without_company_claim [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Pending_interview_results_include_dismissed_reports_and_sort_oldest_first_without_mutation [159 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_confirmation_rejects_confirmation_source_over_500_characters [2 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_confirms_request_student_history_and_other_open_requests [13 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_without_job_position_succeeds [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Admin_passed_requires_a_student_report [3 ms]
 info: StudentInternshipMgmt.Api.BackgroundServices.PlacementRequestExpiryWorker[0]
       Placement request expiry worker is disabled
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Dismiss_report_preserves_interview_status_and_company_can_still_record_result [8 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Overdue_requests_filter_status_and_due_date_and_sort_earliest_due_first [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AdminPlacementFlowTests.Cancel_reopens_closed_full_approved_position_after_removing_canceled_student [3 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.DeactivateAsync_revokes_tokens_and_activate_is_idempotent [487 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_missing_contact_email_without_adding_user [4 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_deduplicates_duplicate_company_ids [812 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkByFilterAsync_rejects_more_than_500_companies [23 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.GetMe_company_user_returns_company_role_and_company_id [381 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 2 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -441,199 +446,207 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 2 entities to in-memory store.
 warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
       Failed to determine the https port for redirect.
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.ResetPasswordAsync_changes_hash_revokes_tokens_and_preserves_inactive_state [1 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Change_password_rejects_an_empty_new_password [603 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.GetMe_company_user_returns_company_role_and_company_id [285 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.DeactivateAsync_revokes_tokens_and_activate_is_idempotent [288 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_missing_contact_email_without_adding_user [5 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.GetMe_student_user_returns_null_company_id [318 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_revokes_all_unrevoked_refresh_tokens [616 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.GetMe_student_user_returns_null_company_id [415 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_revokes_all_unrevoked_refresh_tokens [833 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_returns_not_found_for_missing_student [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_does_not_reset_admin_user_linked_to_student [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportPerformanceMeasurementTests.Measure_sample_csv_imports_with_in_memory_database_three_times_each [3 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_creates_company_user_and_returns_temporary_credentials [835 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_passwords_are_stored_as_bcrypt_hashes_not_plain_text [840 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 1 with role Admin
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 545ms TraceId=0HNPQ3BE2KNPJ UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 467ms TraceId=0HNPQ4E0OGHNQ UserId=(null)
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students responded 200 in 100ms TraceId=0HNPQ3BE2KNPK UserId=1
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_returns_not_found_for_missing_student [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_does_not_reset_admin_user_linked_to_student [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_passwords_are_stored_as_bcrypt_hashes_not_plain_text [651 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_creates_company_user_and_returns_temporary_credentials [792 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Student_endpoint_keeps_script_markup_as_plain_json_text [2 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.Regression.StudentImportPerformanceMeasurementTests.Measure_sample_csv_imports_with_in_memory_database_three_times_each [1 s]
+      HTTP POST /api/students responded 200 in 63ms TraceId=0HNPQ4E0OGHNR UserId=1
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 4 with role Company
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 382ms TraceId=0HNPQ3BE2KNPL UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 399ms TraceId=0HNPQ4E0OGHNS UserId=(null)
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Student_endpoint_keeps_script_markup_as_plain_json_text [2 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_with_valid_jwt_settings_issues_an_access_token [736 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_does_not_activate_inactive_user [714 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Changing_password_revokes_refresh_tokens_and_switches_password [2 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.Created_account_can_login_and_deactivated_account_cannot_login [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.ResetPasswordAsync_rejects_company_without_account [1 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 2 with role User
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 362ms TraceId=0HNPQ3BE2KNPM UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 346ms TraceId=0HNPQ4E0OGHNT UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests/2 responded 404 in 20ms TraceId=0HNPQ3BE2KNPN UserId=4
+      HTTP GET /api/company-me/placement-requests/2 responded 404 in 17ms TraceId=0HNPQ4E0OGHNU UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions/2 responded 404 in 14ms TraceId=0HNPQ3BE2KNPO UserId=4
+      HTTP GET /api/company-me/job-positions/2 responded 404 in 15ms TraceId=0HNPQ4E0OGHNV UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests/2/report-interviewed responded 404 in 12ms TraceId=0HNPQ3BE2KNPP UserId=2
+      HTTP POST /api/me/placement-requests/2/report-interviewed responded 404 in 8ms TraceId=0HNPQ4E0OGHO0 UserId=2
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/about responded 200 in 34ms TraceId=0HNPQ3BE2KNPQ UserId=1
+      HTTP PUT /api/about responded 200 in 29ms TraceId=0HNPQ4E0OGHO1 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students responded 401 in 2ms TraceId=0HNPQ3BE2KNPR UserId=(null)
+      HTTP GET /api/students responded 401 in 2ms TraceId=0HNPQ4E0OGHO2 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNPS UserId=(null)
+      HTTP GET /api/students/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHO3 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students responded 401 in 0ms TraceId=0HNPQ3BE2KNPT UserId=(null)
+      HTTP POST /api/students responded 401 in 0ms TraceId=0HNPQ4E0OGHO4 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/students/1 responded 401 in 1ms TraceId=0HNPQ3BE2KNPU UserId=(null)
+      HTTP PUT /api/students/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHO5 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/students/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNPV UserId=(null)
+      HTTP DELETE /api/students/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHO6 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts responded 401 in 0ms TraceId=0HNPQ3BE2KNQ0 UserId=(null)
+      HTTP POST /api/students/create-accounts responded 401 in 0ms TraceId=0HNPQ4E0OGHO7 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts/by-filter responded 401 in 0ms TraceId=0HNPQ3BE2KNQ1 UserId=(null)
+      HTTP POST /api/students/create-accounts/by-filter responded 401 in 0ms TraceId=0HNPQ4E0OGHO8 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/accounts/export responded 401 in 0ms TraceId=0HNPQ3BE2KNQ2 UserId=(null)
+      HTTP POST /api/students/accounts/export responded 401 in 0ms TraceId=0HNPQ4E0OGHO9 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/export responded 401 in 0ms TraceId=0HNPQ3BE2KNQ3 UserId=(null)
+      HTTP GET /api/students/export responded 401 in 0ms TraceId=0HNPQ4E0OGHOA UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/import responded 401 in 0ms TraceId=0HNPQ3BE2KNQ4 UserId=(null)
+      HTTP POST /api/students/import responded 401 in 0ms TraceId=0HNPQ4E0OGHOB UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/change-status responded 401 in 0ms TraceId=0HNPQ3BE2KNQ5 UserId=(null)
+      HTTP POST /api/students/1/change-status responded 401 in 0ms TraceId=0HNPQ4E0OGHOC UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/reset-password responded 401 in 0ms TraceId=0HNPQ3BE2KNQ6 UserId=(null)
+      HTTP POST /api/students/1/reset-password responded 401 in 0ms TraceId=0HNPQ4E0OGHOD UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1/status-history responded 401 in 0ms TraceId=0HNPQ3BE2KNQ7 UserId=(null)
+      HTTP GET /api/students/1/status-history responded 401 in 0ms TraceId=0HNPQ4E0OGHOE UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/assign-company responded 401 in 0ms TraceId=0HNPQ3BE2KNQ8 UserId=(null)
+      HTTP POST /api/students/1/assign-company responded 401 in 0ms TraceId=0HNPQ4E0OGHOF UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/about responded 401 in 0ms TraceId=0HNPQ3BE2KNQ9 UserId=(null)
+      HTTP GET /api/about responded 401 in 0ms TraceId=0HNPQ4E0OGHOG UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/about responded 401 in 0ms TraceId=0HNPQ3BE2KNQA UserId=(null)
+      HTTP PUT /api/about responded 401 in 0ms TraceId=0HNPQ4E0OGHOH UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/about/reset responded 401 in 0ms TraceId=0HNPQ3BE2KNQB UserId=(null)
+      HTTP POST /api/about/reset responded 401 in 0ms TraceId=0HNPQ4E0OGHOI UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/Auth/change-password responded 401 in 0ms TraceId=0HNPQ3BE2KNQC UserId=(null)
+      HTTP POST /api/Auth/change-password responded 401 in 0ms TraceId=0HNPQ4E0OGHOJ UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/Auth/logout responded 401 in 0ms TraceId=0HNPQ3BE2KNQD UserId=(null)
+      HTTP POST /api/Auth/logout responded 401 in 0ms TraceId=0HNPQ4E0OGHOK UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/Auth/me responded 401 in 0ms TraceId=0HNPQ3BE2KNQE UserId=(null)
+      HTTP GET /api/Auth/me responded 401 in 0ms TraceId=0HNPQ4E0OGHOL UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies responded 401 in 0ms TraceId=0HNPQ3BE2KNQF UserId=(null)
+      HTTP GET /api/companies responded 401 in 0ms TraceId=0HNPQ4E0OGHOM UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/industries responded 401 in 0ms TraceId=0HNPQ3BE2KNQG UserId=(null)
+      HTTP GET /api/companies/industries responded 401 in 0ms TraceId=0HNPQ4E0OGHON UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1 responded 401 in 1ms TraceId=0HNPQ3BE2KNQH UserId=(null)
+      HTTP GET /api/companies/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHOO UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies responded 401 in 0ms TraceId=0HNPQ3BE2KNQI UserId=(null)
+      HTTP POST /api/companies responded 401 in 0ms TraceId=0HNPQ4E0OGHOP UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/companies/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNQJ UserId=(null)
+      HTTP PUT /api/companies/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHOQ UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/companies/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNQK UserId=(null)
+      HTTP DELETE /api/companies/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHOR UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk responded 401 in 0ms TraceId=0HNPQ3BE2KNQL UserId=(null)
+      HTTP POST /api/companies/accounts/bulk responded 401 in 0ms TraceId=0HNPQ4E0OGHOS UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk-by-filter responded 401 in 0ms TraceId=0HNPQ3BE2KNQM UserId=(null)
+      HTTP POST /api/companies/accounts/bulk-by-filter responded 401 in 0ms TraceId=0HNPQ4E0OGHOT UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/export responded 401 in 0ms TraceId=0HNPQ3BE2KNQN UserId=(null)
+      HTTP POST /api/companies/accounts/export responded 401 in 0ms TraceId=0HNPQ4E0OGHOU UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1/account responded 401 in 0ms TraceId=0HNPQ3BE2KNQO UserId=(null)
+      HTTP GET /api/companies/1/account responded 401 in 0ms TraceId=0HNPQ4E0OGHOV UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account responded 401 in 0ms TraceId=0HNPQ3BE2KNQP UserId=(null)
+      HTTP POST /api/companies/1/account responded 401 in 0ms TraceId=0HNPQ4E0OGHP0 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/reset-password responded 401 in 0ms TraceId=0HNPQ3BE2KNQQ UserId=(null)
+      HTTP POST /api/companies/1/account/reset-password responded 401 in 0ms TraceId=0HNPQ4E0OGHP1 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/deactivate responded 401 in 1ms TraceId=0HNPQ3BE2KNQR UserId=(null)
+      HTTP POST /api/companies/1/account/deactivate responded 401 in 0ms TraceId=0HNPQ4E0OGHP2 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/activate responded 401 in 0ms TraceId=0HNPQ3BE2KNQS UserId=(null)
+      HTTP POST /api/companies/1/account/activate responded 401 in 0ms TraceId=0HNPQ4E0OGHP3 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/profile responded 401 in 0ms TraceId=0HNPQ3BE2KNQT UserId=(null)
+      HTTP GET /api/company-me/profile responded 401 in 0ms TraceId=0HNPQ4E0OGHP4 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions responded 401 in 0ms TraceId=0HNPQ3BE2KNQU UserId=(null)
+      HTTP GET /api/company-me/job-positions responded 401 in 0ms TraceId=0HNPQ4E0OGHP5 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNQV UserId=(null)
+      HTTP GET /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHP6 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions responded 401 in 0ms TraceId=0HNPQ3BE2KNR0 UserId=(null)
+      HTTP POST /api/company-me/job-positions responded 401 in 0ms TraceId=0HNPQ4E0OGHP7 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNR1 UserId=(null)
+      HTTP PUT /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHP8 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions/1/submit responded 401 in 0ms TraceId=0HNPQ3BE2KNR2 UserId=(null)
+      HTTP POST /api/company-me/job-positions/1/submit responded 401 in 0ms TraceId=0HNPQ4E0OGHP9 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 401 in 0ms TraceId=0HNPQ3BE2KNR3 UserId=(null)
+      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 401 in 0ms TraceId=0HNPQ4E0OGHPA UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNR4 UserId=(null)
+      HTTP DELETE /api/company-me/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHPB UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests responded 401 in 0ms TraceId=0HNPQ3BE2KNR5 UserId=(null)
+      HTTP GET /api/company-me/placement-requests responded 401 in 0ms TraceId=0HNPQ4E0OGHPC UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNR6 UserId=(null)
+      HTTP GET /api/company-me/placement-requests/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHPD UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 401 in 0ms TraceId=0HNPQ3BE2KNR7 UserId=(null)
+      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 401 in 0ms TraceId=0HNPQ4E0OGHPE UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/reject responded 401 in 0ms TraceId=0HNPQ3BE2KNR8 UserId=(null)
+      HTTP POST /api/company-me/placement-requests/1/reject responded 401 in 0ms TraceId=0HNPQ4E0OGHPF UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/result responded 401 in 0ms TraceId=0HNPQ3BE2KNR9 UserId=(null)
+      HTTP POST /api/company-me/placement-requests/1/result responded 401 in 0ms TraceId=0HNPQ4E0OGHPG UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/summary responded 401 in 0ms TraceId=0HNPQ3BE2KNRA UserId=(null)
+      HTTP GET /api/dashboard/summary responded 401 in 0ms TraceId=0HNPQ4E0OGHPH UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/need-assignment responded 401 in 1ms TraceId=0HNPQ3BE2KNRB UserId=(null)
+      HTTP GET /api/dashboard/need-assignment responded 401 in 1ms TraceId=0HNPQ4E0OGHPI UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/recent-rejections responded 401 in 0ms TraceId=0HNPQ3BE2KNRC UserId=(null)
+      HTTP GET /api/dashboard/recent-rejections responded 401 in 0ms TraceId=0HNPQ4E0OGHPJ UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/overdue-requests responded 401 in 0ms TraceId=0HNPQ3BE2KNRD UserId=(null)
+      HTTP GET /api/dashboard/overdue-requests responded 401 in 0ms TraceId=0HNPQ4E0OGHPK UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/pending-interview-results responded 401 in 0ms TraceId=0HNPQ3BE2KNRE UserId=(null)
+      HTTP GET /api/dashboard/pending-interview-results responded 401 in 0ms TraceId=0HNPQ4E0OGHPL UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions responded 401 in 0ms TraceId=0HNPQ3BE2KNRF UserId=(null)
+      HTTP GET /api/job-positions responded 401 in 0ms TraceId=0HNPQ4E0OGHPM UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNRG UserId=(null)
+      HTTP GET /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHPN UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions responded 401 in 0ms TraceId=0HNPQ3BE2KNRH UserId=(null)
+      HTTP POST /api/job-positions responded 401 in 0ms TraceId=0HNPQ4E0OGHPO UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNRI UserId=(null)
+      HTTP PUT /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHPP UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNRJ UserId=(null)
+      HTTP DELETE /api/job-positions/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHPQ UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/approve responded 401 in 0ms TraceId=0HNPQ3BE2KNRK UserId=(null)
+      HTTP POST /api/job-positions/1/approve responded 401 in 0ms TraceId=0HNPQ4E0OGHPR UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/reject responded 401 in 0ms TraceId=0HNPQ3BE2KNRL UserId=(null)
+      HTTP POST /api/job-positions/1/reject responded 401 in 0ms TraceId=0HNPQ4E0OGHPS UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/job-positions/1/toggle-open responded 401 in 0ms TraceId=0HNPQ3BE2KNRM UserId=(null)
+      HTTP PATCH /api/job-positions/1/toggle-open responded 401 in 0ms TraceId=0HNPQ4E0OGHPT UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/profile responded 401 in 0ms TraceId=0HNPQ3BE2KNRN UserId=(null)
+      HTTP GET /api/me/profile responded 401 in 1ms TraceId=0HNPQ4E0OGHPU UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/status-history responded 401 in 0ms TraceId=0HNPQ3BE2KNRO UserId=(null)
+      HTTP GET /api/me/status-history responded 401 in 0ms TraceId=0HNPQ4E0OGHPV UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/placement-requests responded 401 in 0ms TraceId=0HNPQ3BE2KNRP UserId=(null)
+      HTTP GET /api/me/placement-requests responded 401 in 0ms TraceId=0HNPQ4E0OGHQ0 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests responded 401 in 0ms TraceId=0HNPQ3BE2KNRQ UserId=(null)
+      HTTP POST /api/me/placement-requests responded 401 in 0ms TraceId=0HNPQ4E0OGHQ1 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests/1/report-interviewed responded 401 in 0ms TraceId=0HNPQ3BE2KNRR UserId=(null)
+      HTTP POST /api/me/placement-requests/1/report-interviewed responded 401 in 0ms TraceId=0HNPQ4E0OGHQ2 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications responded 401 in 0ms TraceId=0HNPQ3BE2KNRS UserId=(null)
+      HTTP GET /api/notifications responded 401 in 0ms TraceId=0HNPQ4E0OGHQ3 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications/unread-count responded 401 in 0ms TraceId=0HNPQ3BE2KNRT UserId=(null)
+      HTTP GET /api/notifications/unread-count responded 401 in 0ms TraceId=0HNPQ4E0OGHQ4 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/1/read responded 401 in 0ms TraceId=0HNPQ3BE2KNRU UserId=(null)
+      HTTP POST /api/notifications/1/read responded 401 in 0ms TraceId=0HNPQ4E0OGHQ5 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/read-all responded 401 in 0ms TraceId=0HNPQ3BE2KNRV UserId=(null)
+      HTTP POST /api/notifications/read-all responded 401 in 0ms TraceId=0HNPQ4E0OGHQ6 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests responded 401 in 0ms TraceId=0HNPQ3BE2KNS0 UserId=(null)
+      HTTP GET /api/placement-requests responded 401 in 0ms TraceId=0HNPQ4E0OGHQ7 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/1 responded 401 in 0ms TraceId=0HNPQ3BE2KNS1 UserId=(null)
+      HTTP GET /api/placement-requests/1 responded 401 in 0ms TraceId=0HNPQ4E0OGHQ8 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/pending-confirmation responded 401 in 0ms TraceId=0HNPQ3BE2KNS2 UserId=(null)
+      HTTP GET /api/placement-requests/pending-confirmation responded 401 in 0ms TraceId=0HNPQ4E0OGHQ9 UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/admin-confirm-result responded 401 in 0ms TraceId=0HNPQ3BE2KNS3 UserId=(null)
+      HTTP POST /api/placement-requests/1/admin-confirm-result responded 401 in 0ms TraceId=0HNPQ4E0OGHQA UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 401 in 0ms TraceId=0HNPQ3BE2KNS4 UserId=(null)
+      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 401 in 0ms TraceId=0HNPQ4E0OGHQB UserId=(null)
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_returns_not_found_for_missing_company [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_company_user_includes_company_claim_and_company_role [714 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Company_cannot_read_another_company_request_or_position_and_student_cannot_report_another_students_request [804 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.About_endpoint_keeps_script_markup_as_plain_json_text [35 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.GetAccountAsync_returns_null_for_missing_company_and_empty_details_without_account [310 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_username_used_by_another_user [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_invalid_contact_email [1 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Every_controller_endpoint_requires_authentication_except_login_and_refresh [66 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.NoOpEmailSender[0]
@@ -641,22 +654,13 @@ info: StudentInternshipMgmt.Infrastructure.Services.NoOpEmailSender[0]
 info: StudentInternshipMgmt.Infrastructure.Services.PlacementRequestService[0]
       Placement request created: RequestId 3, StudentId 1, CompanyId 2, JobPositionId 2
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests responded 200 in 30ms TraceId=0HNPQ3BE2KNS5 UserId=2
+      HTTP POST /api/me/placement-requests responded 200 in 40ms TraceId=0HNPQ4E0OGHQC UserId=2
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies responded 200 in 9ms TraceId=0HNPQ3BE2KNS6 UserId=1
+      HTTP POST /api/companies responded 200 in 8ms TraceId=0HNPQ4E0OGHQD UserId=1
 info: StudentInternshipMgmt.Api.BackgroundServices.PlacementRequestExpiryWorker[0]
       Placement request expiry worker is disabled
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_with_valid_jwt_settings_issues_an_access_token [805 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.StudentPasswordResetTests.ResetPasswordAsync_does_not_activate_inactive_user [850 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Company_cannot_read_another_company_request_or_position_and_student_cannot_report_another_students_request [804 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthServiceCompanyRoleTests.Login_company_user_includes_company_claim_and_company_role [707 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.About_endpoint_keeps_script_markup_as_plain_json_text [41 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Every_controller_endpoint_requires_authentication_except_login_and_refresh [75 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Placement_request_keeps_script_markup_as_plain_json_text [35 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Company_endpoint_keeps_script_markup_as_plain_json_text [13 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.Created_account_can_login_and_deactivated_account_cannot_login [1 s]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 2 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -676,292 +680,283 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 1 with role Admin
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 300ms TraceId=0HNPQ3BE2KNS7 UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 262ms TraceId=0HNPQ4E0OGHQE UserId=(null)
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students responded 403 in 2ms TraceId=0HNPQ3BE2KNS8 UserId=1
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.ResetPasswordAsync_rejects_company_without_account [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_returns_not_found_for_missing_company [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.GetAccountAsync_returns_null_for_missing_company_and_empty_details_without_account [350 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_username_used_by_another_user [2 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_invalid_contact_email [1 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthPasswordChangeTests.Changing_password_revokes_refresh_tokens_and_switches_password [2 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_creates_multiple_company_accounts_successfully [2 s]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_existing_inactive_company_account [272 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Admin_who_must_change_password_cannot_use_management_endpoints [706 ms]
+      HTTP GET /api/students responded 403 in 3ms TraceId=0HNPQ4E0OGHQF UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students responded 403 in 1ms TraceId=0HNPQ3BE2KNS9 UserId=2
+      HTTP GET /api/students responded 403 in 0ms TraceId=0HNPQ4E0OGHQG UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNSA UserId=2
+      HTTP GET /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHQH UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students responded 403 in 0ms TraceId=0HNPQ3BE2KNSB UserId=2
+      HTTP POST /api/students responded 403 in 0ms TraceId=0HNPQ4E0OGHQI UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNSC UserId=2
+      HTTP PUT /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHQJ UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNSD UserId=2
+      HTTP DELETE /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHQK UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts responded 403 in 0ms TraceId=0HNPQ3BE2KNSE UserId=2
+      HTTP POST /api/students/create-accounts responded 403 in 0ms TraceId=0HNPQ4E0OGHQL UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts/by-filter responded 403 in 0ms TraceId=0HNPQ3BE2KNSF UserId=2
+      HTTP POST /api/students/create-accounts/by-filter responded 403 in 0ms TraceId=0HNPQ4E0OGHQM UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/accounts/export responded 403 in 0ms TraceId=0HNPQ3BE2KNSG UserId=2
+      HTTP POST /api/students/accounts/export responded 403 in 0ms TraceId=0HNPQ4E0OGHQN UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/export responded 403 in 0ms TraceId=0HNPQ3BE2KNSH UserId=2
+      HTTP GET /api/students/export responded 403 in 0ms TraceId=0HNPQ4E0OGHQO UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/import responded 403 in 0ms TraceId=0HNPQ3BE2KNSI UserId=2
+      HTTP POST /api/students/import responded 403 in 0ms TraceId=0HNPQ4E0OGHQP UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/change-status responded 403 in 0ms TraceId=0HNPQ3BE2KNSJ UserId=2
+      HTTP POST /api/students/1/change-status responded 403 in 0ms TraceId=0HNPQ4E0OGHQQ UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/reset-password responded 403 in 0ms TraceId=0HNPQ3BE2KNSK UserId=2
+      HTTP POST /api/students/1/reset-password responded 403 in 0ms TraceId=0HNPQ4E0OGHQR UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1/status-history responded 403 in 0ms TraceId=0HNPQ3BE2KNSL UserId=2
+      HTTP GET /api/students/1/status-history responded 403 in 0ms TraceId=0HNPQ4E0OGHQS UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/assign-company responded 403 in 0ms TraceId=0HNPQ3BE2KNSM UserId=2
+      HTTP POST /api/students/1/assign-company responded 403 in 0ms TraceId=0HNPQ4E0OGHQT UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/about responded 403 in 0ms TraceId=0HNPQ3BE2KNSN UserId=2
+      HTTP PUT /api/about responded 403 in 0ms TraceId=0HNPQ4E0OGHQU UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/about/reset responded 403 in 0ms TraceId=0HNPQ3BE2KNSO UserId=2
+      HTTP POST /api/about/reset responded 403 in 0ms TraceId=0HNPQ4E0OGHQV UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies responded 403 in 0ms TraceId=0HNPQ3BE2KNSP UserId=2
+      HTTP POST /api/companies responded 403 in 0ms TraceId=0HNPQ4E0OGHR0 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/companies/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNSQ UserId=2
+      HTTP PUT /api/companies/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHR1 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/companies/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNSR UserId=2
+      HTTP DELETE /api/companies/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHR2 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk responded 403 in 0ms TraceId=0HNPQ3BE2KNSS UserId=2
+      HTTP POST /api/companies/accounts/bulk responded 403 in 0ms TraceId=0HNPQ4E0OGHR3 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk-by-filter responded 403 in 0ms TraceId=0HNPQ3BE2KNST UserId=2
+      HTTP POST /api/companies/accounts/bulk-by-filter responded 403 in 0ms TraceId=0HNPQ4E0OGHR4 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/export responded 403 in 0ms TraceId=0HNPQ3BE2KNSU UserId=2
+      HTTP POST /api/companies/accounts/export responded 403 in 0ms TraceId=0HNPQ4E0OGHR5 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ3BE2KNSV UserId=2
+      HTTP GET /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ4E0OGHR6 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ3BE2KNT0 UserId=2
+      HTTP POST /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ4E0OGHR7 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/reset-password responded 403 in 0ms TraceId=0HNPQ3BE2KNT1 UserId=2
+      HTTP POST /api/companies/1/account/reset-password responded 403 in 0ms TraceId=0HNPQ4E0OGHR8 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/deactivate responded 403 in 0ms TraceId=0HNPQ3BE2KNT2 UserId=2
+      HTTP POST /api/companies/1/account/deactivate responded 403 in 0ms TraceId=0HNPQ4E0OGHR9 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/activate responded 403 in 0ms TraceId=0HNPQ3BE2KNT3 UserId=2
+      HTTP POST /api/companies/1/account/activate responded 403 in 0ms TraceId=0HNPQ4E0OGHRA UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/profile responded 403 in 0ms TraceId=0HNPQ3BE2KNT4 UserId=2
+      HTTP GET /api/company-me/profile responded 403 in 0ms TraceId=0HNPQ4E0OGHRB UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNT5 UserId=2
+      HTTP GET /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHRC UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNT6 UserId=2
+      HTTP GET /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRD UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNT7 UserId=2
+      HTTP POST /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHRE UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNT8 UserId=2
+      HTTP PUT /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRF UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions/1/submit responded 403 in 0ms TraceId=0HNPQ3BE2KNT9 UserId=2
+      HTTP POST /api/company-me/job-positions/1/submit responded 403 in 0ms TraceId=0HNPQ4E0OGHRG UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ3BE2KNTA UserId=2
+      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ4E0OGHRH UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNTB UserId=2
+      HTTP DELETE /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRI UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNTC UserId=2
+      HTTP GET /api/company-me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHRJ UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNTD UserId=2
+      HTTP GET /api/company-me/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRK UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 403 in 0ms TraceId=0HNPQ3BE2KNTE UserId=2
+      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 403 in 0ms TraceId=0HNPQ4E0OGHRL UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/reject responded 403 in 0ms TraceId=0HNPQ3BE2KNTF UserId=2
+      HTTP POST /api/company-me/placement-requests/1/reject responded 403 in 0ms TraceId=0HNPQ4E0OGHRM UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/result responded 403 in 0ms TraceId=0HNPQ3BE2KNTG UserId=2
+      HTTP POST /api/company-me/placement-requests/1/result responded 403 in 0ms TraceId=0HNPQ4E0OGHRN UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/summary responded 403 in 0ms TraceId=0HNPQ3BE2KNTH UserId=2
+      HTTP GET /api/dashboard/summary responded 403 in 0ms TraceId=0HNPQ4E0OGHRO UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/need-assignment responded 403 in 0ms TraceId=0HNPQ3BE2KNTI UserId=2
+      HTTP GET /api/dashboard/need-assignment responded 403 in 0ms TraceId=0HNPQ4E0OGHRP UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/recent-rejections responded 403 in 0ms TraceId=0HNPQ3BE2KNTJ UserId=2
+      HTTP GET /api/dashboard/recent-rejections responded 403 in 0ms TraceId=0HNPQ4E0OGHRQ UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/overdue-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNTK UserId=2
+      HTTP GET /api/dashboard/overdue-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHRR UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/pending-interview-results responded 403 in 0ms TraceId=0HNPQ3BE2KNTL UserId=2
+      HTTP GET /api/dashboard/pending-interview-results responded 403 in 0ms TraceId=0HNPQ4E0OGHRS UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNTM UserId=2
+      HTTP POST /api/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHRT UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNTN UserId=2
+      HTTP PUT /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRU UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNTO UserId=2
+      HTTP DELETE /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHRV UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/approve responded 403 in 0ms TraceId=0HNPQ3BE2KNTP UserId=2
+      HTTP POST /api/job-positions/1/approve responded 403 in 0ms TraceId=0HNPQ4E0OGHS0 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/reject responded 403 in 0ms TraceId=0HNPQ3BE2KNTQ UserId=2
+      HTTP POST /api/job-positions/1/reject responded 403 in 0ms TraceId=0HNPQ4E0OGHS1 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ3BE2KNTR UserId=2
+      HTTP PATCH /api/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ4E0OGHS2 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications responded 403 in 0ms TraceId=0HNPQ3BE2KNTS UserId=2
+      HTTP GET /api/notifications responded 403 in 0ms TraceId=0HNPQ4E0OGHS3 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications/unread-count responded 403 in 0ms TraceId=0HNPQ3BE2KNTT UserId=2
+      HTTP GET /api/notifications/unread-count responded 403 in 0ms TraceId=0HNPQ4E0OGHS4 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/1/read responded 403 in 0ms TraceId=0HNPQ3BE2KNTU UserId=2
+      HTTP POST /api/notifications/1/read responded 403 in 0ms TraceId=0HNPQ4E0OGHS5 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/read-all responded 403 in 0ms TraceId=0HNPQ3BE2KNTV UserId=2
+      HTTP POST /api/notifications/read-all responded 403 in 0ms TraceId=0HNPQ4E0OGHS6 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNU0 UserId=2
+      HTTP GET /api/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHS7 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNU1 UserId=2
+      HTTP GET /api/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHS8 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/pending-confirmation responded 403 in 0ms TraceId=0HNPQ3BE2KNU2 UserId=2
+      HTTP GET /api/placement-requests/pending-confirmation responded 403 in 0ms TraceId=0HNPQ4E0OGHS9 UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/admin-confirm-result responded 403 in 0ms TraceId=0HNPQ3BE2KNU3 UserId=2
+      HTTP POST /api/placement-requests/1/admin-confirm-result responded 403 in 0ms TraceId=0HNPQ4E0OGHSA UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 403 in 0ms TraceId=0HNPQ3BE2KNU4 UserId=2
+      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 403 in 0ms TraceId=0HNPQ4E0OGHSB UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students responded 403 in 0ms TraceId=0HNPQ3BE2KNU5 UserId=4
+      HTTP GET /api/students responded 403 in 0ms TraceId=0HNPQ4E0OGHSC UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNU6 UserId=4
+      HTTP GET /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHSD UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students responded 403 in 0ms TraceId=0HNPQ3BE2KNU7 UserId=4
+      HTTP POST /api/students responded 403 in 0ms TraceId=0HNPQ4E0OGHSE UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNU8 UserId=4
+      HTTP PUT /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHSF UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/students/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNU9 UserId=4
+      HTTP DELETE /api/students/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHSG UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts responded 403 in 0ms TraceId=0HNPQ3BE2KNUA UserId=4
+      HTTP POST /api/students/create-accounts responded 403 in 0ms TraceId=0HNPQ4E0OGHSH UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts/by-filter responded 403 in 0ms TraceId=0HNPQ3BE2KNUB UserId=4
+      HTTP POST /api/students/create-accounts/by-filter responded 403 in 0ms TraceId=0HNPQ4E0OGHSI UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/accounts/export responded 403 in 0ms TraceId=0HNPQ3BE2KNUC UserId=4
+      HTTP POST /api/students/accounts/export responded 403 in 0ms TraceId=0HNPQ4E0OGHSJ UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/export responded 403 in 0ms TraceId=0HNPQ3BE2KNUD UserId=4
+      HTTP GET /api/students/export responded 403 in 0ms TraceId=0HNPQ4E0OGHSK UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/import responded 403 in 0ms TraceId=0HNPQ3BE2KNUE UserId=4
+      HTTP POST /api/students/import responded 403 in 0ms TraceId=0HNPQ4E0OGHSL UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/change-status responded 403 in 0ms TraceId=0HNPQ3BE2KNUF UserId=4
+      HTTP POST /api/students/1/change-status responded 403 in 0ms TraceId=0HNPQ4E0OGHSM UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/reset-password responded 403 in 0ms TraceId=0HNPQ3BE2KNUG UserId=4
+      HTTP POST /api/students/1/reset-password responded 403 in 0ms TraceId=0HNPQ4E0OGHSN UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1/status-history responded 403 in 0ms TraceId=0HNPQ3BE2KNUH UserId=4
+      HTTP GET /api/students/1/status-history responded 403 in 0ms TraceId=0HNPQ4E0OGHSO UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/1/assign-company responded 403 in 0ms TraceId=0HNPQ3BE2KNUI UserId=4
+      HTTP POST /api/students/1/assign-company responded 403 in 0ms TraceId=0HNPQ4E0OGHSP UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/about responded 403 in 0ms TraceId=0HNPQ3BE2KNUJ UserId=4
+      HTTP PUT /api/about responded 403 in 0ms TraceId=0HNPQ4E0OGHSQ UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/about/reset responded 403 in 0ms TraceId=0HNPQ3BE2KNUK UserId=4
+      HTTP POST /api/about/reset responded 403 in 0ms TraceId=0HNPQ4E0OGHSR UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies responded 403 in 0ms TraceId=0HNPQ3BE2KNUL UserId=4
+      HTTP GET /api/companies responded 403 in 0ms TraceId=0HNPQ4E0OGHSS UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/industries responded 403 in 0ms TraceId=0HNPQ3BE2KNUM UserId=4
+      HTTP GET /api/companies/industries responded 403 in 0ms TraceId=0HNPQ4E0OGHST UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNUN UserId=4
+      HTTP GET /api/companies/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHSU UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies responded 403 in 0ms TraceId=0HNPQ3BE2KNUO UserId=4
+      HTTP POST /api/companies responded 403 in 0ms TraceId=0HNPQ4E0OGHSV UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/companies/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNUP UserId=4
+      HTTP PUT /api/companies/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHT0 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/companies/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNUQ UserId=4
+      HTTP DELETE /api/companies/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHT1 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk responded 403 in 0ms TraceId=0HNPQ3BE2KNUR UserId=4
+      HTTP POST /api/companies/accounts/bulk responded 403 in 0ms TraceId=0HNPQ4E0OGHT2 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk-by-filter responded 403 in 0ms TraceId=0HNPQ3BE2KNUS UserId=4
+      HTTP POST /api/companies/accounts/bulk-by-filter responded 403 in 0ms TraceId=0HNPQ4E0OGHT3 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/export responded 403 in 0ms TraceId=0HNPQ3BE2KNUT UserId=4
+      HTTP POST /api/companies/accounts/export responded 403 in 0ms TraceId=0HNPQ4E0OGHT4 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ3BE2KNUU UserId=4
+      HTTP GET /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ4E0OGHT5 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ3BE2KNUV UserId=4
+      HTTP POST /api/companies/1/account responded 403 in 0ms TraceId=0HNPQ4E0OGHT6 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/reset-password responded 403 in 0ms TraceId=0HNPQ3BE2KNV0 UserId=4
+      HTTP POST /api/companies/1/account/reset-password responded 403 in 0ms TraceId=0HNPQ4E0OGHT7 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/deactivate responded 403 in 0ms TraceId=0HNPQ3BE2KNV1 UserId=4
+      HTTP POST /api/companies/1/account/deactivate responded 403 in 0ms TraceId=0HNPQ4E0OGHT8 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/1/account/activate responded 403 in 0ms TraceId=0HNPQ3BE2KNV2 UserId=4
+      HTTP POST /api/companies/1/account/activate responded 403 in 0ms TraceId=0HNPQ4E0OGHT9 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/summary responded 403 in 0ms TraceId=0HNPQ3BE2KNV3 UserId=4
+      HTTP GET /api/dashboard/summary responded 403 in 0ms TraceId=0HNPQ4E0OGHTA UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/need-assignment responded 403 in 0ms TraceId=0HNPQ3BE2KNV4 UserId=4
+      HTTP GET /api/dashboard/need-assignment responded 403 in 0ms TraceId=0HNPQ4E0OGHTB UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/recent-rejections responded 403 in 0ms TraceId=0HNPQ3BE2KNV5 UserId=4
+      HTTP GET /api/dashboard/recent-rejections responded 403 in 0ms TraceId=0HNPQ4E0OGHTC UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/overdue-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNV6 UserId=4
+      HTTP GET /api/dashboard/overdue-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHTD UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/pending-interview-results responded 403 in 0ms TraceId=0HNPQ3BE2KNV7 UserId=4
+      HTTP GET /api/dashboard/pending-interview-results responded 403 in 0ms TraceId=0HNPQ4E0OGHTE UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNV8 UserId=4
+      HTTP GET /api/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHTF UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNV9 UserId=4
+      HTTP GET /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHTG UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNVA UserId=4
+      HTTP POST /api/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHTH UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNVB UserId=4
+      HTTP PUT /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHTI UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNVC UserId=4
+      HTTP DELETE /api/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHTJ UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/approve responded 403 in 0ms TraceId=0HNPQ3BE2KNVD UserId=4
+      HTTP POST /api/job-positions/1/approve responded 403 in 0ms TraceId=0HNPQ4E0OGHTK UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/1/reject responded 403 in 0ms TraceId=0HNPQ3BE2KNVE UserId=4
+      HTTP POST /api/job-positions/1/reject responded 403 in 0ms TraceId=0HNPQ4E0OGHTL UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ3BE2KNVF UserId=4
+      HTTP PATCH /api/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ4E0OGHTM UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/profile responded 403 in 0ms TraceId=0HNPQ3BE2KNVG UserId=4
+      HTTP GET /api/me/profile responded 403 in 0ms TraceId=0HNPQ4E0OGHTN UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/status-history responded 403 in 0ms TraceId=0HNPQ3BE2KNVH UserId=4
+      HTTP GET /api/me/status-history responded 403 in 0ms TraceId=0HNPQ4E0OGHTO UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNVI UserId=4
+      HTTP GET /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHTP UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNVJ UserId=4
+      HTTP POST /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHTQ UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests/1/report-interviewed responded 403 in 0ms TraceId=0HNPQ3BE2KNVK UserId=4
+      HTTP POST /api/me/placement-requests/1/report-interviewed responded 403 in 0ms TraceId=0HNPQ4E0OGHTR UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications responded 403 in 0ms TraceId=0HNPQ3BE2KNVL UserId=4
+      HTTP GET /api/notifications responded 403 in 0ms TraceId=0HNPQ4E0OGHTS UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications/unread-count responded 403 in 0ms TraceId=0HNPQ3BE2KNVM UserId=4
+      HTTP GET /api/notifications/unread-count responded 403 in 0ms TraceId=0HNPQ4E0OGHTT UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/1/read responded 403 in 0ms TraceId=0HNPQ3BE2KNVN UserId=4
+      HTTP POST /api/notifications/1/read responded 403 in 0ms TraceId=0HNPQ4E0OGHTU UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/read-all responded 403 in 0ms TraceId=0HNPQ3BE2KNVO UserId=4
+      HTTP POST /api/notifications/read-all responded 403 in 0ms TraceId=0HNPQ4E0OGHTV UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KNVP UserId=4
+      HTTP GET /api/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHU0 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ3BE2KNVQ UserId=4
+      HTTP GET /api/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHU1 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/pending-confirmation responded 403 in 0ms TraceId=0HNPQ3BE2KNVR UserId=4
+      HTTP GET /api/placement-requests/pending-confirmation responded 403 in 0ms TraceId=0HNPQ4E0OGHU2 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/admin-confirm-result responded 403 in 0ms TraceId=0HNPQ3BE2KNVS UserId=4
+      HTTP POST /api/placement-requests/1/admin-confirm-result responded 403 in 0ms TraceId=0HNPQ4E0OGHU3 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 403 in 0ms TraceId=0HNPQ3BE2KNVT UserId=4
+      HTTP POST /api/placement-requests/1/cancel-accepted-result responded 403 in 0ms TraceId=0HNPQ4E0OGHU4 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/profile responded 403 in 0ms TraceId=0HNPQ3BE2KNVU UserId=1
+      HTTP GET /api/company-me/profile responded 403 in 0ms TraceId=0HNPQ4E0OGHU5 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KNVV UserId=1
+      HTTP GET /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHU6 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KO00 UserId=1
+      HTTP GET /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHU7 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ3BE2KO01 UserId=1
+      HTTP POST /api/company-me/job-positions responded 403 in 0ms TraceId=0HNPQ4E0OGHU8 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KO02 UserId=1
+      HTTP PUT /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHU9 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions/1/submit responded 403 in 0ms TraceId=0HNPQ3BE2KO03 UserId=1
+      HTTP POST /api/company-me/job-positions/1/submit responded 403 in 0ms TraceId=0HNPQ4E0OGHUA UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ3BE2KO04 UserId=1
+      HTTP PATCH /api/company-me/job-positions/1/toggle-open responded 403 in 0ms TraceId=0HNPQ4E0OGHUB UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ3BE2KO05 UserId=1
+      HTTP DELETE /api/company-me/job-positions/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHUC UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KO06 UserId=1
+      HTTP GET /api/company-me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHUD UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ3BE2KO07 UserId=1
+      HTTP GET /api/company-me/placement-requests/1 responded 403 in 0ms TraceId=0HNPQ4E0OGHUE UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 403 in 0ms TraceId=0HNPQ3BE2KO08 UserId=1
+      HTTP POST /api/company-me/placement-requests/1/invite-interview responded 403 in 0ms TraceId=0HNPQ4E0OGHUF UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/reject responded 403 in 0ms TraceId=0HNPQ3BE2KO09 UserId=1
+      HTTP POST /api/company-me/placement-requests/1/reject responded 403 in 0ms TraceId=0HNPQ4E0OGHUG UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/1/result responded 403 in 0ms TraceId=0HNPQ3BE2KO0A UserId=1
+      HTTP POST /api/company-me/placement-requests/1/result responded 403 in 0ms TraceId=0HNPQ4E0OGHUH UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/profile responded 403 in 0ms TraceId=0HNPQ3BE2KO0B UserId=1
+      HTTP GET /api/me/profile responded 403 in 0ms TraceId=0HNPQ4E0OGHUI UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/status-history responded 403 in 0ms TraceId=0HNPQ3BE2KO0C UserId=1
+      HTTP GET /api/me/status-history responded 403 in 0ms TraceId=0HNPQ4E0OGHUJ UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KO0D UserId=1
+      HTTP GET /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHUK UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ3BE2KO0E UserId=1
+      HTTP POST /api/me/placement-requests responded 403 in 0ms TraceId=0HNPQ4E0OGHUL UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests/1/report-interviewed responded 403 in 0ms TraceId=0HNPQ3BE2KO0F UserId=1
+      HTTP POST /api/me/placement-requests/1/report-interviewed responded 403 in 0ms TraceId=0HNPQ4E0OGHUM UserId=1
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions responded 200 in 9ms TraceId=0HNPQ3BE2KO0G UserId=1
+      HTTP POST /api/job-positions responded 200 in 8ms TraceId=0HNPQ4E0OGHUN UserId=1
 info: StudentInternshipMgmt.Api.BackgroundServices.PlacementRequestExpiryWorker[0]
       Placement request expiry worker is disabled
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -981,196 +976,201 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 1 with role Admin
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 209ms TraceId=0HNPQ3BE2KO0H UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 221ms TraceId=0HNPQ4E0OGHUO UserId=(null)
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 2 with role User
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 201ms TraceId=0HNPQ3BE2KO0I UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 194ms TraceId=0HNPQ4E0OGHUP UserId=(null)
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Placement_request_keeps_script_markup_as_plain_json_text [44 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Company_endpoint_keeps_script_markup_as_plain_json_text [12 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountServiceTests.CreateAccountAsync_rejects_existing_inactive_company_account [282 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_creates_multiple_company_accounts_successfully [1 s]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Admin_who_must_change_password_cannot_use_management_endpoints [579 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Role_tokens_are_denied_by_endpoints_outside_their_role_and_admin_cannot_use_me_routes [98 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Job_position_endpoint_keeps_script_markup_as_plain_json_text [11 ms]
+  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_running_twice_skips_all_on_second_run [457 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Infrastructure.Services.AuthService[0]
       Login succeeded for user 4 with role Company
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/auth/login responded 200 in 232ms TraceId=0HNPQ3BE2KO0J UserId=(null)
+      HTTP POST /api/auth/login responded 200 in 200ms TraceId=0HNPQ4E0OGHUQ UserId=(null)
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students responded 200 in 43ms TraceId=0HNPQ3BE2KO0K UserId=1
+      HTTP GET /api/students responded 200 in 43ms TraceId=0HNPQ4E0OGHUR UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1 responded 200 in 4ms TraceId=0HNPQ3BE2KO0L UserId=1
+      HTTP GET /api/students/1 responded 200 in 4ms TraceId=0HNPQ4E0OGHUS UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students responded 400 in 13ms TraceId=0HNPQ3BE2KO0M UserId=1
+      HTTP POST /api/students responded 400 in 12ms TraceId=0HNPQ4E0OGHUT UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/students/2147483647 responded 400 in 6ms TraceId=0HNPQ3BE2KO0N UserId=1
+      HTTP PUT /api/students/2147483647 responded 400 in 6ms TraceId=0HNPQ4E0OGHUU UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/students/2147483647 responded 404 in 26ms TraceId=0HNPQ3BE2KO0O UserId=1
+      HTTP DELETE /api/students/2147483647 responded 404 in 14ms TraceId=0HNPQ4E0OGHUV UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts responded 400 in 6ms TraceId=0HNPQ3BE2KO0P UserId=1
+      HTTP POST /api/students/create-accounts responded 400 in 7ms TraceId=0HNPQ4E0OGHV0 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/create-accounts/by-filter responded 200 in 24ms TraceId=0HNPQ3BE2KO0Q UserId=1
+      HTTP POST /api/students/create-accounts/by-filter responded 200 in 23ms TraceId=0HNPQ4E0OGHV1 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/accounts/export responded 400 in 3ms TraceId=0HNPQ3BE2KO0R UserId=1
+      HTTP POST /api/students/accounts/export responded 400 in 3ms TraceId=0HNPQ4E0OGHV2 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/export responded 200 in 34ms TraceId=0HNPQ3BE2KO0S UserId=1
+      HTTP GET /api/students/export responded 200 in 33ms TraceId=0HNPQ4E0OGHV3 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/import responded 415 in 0ms TraceId=0HNPQ3BE2KO0T UserId=1
+      HTTP POST /api/students/import responded 415 in 0ms TraceId=0HNPQ4E0OGHV4 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/2147483647/change-status responded 400 in 5ms TraceId=0HNPQ3BE2KO0U UserId=1
+      HTTP POST /api/students/2147483647/change-status responded 400 in 5ms TraceId=0HNPQ4E0OGHV5 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/2147483647/reset-password responded 404 in 5ms TraceId=0HNPQ3BE2KO0V UserId=1
+      HTTP POST /api/students/2147483647/reset-password responded 404 in 5ms TraceId=0HNPQ4E0OGHV6 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/students/1/status-history responded 200 in 4ms TraceId=0HNPQ3BE2KO10 UserId=1
+      HTTP GET /api/students/1/status-history responded 200 in 4ms TraceId=0HNPQ4E0OGHV7 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/students/2147483647/assign-company responded 400 in 4ms TraceId=0HNPQ3BE2KO11 UserId=1
+      HTTP POST /api/students/2147483647/assign-company responded 400 in 4ms TraceId=0HNPQ4E0OGHV8 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/about responded 200 in 6ms TraceId=0HNPQ3BE2KO12 UserId=1
+      HTTP GET /api/about responded 200 in 5ms TraceId=0HNPQ4E0OGHV9 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/about responded 400 in 6ms TraceId=0HNPQ3BE2KO13 UserId=1
+      HTTP PUT /api/about responded 400 in 6ms TraceId=0HNPQ4E0OGHVA UserId=1
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/about/reset responded 200 in 4ms TraceId=0HNPQ3BE2KO14 UserId=1
+      HTTP POST /api/about/reset responded 200 in 3ms TraceId=0HNPQ4E0OGHVB UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/Auth/change-password responded 400 in 7ms TraceId=0HNPQ3BE2KO15 UserId=1
+      HTTP POST /api/Auth/change-password responded 400 in 7ms TraceId=0HNPQ4E0OGHVC UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/Auth/logout responded 200 in 8ms TraceId=0HNPQ3BE2KO16 UserId=1
+      HTTP POST /api/Auth/logout responded 200 in 8ms TraceId=0HNPQ4E0OGHVD UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/Auth/me responded 200 in 4ms TraceId=0HNPQ3BE2KO17 UserId=1
+      HTTP GET /api/Auth/me responded 200 in 4ms TraceId=0HNPQ4E0OGHVE UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies responded 200 in 16ms TraceId=0HNPQ3BE2KO18 UserId=1
+      HTTP GET /api/companies responded 200 in 18ms TraceId=0HNPQ4E0OGHVF UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/industries responded 200 in 14ms TraceId=0HNPQ3BE2KO19 UserId=1
+      HTTP GET /api/companies/industries responded 200 in 12ms TraceId=0HNPQ4E0OGHVG UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1 responded 200 in 6ms TraceId=0HNPQ3BE2KO1A UserId=1
+      HTTP GET /api/companies/1 responded 200 in 6ms TraceId=0HNPQ4E0OGHVH UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies responded 400 in 3ms TraceId=0HNPQ3BE2KO1B UserId=1
+      HTTP POST /api/companies responded 400 in 5ms TraceId=0HNPQ4E0OGHVI UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/companies/2147483647 responded 404 in 5ms TraceId=0HNPQ3BE2KO1C UserId=1
+      HTTP PUT /api/companies/2147483647 responded 404 in 6ms TraceId=0HNPQ4E0OGHVJ UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/companies/2147483647 responded 404 in 3ms TraceId=0HNPQ3BE2KO1D UserId=1
+      HTTP DELETE /api/companies/2147483647 responded 404 in 4ms TraceId=0HNPQ4E0OGHVK UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk responded 400 in 4ms TraceId=0HNPQ3BE2KO1E UserId=1
+      HTTP POST /api/companies/accounts/bulk responded 400 in 5ms TraceId=0HNPQ4E0OGHVL UserId=1
 info: StudentInternshipMgmt.Infrastructure.Services.CompanyAccountService[0]
       Admin 1 requested bulk company account creation for 2 company IDs
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/bulk-by-filter responded 200 in 8ms TraceId=0HNPQ3BE2KO1F UserId=1
+      HTTP POST /api/companies/accounts/bulk-by-filter responded 200 in 9ms TraceId=0HNPQ4E0OGHVM UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/accounts/export responded 400 in 3ms TraceId=0HNPQ3BE2KO1G UserId=1
+      HTTP POST /api/companies/accounts/export responded 400 in 4ms TraceId=0HNPQ4E0OGHVN UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/companies/1/account responded 200 in 4ms TraceId=0HNPQ3BE2KO1H UserId=1
+      HTTP GET /api/companies/1/account responded 200 in 6ms TraceId=0HNPQ4E0OGHVO UserId=1
 info: StudentInternshipMgmt.Infrastructure.Services.CompanyAccountService[0]
       Admin 1 requested company account creation for company 2147483647
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/2147483647/account responded 404 in 4ms TraceId=0HNPQ3BE2KO1I UserId=1
+      HTTP POST /api/companies/2147483647/account responded 404 in 5ms TraceId=0HNPQ4E0OGHVP UserId=1
 info: StudentInternshipMgmt.Infrastructure.Services.CompanyAccountService[0]
       Admin 1 requested company account password reset for company 2147483647
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/2147483647/account/reset-password responded 404 in 4ms TraceId=0HNPQ3BE2KO1J UserId=1
+      HTTP POST /api/companies/2147483647/account/reset-password responded 404 in 4ms TraceId=0HNPQ4E0OGHVQ UserId=1
 info: StudentInternshipMgmt.Infrastructure.Services.CompanyAccountService[0]
       Admin 1 requested company account deactivation for company 2147483647
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/2147483647/account/deactivate responded 404 in 4ms TraceId=0HNPQ3BE2KO1K UserId=1
+      HTTP POST /api/companies/2147483647/account/deactivate responded 404 in 4ms TraceId=0HNPQ4E0OGHVR UserId=1
 info: StudentInternshipMgmt.Infrastructure.Services.CompanyAccountService[0]
       Admin 1 requested company account activation for company 2147483647
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/companies/2147483647/account/activate responded 404 in 3ms TraceId=0HNPQ3BE2KO1L UserId=1
+      HTTP POST /api/companies/2147483647/account/activate responded 404 in 4ms TraceId=0HNPQ4E0OGHVS UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/profile responded 200 in 3ms TraceId=0HNPQ3BE2KO1M UserId=4
+      HTTP GET /api/company-me/profile responded 200 in 4ms TraceId=0HNPQ4E0OGHVT UserId=4
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions responded 200 in 7ms TraceId=0HNPQ3BE2KO1N UserId=4
+      HTTP GET /api/company-me/job-positions responded 200 in 9ms TraceId=0HNPQ4E0OGHVU UserId=4
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/job-positions/1 responded 200 in 6ms TraceId=0HNPQ3BE2KO1O UserId=4
+      HTTP GET /api/company-me/job-positions/1 responded 200 in 12ms TraceId=0HNPQ4E0OGHVV UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions responded 400 in 4ms TraceId=0HNPQ3BE2KO1P UserId=4
+      HTTP POST /api/company-me/job-positions responded 400 in 5ms TraceId=0HNPQ4E0OGI00 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/company-me/job-positions/2147483647 responded 404 in 4ms TraceId=0HNPQ3BE2KO1Q UserId=4
+      HTTP PUT /api/company-me/job-positions/2147483647 responded 404 in 5ms TraceId=0HNPQ4E0OGI01 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/job-positions/2147483647/submit responded 404 in 3ms TraceId=0HNPQ3BE2KO1R UserId=4
+      HTTP POST /api/company-me/job-positions/2147483647/submit responded 404 in 3ms TraceId=0HNPQ4E0OGI02 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/company-me/job-positions/2147483647/toggle-open responded 404 in 5ms TraceId=0HNPQ3BE2KO1S UserId=4
+      HTTP PATCH /api/company-me/job-positions/2147483647/toggle-open responded 404 in 5ms TraceId=0HNPQ4E0OGI03 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/company-me/job-positions/2147483647 responded 404 in 3ms TraceId=0HNPQ3BE2KO1T UserId=4
+      HTTP DELETE /api/company-me/job-positions/2147483647 responded 404 in 4ms TraceId=0HNPQ4E0OGI04 UserId=4
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests responded 200 in 7ms TraceId=0HNPQ3BE2KO1U UserId=4
+      HTTP GET /api/company-me/placement-requests responded 200 in 7ms TraceId=0HNPQ4E0OGI05 UserId=4
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/company-me/placement-requests/1 responded 200 in 3ms TraceId=0HNPQ3BE2KO1V UserId=4
+      HTTP GET /api/company-me/placement-requests/1 responded 200 in 4ms TraceId=0HNPQ4E0OGI06 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/2147483647/invite-interview responded 400 in 4ms TraceId=0HNPQ3BE2KO20 UserId=4
+      HTTP POST /api/company-me/placement-requests/2147483647/invite-interview responded 400 in 4ms TraceId=0HNPQ4E0OGI07 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/2147483647/reject responded 400 in 4ms TraceId=0HNPQ3BE2KO21 UserId=4
+      HTTP POST /api/company-me/placement-requests/2147483647/reject responded 400 in 4ms TraceId=0HNPQ4E0OGI08 UserId=4
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/company-me/placement-requests/2147483647/result responded 400 in 9ms TraceId=0HNPQ3BE2KO22 UserId=4
+      HTTP POST /api/company-me/placement-requests/2147483647/result responded 400 in 3ms TraceId=0HNPQ4E0OGI09 UserId=4
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/summary responded 200 in 6ms TraceId=0HNPQ3BE2KO23 UserId=1
+      HTTP GET /api/dashboard/summary responded 200 in 7ms TraceId=0HNPQ4E0OGI0A UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/need-assignment responded 200 in 18ms TraceId=0HNPQ3BE2KO24 UserId=1
+      HTTP GET /api/dashboard/need-assignment responded 200 in 24ms TraceId=0HNPQ4E0OGI0B UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/recent-rejections responded 200 in 5ms TraceId=0HNPQ3BE2KO25 UserId=1
+      HTTP GET /api/dashboard/recent-rejections responded 200 in 5ms TraceId=0HNPQ4E0OGI0C UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/overdue-requests responded 200 in 4ms TraceId=0HNPQ3BE2KO26 UserId=1
+      HTTP GET /api/dashboard/overdue-requests responded 200 in 5ms TraceId=0HNPQ4E0OGI0D UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/dashboard/pending-interview-results responded 200 in 42ms TraceId=0HNPQ3BE2KO27 UserId=1
+      HTTP GET /api/dashboard/pending-interview-results responded 200 in 45ms TraceId=0HNPQ4E0OGI0E UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions responded 200 in 3ms TraceId=0HNPQ3BE2KO28 UserId=1
+      HTTP GET /api/job-positions responded 200 in 4ms TraceId=0HNPQ4E0OGI0F UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/job-positions/1 responded 200 in 3ms TraceId=0HNPQ3BE2KO29 UserId=1
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Role_tokens_are_denied_by_endpoints_outside_their_role_and_admin_cannot_use_me_routes [93 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Job_position_endpoint_keeps_script_markup_as_plain_json_text [12 ms]
-  Passed StudentInternshipMgmt.Infrastructure.Tests.CompanyAccountsBulkTests.CreateAccountsBulkAsync_running_twice_skips_all_on_second_run [479 ms]
+      HTTP GET /api/job-positions/1 responded 200 in 4ms TraceId=0HNPQ4E0OGI0G UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions responded 400 in 4ms TraceId=0HNPQ3BE2KO2A UserId=1
+      HTTP POST /api/job-positions responded 400 in 3ms TraceId=0HNPQ4E0OGI0H UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PUT /api/job-positions/2147483647 responded 404 in 5ms TraceId=0HNPQ3BE2KO2B UserId=1
+      HTTP PUT /api/job-positions/2147483647 responded 404 in 9ms TraceId=0HNPQ4E0OGI0I UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP DELETE /api/job-positions/2147483647 responded 404 in 3ms TraceId=0HNPQ3BE2KO2C UserId=1
+      HTTP DELETE /api/job-positions/2147483647 responded 404 in 4ms TraceId=0HNPQ4E0OGI0J UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/2147483647/approve responded 404 in 3ms TraceId=0HNPQ3BE2KO2D UserId=1
+      HTTP POST /api/job-positions/2147483647/approve responded 404 in 3ms TraceId=0HNPQ4E0OGI0K UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/job-positions/2147483647/reject responded 400 in 3ms TraceId=0HNPQ3BE2KO2E UserId=1
+      HTTP POST /api/job-positions/2147483647/reject responded 400 in 4ms TraceId=0HNPQ4E0OGI0L UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP PATCH /api/job-positions/2147483647/toggle-open responded 404 in 4ms TraceId=0HNPQ3BE2KO2F UserId=1
+      HTTP PATCH /api/job-positions/2147483647/toggle-open responded 404 in 4ms TraceId=0HNPQ4E0OGI0M UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/profile responded 200 in 3ms TraceId=0HNPQ3BE2KO2G UserId=2
+      HTTP GET /api/me/profile responded 200 in 3ms TraceId=0HNPQ4E0OGI0N UserId=2
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/status-history responded 200 in 4ms TraceId=0HNPQ3BE2KO2H UserId=2
+      HTTP GET /api/me/status-history responded 200 in 3ms TraceId=0HNPQ4E0OGI0O UserId=2
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/me/placement-requests responded 200 in 4ms TraceId=0HNPQ3BE2KO2I UserId=2
+      HTTP GET /api/me/placement-requests responded 200 in 3ms TraceId=0HNPQ4E0OGI0P UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests responded 400 in 5ms TraceId=0HNPQ3BE2KO2J UserId=2
+      HTTP POST /api/me/placement-requests responded 400 in 5ms TraceId=0HNPQ4E0OGI0Q UserId=2
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/me/placement-requests/2147483647/report-interviewed responded 404 in 4ms TraceId=0HNPQ3BE2KO2K UserId=2
+      HTTP POST /api/me/placement-requests/2147483647/report-interviewed responded 404 in 3ms TraceId=0HNPQ4E0OGI0R UserId=2
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications responded 200 in 18ms TraceId=0HNPQ3BE2KO2L UserId=1
+      HTTP GET /api/notifications responded 200 in 15ms TraceId=0HNPQ4E0OGI0S UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/notifications/unread-count responded 200 in 4ms TraceId=0HNPQ3BE2KO2M UserId=1
+      HTTP GET /api/notifications/unread-count responded 200 in 4ms TraceId=0HNPQ4E0OGI0T UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/2147483647/read responded 404 in 4ms TraceId=0HNPQ3BE2KO2N UserId=1
+      HTTP POST /api/notifications/2147483647/read responded 404 in 4ms TraceId=0HNPQ4E0OGI0U UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/notifications/read-all responded 200 in 2ms TraceId=0HNPQ3BE2KO2O UserId=1
+      HTTP POST /api/notifications/read-all responded 200 in 3ms TraceId=0HNPQ4E0OGI0V UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests responded 200 in 4ms TraceId=0HNPQ3BE2KO2P UserId=1
+      HTTP GET /api/placement-requests responded 200 in 5ms TraceId=0HNPQ4E0OGI10 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/1 responded 200 in 3ms TraceId=0HNPQ3BE2KO2Q UserId=1
+      HTTP GET /api/placement-requests/1 responded 200 in 4ms TraceId=0HNPQ4E0OGI11 UserId=1
 info: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP GET /api/placement-requests/pending-confirmation responded 200 in 51ms TraceId=0HNPQ3BE2KO2R UserId=1
+      HTTP GET /api/placement-requests/pending-confirmation responded 200 in 54ms TraceId=0HNPQ4E0OGI12 UserId=1
 warn: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/2147483647/admin-confirm-result responded 400 in 5ms TraceId=0HNPQ3BE2KO2S UserId=1
+      HTTP POST /api/placement-requests/2147483647/admin-confirm-result responded 400 in 6ms TraceId=0HNPQ4E0OGI13 UserId=1
 fail: StudentInternshipMgmt.Api.Middlewares.ExceptionHandlingMiddleware[0]
-      Unhandled InvalidOperationException while processing POST /api/placement-requests/2147483647/cancel-accepted-result. TraceId: 0HNPQ3BE2KO2T
+      Unhandled InvalidOperationException while processing POST /api/placement-requests/2147483647/cancel-accepted-result. TraceId: 0HNPQ4E0OGI14
 fail: StudentInternshipMgmt.Api.Middlewares.RequestLoggingMiddleware[0]
-      HTTP POST /api/placement-requests/2147483647/cancel-accepted-result responded 500 in 6ms TraceId=0HNPQ3BE2KO2T UserId=1
-[xUnit.net 00:00:08.80]   Finished:    StudentInternshipMgmt.Infrastructure.Tests
+      HTTP POST /api/placement-requests/2147483647/cancel-accepted-result responded 500 in 7ms TraceId=0HNPQ4E0OGI14 UserId=1
+[xUnit.net 00:00:09.26]   Finished:    StudentInternshipMgmt.Infrastructure.Tests
   Passed StudentInternshipMgmt.Infrastructure.Tests.AuthorizationMatrixTests.Json_responses_from_all_controller_endpoints_do_not_expose_secret_fields [1 s]
 
 Test Run Successful.
 Total tests: 265
      Passed: 264
     Skipped: 1
- Total time: 10.2461 Seconds
+ Total time: 10.6307 Seconds
 
 Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:10.78
+Time Elapsed 00:00:11.18
 

@@ -1,25 +1,24 @@
 
-> frontend@1.0.0 test
+> frontend@1.0.1 test
 > vitest run
 
 
-[1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90mC:/Users/PHAT/AppData/Local/Temp/StudentInternshipMgmt_ReleaseDemo_20261104_092356/InternshipManagement/frontend[39m
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90mC:/Users/PHAT/AppData/Local/Temp/StudentInternshipMgmt_ReleaseDemo_20261104_102600/InternshipManagement/frontend[39m
 
  [32m✓[39m src/utils/apiError.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
  [32m✓[39m src/utils/companyAccountValidation.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
  [32m✓[39m src/utils/companyJobPositionValidation.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 13[2mms[22m[39m
- [32m✓[39m src/utils/companyFormValidation.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 17[2mms[22m[39m
- [32m✓[39m src/utils/studentEditValidation.test.js [2m([22m[2m17 tests[22m[2m)[22m[32m 18[2mms[22m[39m
- [32m✓[39m src/utils/aboutContent.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 19[2mms[22m[39m
- [32m✓[39m src/utils/applicationValidation.test.js [2m([22m[2m56 tests[22m[2m)[22m[32m 31[2mms[22m[39m
- [32m✓[39m src/utils/companyPlacementRequest.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 18[2mms[22m[39m
- [32m✓[39m src/utils/jobPosition.test.js [2m([22m[2m24 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/utils/studentEditValidation.test.js [2m([22m[2m17 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/utils/aboutContent.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/utils/companyFormValidation.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/utils/applicationValidation.test.js [2m([22m[2m56 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/utils/companyPlacementRequest.test.js [2m([22m[2m12 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/utils/jobPosition.test.js [2m([22m[2m24 tests[22m[2m)[22m[32m 46[2mms[22m[39m
  [32m✓[39m src/utils/authNavigation.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
 [90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 saving guard)[2m > [22m[2mresets saving flag to false when client validation produces invalid fields
 [22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
 [Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
 
- [32m✓[39m src/utils/passwordPolicy.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
 [90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 saving guard)[2m > [22m[2mresets saving flag to false even if client validation throws an unexpected exception
 [22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
 [Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
@@ -32,21 +31,27 @@
 [22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
 [Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
 
- [32m✓[39m src/views/job-positions/JobPositionApplyView.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 32[2mms[22m[39m
- [32m✓[39m src/utils/pageTitle.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
- [32m✓[39m src/utils/roleRoutes.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
- [32m✓[39m src/utils/dateTime.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 19[2mms[22m[39m
- [32m✓[39m src/stores/accountResult.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
- [32m✓[39m src/api/axiosClient.test.js [2m([22m[2m3 tests[22m[2m)[22m[33m 1436[2mms[22m[39m
+[90mstderr[2m | src/views/job-positions/JobPositionApplyView.test.js[2m > [22m[2mJobPositionApplyView (CR-03 saving guard)[2m > [22m[2msafely trims only string values and preserves non-string attributes on submit (P4-02)
+[22m[39m[Vue warn]: onMounted is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
+[Vue warn]: onBeforeUnmount is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
+
+ [32m✓[39m src/views/job-positions/JobPositionApplyView.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m src/utils/roleRoutes.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/views/company/CompanyPlacementRequestDetailView.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/utils/passwordPolicy.test.js [2m([22m[2m10 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/utils/pageTitle.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/utils/dateTime.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/stores/accountResult.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/api/axiosClient.test.js [2m([22m[2m3 tests[22m[2m)[22m[33m 1430[2mms[22m[39m
    [32m✓[39m axiosClient GET retries [2m(3)[22m
-     [33m[2m✓[22m[39m retries a network-failed GET twice and marks the final error[33m 1431[2mms[22m[39m
+     [33m[2m✓[22m[39m retries a network-failed GET twice and marks the final error[33m 1424[2mms[22m[39m
 
-[2m Test Files [22m [1m[32m17 passed[39m[22m[90m (17)[39m
-[2m      Tests [22m [1m[32m194 passed[39m[22m[90m (194)[39m
-[2m   Start at [22m 09:25:20
-[2m   Duration [22m 3.82s[2m (transform 42%, import 42%, tests 14%, worker 2%)[22m
+[2m Test Files [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m      Tests [22m [1m[32m199 passed[39m[22m[90m (199)[39m
+[2m   Start at [22m 10:27:13
+[2m   Duration [22m 4.12s[2m (import 56%, transform 30%, tests 12%, worker 2%)[22m
 
-[2m  Transform [22m [33mtransforming modules took 5.10s[39m[2m · 42% of tracked time, re-done on every run[22m
+[2m  Transform [22m [33mtransforming modules took 4.13s[39m[2m · 30% of tracked time, re-done on every run[22m
 [2m            [22m [2mpersist transforms across runs with [22m[33mfsModuleCache: true[39m
 [2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns[22m
 

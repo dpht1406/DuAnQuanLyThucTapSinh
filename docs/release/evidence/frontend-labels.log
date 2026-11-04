@@ -1,5 +1,5 @@
 
-> frontend@1.0.0 check:labels
+> frontend@1.0.1 check:labels
 > node scripts/check-labels.mjs
 
 Không phát hiện label mồ côi hoặc input thiếu label/aria-label (48 file Vue).

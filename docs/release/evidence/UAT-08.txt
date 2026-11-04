@@ -1,5 +1,5 @@
 ﻿=== KỊCH BẢN UAT-08: DOANH NGHIỆP MỜI PHỎNG VẤN VÀ GHI NHẬN KẾT QUẢ ĐẠT ===
-Thời gian: 2026-11-04 09:25:38
+Thời gian: 2026-11-04 10:27:32
 Vai trò: Doanh nghiệp (DN-01)
 Bước 1: Doanh nghiệp gửi lời mời phỏng vấn qua POST /company-me/placement-requests/1/invite-interview.
 Kết quả: HTTP 200 thành công.

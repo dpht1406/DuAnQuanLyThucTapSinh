@@ -1,5 +1,5 @@
 ﻿=== KỊCH BẢN UAT-04: QUẢN LÝ DOANH NGHIỆP VÀ TẠO TÀI KHOẢN HÀNG LOẠT ===
-Thời gian: 2026-11-04 09:25:30
+Thời gian: 2026-11-04 10:27:24
 Vai trò: Quản trị viên (Admin)
 Bước 1: Tạo 2 doanh nghiệp thành công: ID 4 và ID 5.
 Bước 2: Tạo tài khoản doanh nghiệp hàng loạt qua POST /api/companies/accounts/bulk.

@@ -1,14 +1,14 @@
 ﻿=== KỊCH BẢN UAT-02: QUẢN LÝ SINH VIÊN VÀ XÁC THỰC LỖI TIẾNG VIỆT (FB-01) ===
-Thời gian: 2026-11-04 09:25:29
+Thời gian: 2026-11-04 10:27:23
 Vai trò: Quản trị viên (Admin)
 Bước 1: Gửi form tạo sinh viên rỗng toàn bộ.
 HTTP Status nhận được: 400
 Phản hồi lỗi chi tiết:
-{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Email":["Email không được để trống."],"Major":["Ngành không được để trống."],"FullName":["Họ tên không được để trống."],"ClassName":["Lớp không được để trống."],"PhoneNumber":["Số điện thoại không được để trống.","Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0)."],"StudentCode":["Mã số sinh viên không được để trống."]},"traceId":"00-0eefdc449d47463d2400f55a72e28d25-2562a7a3389cade4-00"}
-Bước 2: Tạo sinh viên hợp lệ với mã SV3bf670.
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Email":["Email không được để trống."],"Major":["Ngành không được để trống."],"FullName":["Họ tên không được để trống."],"ClassName":["Lớp không được để trống."],"PhoneNumber":["Số điện thoại không được để trống.","Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0)."],"StudentCode":["Mã số sinh viên không được để trống."]},"traceId":"00-d4b9553e3be14521442247c181f6aa6c-ab97b8f0dc683932-00"}
+Bước 2: Tạo sinh viên hợp lệ với mã SV49bb62.
 HTTP Status nhận được: 200, Student ID: 1
-Bước 3: Gửi lại mã sinh viên SV3bf670 bị trùng lặp.
+Bước 3: Gửi lại mã sinh viên SV49bb62 bị trùng lặp.
 HTTP Status nhận được: 400
 Phản hồi lỗi chi tiết:
-{"success":false,"message":"Mã số sinh viên 'SV3bf670' đã tồn tại.","data":null,"errors":null}
+{"success":false,"message":"Mã số sinh viên 'SV49bb62' đã tồn tại.","data":null,"errors":null}
 Kết luận: ĐẠT (PASS) - Thông báo lỗi chuẩn hóa tiếng Việt 100%, không còn lai tạp tiếng Anh kỹ thuật.

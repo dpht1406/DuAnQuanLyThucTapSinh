@@ -1,12 +1,13 @@
 ﻿=== KỊCH BẢN UAT-03: XUẤT DỮ LIỆU SINH VIÊN RA CSV ===
-Thời gian: 2026-11-04 09:25:30
+Thời gian: 2026-11-04 10:27:24
 Vai trò: Quản trị viên (Admin)
 Bước 1: Gọi GET /api/students/export?format=csv.
 HTTP Status nhận được: 200
 Content-Type: text/csv
-Kiểm tra UTF-8 BOM: False
+Dung lượng nhị phân tải về: 255 bytes
+Kiểm tra UTF-8 BOM (0xEF, 0xBB, 0xBF): True
 Một phần nội dung xuất ra:
-ï»¿MSSV,Há» tÃªn,Lá»p,NgÃ nh,Email,Sá» Äiá»n thoáº¡i,Tráº¡ng thÃ¡i,Doanh nghiá»p,Vá» trÃ­,NgÃ y táº¡o tÃ i khoáº£n
-SV3bf670,Nguyá»n VÄn UAT 3bf670,CNTT-K21,CÃ´ng nghá» ThÃ´ng tin,sv-3bf670@student.edu.vn,0981234567,ChÆ°a cÃ³ doanh nghiá»p,,,
+﻿MSSV,Họ tên,Lớp,Ngành,Email,Số điện thoại,Trạng thái,Doanh nghiệp,Vị trí,Ngày tạo tài khoản
+SV49bb62,Nguyễn Văn UAT 49bb62,CNTT-K21,Công nghệ Thông tin,sv-49bb62@student.edu.vn,0981234567,Chưa có doanh nghiệp,,,
 
-Kết luận: ĐẠT (PASS) - Xuất dữ liệu sinh viên CSV thành công, định dạng UTF-8 đầy đủ.
+Kết luận: ĐẠT (PASS) - Xuất dữ liệu sinh viên CSV thành công, có UTF-8 BOM chuẩn cho Microsoft Excel.

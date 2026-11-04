@@ -1,5 +1,5 @@
 
-> frontend@1.0.0 check:contrast
+> frontend@1.0.1 check:contrast
 > node scripts/check-contrast.mjs
 
 Cặp màu                                        Tỉ lệ  Ngưỡng  Kết quả

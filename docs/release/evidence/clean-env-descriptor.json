@@ -1,14 +1,14 @@
 ﻿{
-    "Timestamp":  "20261104_092356",
-    "TempDirectory":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_092356",
-    "DatabaseName":  "StudentInternshipMgmt_ReleaseDemo_20261104_092356",
+    "Timestamp":  "20261104_102600",
+    "TempDirectory":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_102600",
+    "DatabaseName":  "StudentInternshipMgmt_ReleaseDemo_20261104_102600",
     "SqlServer":  "localhost",
     "ApiPort":  5028,
     "FrontendPort":  5183,
     "ApiBaseUrl":  "http://127.0.0.1:5028",
     "FrontendBaseUrl":  "http://127.0.0.1:5183",
-    "ApiProcessId":  34304,
-    "FrontendProcessId":  46332,
+    "ApiProcessId":  11804,
+    "FrontendProcessId":  9188,
     "ToolVersions":  {
                          "DotNet":  "9.0.308",
                          "Node":  "v22.19.0",
@@ -16,9 +16,9 @@
                          "SqlCmd":  "Version 16.0.1000.6 NT"
                      },
     "LogPaths":  {
-                     "ApiStdout":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_092356\\logs\\api-stdout.log",
-                     "ApiStderr":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_092356\\logs\\api-stderr.log",
-                     "FrontendStdout":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_092356\\logs\\frontend-stdout.log",
-                     "FrontendStderr":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_092356\\logs\\frontend-stderr.log"
+                     "ApiStdout":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_102600\\logs\\api-stdout.log",
+                     "ApiStderr":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_102600\\logs\\api-stderr.log",
+                     "FrontendStdout":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_102600\\logs\\frontend-stdout.log",
+                     "FrontendStderr":  "C:\\Users\\PHAT\\AppData\\Local\\Temp\\StudentInternshipMgmt_ReleaseDemo_20261104_102600\\logs\\frontend-stderr.log"
                  }
 }

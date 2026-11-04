@@ -1,5 +1,5 @@
 ﻿=== KỊCH BẢN UAT-05: DOANH NGHIỆP ĐĂNG NHẬP, ĐỔI MẬT KHẨU & TẠO TIN TUYỂN DỤNG (FB-02) ===
-Thời gian: 2026-11-04 09:25:32
+Thời gian: 2026-11-04 10:27:26
 Vai trò: Đại diện Doanh nghiệp (DN-01)
 Bước 1: Doanh nghiệp đăng nhập với mật khẩu tạm thời. mustChangePassword = True
 Bước 2: Doanh nghiệp đổi mật khẩu lần đầu thành công.

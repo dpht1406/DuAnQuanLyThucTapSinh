@@ -1,5 +1,5 @@
 ﻿=== KỊCH BẢN UAT-10: ĐƯỜNG DẪN LỖI, PHÂN QUYỀN BẢO MẬT VÀ CÁCH LY MULTI-TENANCY ===
-Thời gian: 2026-11-04 09:25:39
+Thời gian: 2026-11-04 10:27:33
 Vai trò: Nặc danh, Sinh viên, Doanh nghiệp B
 Bước 1: Người dùng nặc danh truy cập API quản trị (/api/students).
 HTTP Status nhận được: 401 (Kỳ vọng: 401 Unauthorized)

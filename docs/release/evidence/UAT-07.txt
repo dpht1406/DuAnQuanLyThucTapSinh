@@ -1,5 +1,5 @@
 ﻿=== KỊCH BẢN UAT-07: CHỐNG RACE CONDITION KHI BẤM NỘP ĐƠN ĐÚP LIÊN TIẾP (FB-10 / TC-12) ===
-Thời gian: 2026-11-04 09:25:35
+Thời gian: 2026-11-04 10:27:29
 Vai trò: Sinh viên (SV-01)
 Gửi đồng thời 2 POST requests tới /api/me/placement-requests:
 Kết quả Request A: HTTP 200
