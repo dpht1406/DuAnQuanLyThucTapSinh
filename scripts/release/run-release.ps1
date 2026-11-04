@@ -274,41 +274,36 @@ try {
             $zipObj.Dispose()
         }
 
-        # Directories present in repo but not in zip
-        $repoOnlyDirs = @(
-            "RELEASE/ (Lưu trữ các bản zip, checksum, tài liệu phát hành)",
-            "docs/release/evidence/ (Nhật ký thực thi test, UAT log, ảnh chụp màn hình)",
-            ".agent/ (Cờ trạng thái và heartbeat của quy trình phát hành)",
-            ".git/ (Lịch sử phiên bản git cục bộ)"
-        )
+        $nowUtc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+        $provContent = @"
+# Bản Ghi Nguồn Gốc Gói Phát Hành (Release Provenance - v$version)
 
-        $provDoc = New-Object System.Text.StringBuilder
-        [void]$provDoc.AppendLine("# Bản Ghi Nguồn Gốc Gói Phát Hành (Release Provenance - v$version)")
-        [void]$provDoc.AppendLine("")
-        [void]$provDoc.AppendLine("> [!IMPORTANT]")
-        [void]$provDoc.AppendLine("> Gói phát hành `DuAnQuanLyThucTapSinh-v$version.zip` được đóng gói tự động từ đúng commit mã nguồn được gắn tag `$tagName`.")
-        [void]$provDoc.AppendLine("")
-        [void]$provDoc.AppendLine("## 1. Thông Tin Nguồn Gốc (Metadata)")
-        [void]$provDoc.AppendLine("- **Phiên bản phát hành**: `v$version`")
-        [void]$provDoc.AppendLine("- **Git Tag**: `$tagName`")
-        [void]$provDoc.AppendLine("- **Commit SHA**: `$currentCommit`")
-        [void]$provDoc.AppendLine("- **Thời điểm commit**: `$commitIso`")
-        [void]$provDoc.AppendLine("- **Thời điểm đóng gói**: $((Get-Date).ToString('yyyy-MM-dd HH:mm:ss UTC'))")
-        [void]$provDoc.AppendLine("- **Công cụ đóng gói**: `git archive --format=zip`")
-        [void]$provDoc.AppendLine("- **Tệp nén**: `DuAnQuanLyThucTapSinh-v$version.zip` ($sizeMb MB)")
-        [void]$provDoc.AppendLine("- **Mã băm SHA256**: `$hashZip`")
-        [void]$provDoc.AppendLine("- **Tổng số file trong zip**: $($zipEntries.Count) files")
-        [void]$provDoc.AppendLine("")
-        [void]$provDoc.AppendLine("## 2. Danh Sách Thư Mục Chỉ Có Trong Repo (Không Nằm Trong Zip)")
-        [void]$provDoc.AppendLine("Theo thiết kế đóng gói mã nguồn sạch qua `git archive`, các thư mục sau chỉ tồn tại trong kho lưu trữ phục vụ quản trị và nghiệm thu mà không được đưa vào gói nguồn triển khai:")
-        foreach ($d in $repoOnlyDirs) {
-            [void]$provDoc.AppendLine("- `$d`")
-        }
-        [void]$provDoc.AppendLine("")
-        [void]$provDoc.AppendLine("## 3. Xác Nhận Tính Đồng Nhất")
-        [void]$provDoc.AppendLine("- Cam kết tag `$tagName` và tệp nén `DuAnQuanLyThucTapSinh-v$version.zip` cùng xuất phát từ commit `$currentCommit`.")
-        [void]$provDoc.AppendLine("- Mã băm của gói khớp hoàn toàn với `checksums.sha256`.")
-        [System.IO.File]::WriteAllText($provenanceFile, $provDoc.ToString(), [System.Text.Encoding]::UTF8)
+> [!IMPORTANT]
+> Gói phát hành ``DuAnQuanLyThucTapSinh-v$version.zip`` được đóng gói tự động từ đúng commit mã nguồn được gắn tag ``$tagName``.
+
+## 1. Thông Tin Nguồn Gốc (Metadata)
+- **Phiên bản phát hành**: ``v$version``
+- **Git Tag**: ``$tagName``
+- **Commit SHA**: ``$currentCommit``
+- **Thời điểm commit**: ``$commitIso``
+- **Thời điểm đóng gói**: ``$nowUtc``
+- **Công cụ đóng gói**: ``git archive --format=zip``
+- **Tệp nén**: ``DuAnQuanLyThucTapSinh-v$version.zip`` ($sizeMb MB)
+- **Mã băm SHA256**: ``$hashZip``
+- **Tổng số file trong zip**: $($zipEntries.Count) files
+
+## 2. Danh Sách Thư Mục Chỉ Có Trong Repo (Không Nằm Trong Zip)
+Theo thiết kế đóng gói mã nguồn sạch qua git archive, các thư mục sau chỉ tồn tại trong kho lưu trữ phục vụ quản trị và nghiệm thu mà không được đưa vào gói nguồn triển khai:
+- ``RELEASE/`` (Lưu trữ các bản zip, checksum, tài liệu phát hành)
+- ``docs/release/evidence/`` (Nhật ký thực thi test, UAT log, ảnh chụp màn hình)
+- ``.agent/`` (Cờ trạng thái và heartbeat của quy trình phát hành)
+- ``.git/`` (Lịch sử phiên bản git cục bộ)
+
+## 3. Xác Nhận Tính Đồng Nhất
+- Cam kết tag ``$tagName`` và tệp nén ``DuAnQuanLyThucTapSinh-v$version.zip`` cùng xuất phát từ commit ``$currentCommit``.
+- Mã băm của gói khớp hoàn toàn với ``checksums.sha256``.
+"@
+        [System.IO.File]::WriteAllText($provenanceFile, $provContent, [System.Text.Encoding]::UTF8)
         Write-Host "Generated PROVENANCE: $provenanceFile"
 
         # VERIFY PACKAGE: Extract into fresh empty temp dir and run reproduction test
@@ -381,8 +376,8 @@ try {
             try {
                 $cmdIdx = 1
                 foreach ($cmd in $reproduceCommands) {
-                    [void]$verifyLog.AppendLine("`n--- Executing README command #$cmdIdx: '$cmd' ---")
-                    Write-Host "Executing README command #$cmdIdx: $cmd" -ForegroundColor Yellow
+                    [void]$verifyLog.AppendLine("`n--- Executing README command #$($cmdIdx): '$cmd' ---")
+                    Write-Host "Executing README command #$($cmdIdx): $cmd" -ForegroundColor Yellow
 
                     if ($cmd -match '^\s*cd\s+(.+)$') {
                         $targetFolder = $matches[1].Trim()
@@ -395,7 +390,7 @@ try {
                         $exitCode = $LASTEXITCODE
                         [void]$verifyLog.AppendLine($output)
                         if ($exitCode -ne 0) {
-                            throw "README command failed with exit code $exitCode: '$cmd'."
+                            throw "README command failed with exit code $($exitCode): '$cmd'."
                         }
                     }
                     $cmdIdx++
