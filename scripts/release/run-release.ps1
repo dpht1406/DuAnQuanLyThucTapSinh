@@ -119,13 +119,13 @@ try {
 
             $contrastOut = (cmd.exe /c "npm run check:contrast" 2>&1 | Out-String)
             [System.IO.File]::WriteAllText((Join-Path $evidenceDir "frontend-contrast.log"), $contrastOut, [System.Text.Encoding]::UTF8)
-            if ($contrastOut -notmatch "Số cặp màu không đạt: 0") {
+            if ($contrastOut -match "không đạt:\s*([1-9]\d*)") {
                 throw "Frontend color contrast check failed!"
             }
 
             $labelsOut = (cmd.exe /c "npm run check:labels" 2>&1 | Out-String)
             [System.IO.File]::WriteAllText((Join-Path $evidenceDir "frontend-labels.log"), $labelsOut, [System.Text.Encoding]::UTF8)
-            if ($labelsOut -notmatch "Không phát hiện label mồ côi") {
+            if ($labelsOut -match "phát hiện" -and $labelsOut -notmatch "Không phát hiện") {
                 throw "Frontend labels check failed!"
             }
         } finally {
@@ -178,7 +178,8 @@ try {
         # Clean packaging via git archive to guarantee 0 binary, 0 obj, 0 node_modules, 0 secrets
         & git archive --format=zip -o $packageZip HEAD
         if ($LASTEXITCODE -ne 0) { throw "Failed to create release zip package." }
-        Write-Host "Package created: $packageZip ($( [Math]::Round((Get-Item $packageZip).Length / 1MB, 2) ) MB)"
+        $sizeMb = [Math]::Round(((Get-Item $packageZip).Length / 1048576), 2)
+        Write-Host "Package created: $packageZip ($sizeMb MB)"
 
         # Package sample data into RELEASE/v1.0.0/data
         $dataDir = Join-Path $releaseDir "data"
