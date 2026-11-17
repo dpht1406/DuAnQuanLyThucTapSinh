@@ -34,6 +34,16 @@ public class NotificationsController : ControllerBase
         return Ok(ApiResponse<UnreadCountDto>.SuccessResponse(result));
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ApiResponse<NotificationDto>>> GetById(int id)
+    {
+        var dto = await _notificationService.GetByIdAsync(id);
+        if (dto is null)
+            return NotFound(ApiResponse<NotificationDto>.FailResponse("Không tìm thấy thông báo."));
+
+        return Ok(ApiResponse<NotificationDto>.SuccessResponse(dto));
+    }
+
     [HttpPost("{id:int}/read")]
     public async Task<ActionResult<ApiResponse<object>>> MarkAsRead(int id)
     {

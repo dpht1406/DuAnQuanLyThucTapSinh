@@ -128,6 +128,54 @@ public class NotificationWorkflowTests
         anotherNotification.ReadBy.Should().Be(seeded.User.Id);
     }
 
+    [Fact]
+    public async Task GetByIdAsync_returns_notification_when_exists()
+    {
+        var seeded = await CreateSeededContext(StudentStatus.NoCompany);
+        await using var dbContext = seeded.DbContext;
+        var notification = new Notification
+        {
+            Type = NotificationType.StudentReportedRejection,
+            Title = "Sinh viên báo rớt",
+            Message = "Nội dung thông báo chi tiết",
+            StudentId = seeded.Student.Id,
+            CompanyId = seeded.Company.Id,
+            CompanyName = seeded.Company.Name,
+            Reason = "Không phù hợp kỹ năng",
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        dbContext.Notifications.Add(notification);
+        await dbContext.SaveChangesAsync();
+
+        var service = new NotificationService(dbContext);
+        var result = await service.GetByIdAsync(notification.Id);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(notification.Id);
+        result.Type.Should().Be(NotificationType.StudentReportedRejection);
+        result.Title.Should().Be("Sinh viên báo rớt");
+        result.Message.Should().Be("Nội dung thông báo chi tiết");
+        result.StudentId.Should().Be(seeded.Student.Id);
+        result.CompanyId.Should().Be(seeded.Company.Id);
+        result.CompanyName.Should().Be(seeded.Company.Name);
+        result.Reason.Should().Be("Không phù hợp kỹ năng");
+        result.IsRead.Should().BeFalse();
+        result.CreatedAt.Should().BeCloseTo(notification.CreatedAt, TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_returns_null_when_not_found()
+    {
+        var seeded = await CreateSeededContext(StudentStatus.NoCompany);
+        await using var dbContext = seeded.DbContext;
+        var service = new NotificationService(dbContext);
+
+        var result = await service.GetByIdAsync(99999);
+
+        result.Should().BeNull();
+    }
+
     private static async Task<SeededContext> CreateSeededContext(
         StudentStatus status,
         UserRole role = UserRole.User)

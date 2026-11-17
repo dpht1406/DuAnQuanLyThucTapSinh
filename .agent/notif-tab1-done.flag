@@ -1,0 +1,11 @@
+InternshipManagement/backend/src/StudentInternshipMgmt.Application/Features/Notifications/INotificationService.cs
+InternshipManagement/backend/src/StudentInternshipMgmt.Infrastructure/Services/NotificationService.cs
+InternshipManagement/backend/src/StudentInternshipMgmt.Api/Controllers/NotificationsController.cs
+InternshipManagement/backend/tests/StudentInternshipMgmt.Infrastructure.Tests/NotificationWorkflowTests.cs
+InternshipManagement/frontend/src/api/notifications.js
+InternshipManagement/frontend/src/utils/notificationType.js
+InternshipManagement/frontend/src/utils/notificationType.test.js
+InternshipManagement/frontend/src/views/notifications/NotificationDetailView.vue
+InternshipManagement/frontend/src/router/index.js
+InternshipManagement/frontend/src/layouts/MainLayout.vue
+InternshipManagement/frontend/src/views/notifications/NotificationsView.vue

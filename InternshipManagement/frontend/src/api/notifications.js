@@ -4,6 +4,10 @@ export function getNotifications(filter = {}) {
   return axiosClient.get('/notifications', { params: filter }).then((res) => res.data.data)
 }
 
+export function getNotificationById(id) {
+  return axiosClient.get(`/notifications/${id}`).then((res) => res.data.data)
+}
+
 export function getUnreadCount() {
   return axiosClient.get('/notifications/unread-count').then((res) => res.data.data)
 }

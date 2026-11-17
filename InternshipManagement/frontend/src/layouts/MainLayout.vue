@@ -105,7 +105,7 @@ function notificationIcon(notification) { return isRejection(notification) ? 'pi
 function notificationTone(notification) { return isRejection(notification) ? 'warning' : 'danger' }
 async function refreshUnreadCount() { if (!isAdmin.value || document.hidden) return; try { unreadCount.value = Number((await getUnreadCount())?.unreadCount ?? 0) } catch { } }
 async function loadNotifications() { notificationsLoading.value = true; try { notifications.value = (await getNotifications({ pageNumber: 1, pageSize: 10 }))?.items ?? [] } catch { notifications.value = [] } finally { notificationsLoading.value = false } }
-async function openNotification(notification) { if (!notification.isRead) { try { await markNotificationRead(notification.id); notification.isRead = true; unreadCount.value = Math.max(0, unreadCount.value - 1) } catch { } } notificationPopover.value?.hide(); mobileNotificationsVisible.value = false; if (notification.studentId != null) router.push({ name: 'student-detail', params: { id: notification.studentId } }) }
+async function openNotification(notification) { if (!notification.isRead) { try { await markNotificationRead(notification.id); notification.isRead = true; unreadCount.value = Math.max(0, unreadCount.value - 1) } catch { } } notificationPopover.value?.hide(); mobileNotificationsVisible.value = false; router.push({ name: 'notification-detail', params: { id: notification.id } }) }
 async function markAllRead() { try { await markAllNotificationsRead(); notifications.value = notifications.value.map((item) => ({ ...item, isRead: true })); unreadCount.value = 0 } catch { } }
 function stopNotificationPolling() { if (notificationPollTimer) { clearInterval(notificationPollTimer); notificationPollTimer = null } }
 function onDocumentVisibilityChange() { stopNotificationPolling(); if (!isAdmin.value || document.hidden) return; refreshUnreadCount(); notificationPollTimer = setInterval(refreshUnreadCount, 30000) }
@@ -204,7 +204,7 @@ const hideMobileTabs = computed(() => hideMobileChrome.value || route.name === '
             class="icon-btn mobile-bell"
             :aria-label="unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : 'Thông báo'"
             title="Thông báo"
-            @click="mobileNotificationsVisible = true"
+            @click="goTo('/notifications')"
           >
             <span class="pi pi-bell" aria-hidden="true" />
             <Badge v-if="unreadCount > 0" :value="unreadCount > 9 ? (unreadCount > 99 ? '99+' : unreadCount) : ''" severity="danger" class="notification-badge" />
@@ -255,7 +255,7 @@ const hideMobileTabs = computed(() => hideMobileChrome.value || route.name === '
               class="icon-btn topbar-bell"
               :aria-label="unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : 'Thông báo'"
               title="Thông báo"
-              @click="toggleNotifications"
+              @click="goTo('/notifications')"
             >
               <span class="pi pi-bell" aria-hidden="true" />
               <Badge v-if="unreadCount > 0" :value="unreadCount > 9 ? (unreadCount > 99 ? '99+' : unreadCount) : ''" severity="danger" class="notification-badge" />

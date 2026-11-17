@@ -241,6 +241,12 @@ const routes = [
         meta: { requiresAuth: true, roles: ['Admin'] }
       },
       {
+        path: 'notifications/:id(\\d+)',
+        name: 'notification-detail',
+        component: () => import('../views/notifications/NotificationDetailView.vue'),
+        meta: { requiresAuth: true, roles: ['Admin'] }
+      },
+      {
         path: 'profile',
         name: 'profile',
         component: () => import('../views/profile/ProfileView.vue'),
@@ -293,6 +299,7 @@ const routeTitles = {
   'placement-request-confirm-result': 'Xác nhận kết quả thực tập',
   'placement-request-cancel-accepted': 'Hủy phân công đã xác nhận',
   notifications: 'Thông báo',
+  'notification-detail': 'Chi tiết thông báo',
   profile: 'Hồ sơ cá nhân',
   'not-found': 'Không tìm thấy trang'
 }

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
 import Paginator from 'primevue/paginator'
@@ -7,6 +8,7 @@ import { getNotifications, markAllNotificationsRead, markNotificationRead } from
 import { extractErrorMessage } from '../../utils/apiError.js'
 import dayjs from '../../utils/dayjs.js'
 
+const router = useRouter()
 const notifications = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
@@ -32,8 +34,10 @@ async function loadNotifications() {
   } finally { loading.value = false }
 }
 async function openNotification(notification) {
-  if (notification.isRead) return
-  try { await markNotificationRead(notification.id); notification.isRead = true } catch { }
+  if (!notification.isRead) {
+    try { await markNotificationRead(notification.id); notification.isRead = true } catch { }
+  }
+  router.push({ name: 'notification-detail', params: { id: notification.id } })
 }
 async function markAllRead() {
   try { await markAllNotificationsRead(); notifications.value = notifications.value.map((item) => ({ ...item, isRead: true })) } catch { }

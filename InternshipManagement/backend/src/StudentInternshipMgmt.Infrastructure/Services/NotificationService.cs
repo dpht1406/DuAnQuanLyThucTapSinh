@@ -40,6 +40,28 @@ public class NotificationService : INotificationService
             .ToPagedResultAsync(filter);
     }
 
+    public async Task<NotificationDto?> GetByIdAsync(int id)
+    {
+        return await _db.Notifications
+            .AsNoTracking()
+            .Where(notification => notification.Id == id)
+            .Select(notification => new NotificationDto
+            {
+                Id = notification.Id,
+                Type = notification.Type,
+                Title = notification.Title,
+                Message = notification.Message,
+                StudentId = notification.StudentId,
+                CompanyId = notification.CompanyId,
+                CompanyName = notification.CompanyName,
+                Reason = notification.Reason,
+                IsRead = notification.IsRead,
+                CreatedAt = notification.CreatedAt,
+                ReadAt = notification.ReadAt
+            })
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<UnreadCountDto> GetUnreadCountAsync()
     {
         return new UnreadCountDto
