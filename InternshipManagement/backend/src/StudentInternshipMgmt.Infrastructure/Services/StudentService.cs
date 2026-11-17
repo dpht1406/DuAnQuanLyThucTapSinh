@@ -2,6 +2,7 @@ using ClosedXML.Excel;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Students;
 using StudentInternshipMgmt.Domain.Entities;
@@ -18,15 +19,18 @@ public class StudentService : IStudentService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<StudentService> _logger;
-    private static readonly Regex EmailRegex = new(
-        @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+    private readonly ImportSettings _importSettings;
     private static readonly Regex PhoneRegex = new(
         @"^0\d{9}$", RegexOptions.Compiled);
 
-    public StudentService(AppDbContext db, ILogger<StudentService> logger)
+    public StudentService(
+        AppDbContext db,
+        ILogger<StudentService> logger,
+        IOptions<ImportSettings>? importSettings = null)
     {
         _db = db;
         _logger = logger;
+        _importSettings = importSettings?.Value ?? new ImportSettings();
     }
 
     // ---------- 2. CRUD & tìm kiếm/lọc/xoá mềm ----------
@@ -111,9 +115,34 @@ public class StudentService : IStudentService
 
     public async Task<(bool Success, string? Error, StudentDto? Data)> CreateStudentAsync(CreateStudentDto dto)
     {
-        var codeExists = await _db.Students.AnyAsync(s => s.StudentCode == dto.StudentCode);
+        dto.StudentCode = dto.StudentCode?.Trim();
+        dto.FullName = dto.FullName?.Trim();
+        dto.Email = dto.Email?.Trim();
+        dto.PhoneNumber = dto.PhoneNumber?.Trim();
+        dto.Major = dto.Major?.Trim();
+        dto.ClassName = dto.ClassName?.Trim();
+
+        if (string.IsNullOrWhiteSpace(dto.StudentCode))
+            return (false, "Mã số sinh viên không được để trống.", null);
+        if (string.IsNullOrWhiteSpace(dto.FullName))
+            return (false, "Họ tên không được để trống.", null);
+        if (string.IsNullOrWhiteSpace(dto.Email))
+            return (false, "Email không được để trống.", null);
+        if (!EmailAddressValidator.IsValid(dto.Email))
+            return (false, EmailAddressValidator.GetErrorMessage(dto.Email), null);
+        if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            return (false, "Số điện thoại không được để trống.", null);
+        if (!PhoneRegex.IsMatch(dto.PhoneNumber))
+            return (false, "Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).", null);
+        if (string.IsNullOrWhiteSpace(dto.Major))
+            return (false, "Ngành không được để trống.", null);
+        if (string.IsNullOrWhiteSpace(dto.ClassName))
+            return (false, "Lớp không được để trống.", null);
+
+        var normalizedCode = dto.StudentCode;
+        var codeExists = await _db.Students.AnyAsync(s => s.StudentCode != null && s.StudentCode.ToLower() == normalizedCode.ToLower());
         if (codeExists)
-            return (false, $"StudentCode '{dto.StudentCode}' đã tồn tại.", null);
+            return (false, $"Mã số sinh viên '{dto.StudentCode}' đã tồn tại.", null);
 
         var student = new Student
         {
@@ -137,9 +166,30 @@ public class StudentService : IStudentService
 
     public async Task<(bool Success, string? Error)> UpdateStudentAsync(int id, UpdateStudentDto dto)
     {
+        dto.FullName = dto.FullName?.Trim();
+        dto.Email = dto.Email?.Trim();
+        dto.PhoneNumber = dto.PhoneNumber?.Trim();
+        dto.Major = dto.Major?.Trim();
+        dto.ClassName = dto.ClassName?.Trim();
+
         var student = await _db.Students.FirstOrDefaultAsync(s => s.Id == id);
         if (student is null)
             return (false, "Không tìm thấy sinh viên.");
+
+        if (string.IsNullOrWhiteSpace(dto.FullName))
+            return (false, "Họ tên không được để trống.");
+        if (string.IsNullOrWhiteSpace(dto.Email))
+            return (false, "Email không được để trống.");
+        if (!EmailAddressValidator.IsValid(dto.Email))
+            return (false, EmailAddressValidator.GetErrorMessage(dto.Email));
+        if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            return (false, "Số điện thoại không được để trống.");
+        if (!PhoneRegex.IsMatch(dto.PhoneNumber))
+            return (false, "Số điện thoại phải là số Việt Nam hợp lệ (10 số, bắt đầu bằng 0).");
+        if (string.IsNullOrWhiteSpace(dto.Major))
+            return (false, "Ngành không được để trống.");
+        if (string.IsNullOrWhiteSpace(dto.ClassName))
+            return (false, "Lớp không được để trống.");
 
         // Chỉ sửa thông tin cơ bản — không đụng StudentCode, Status, CompanyId, JobPositionId.
         student.FullName = dto.FullName;
@@ -276,20 +326,39 @@ public class StudentService : IStudentService
     {
         var result = new ImportResultDto();
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        if (extension is not ".xlsx" and not ".csv")
+        {
+            result.Errors.Add(new ImportErrorDto
+            {
+                RowNumber = 0,
+                Reason = "Định dạng file không hợp lệ. Chỉ hỗ trợ .xlsx hoặc .csv."
+            });
+            return result;
+        }
 
         List<ImportRow> rows;
         try
         {
             rows = extension switch
             {
-                ".xlsx" or ".xls" => ReadExcel(fileStream),
+                ".xlsx" => ReadExcel(fileStream),
                 ".csv" => ReadCsv(fileStream),
-                _ => throw new InvalidOperationException("Chỉ hỗ trợ file .xlsx, .xls hoặc .csv.")
+                _ => throw new InvalidOperationException("Định dạng file không hợp lệ.")
             };
         }
         catch (Exception ex)
         {
             result.Errors.Add(new ImportErrorDto { RowNumber = 0, Reason = $"Không đọc được file: {ex.Message}" });
+            return result;
+        }
+
+        if (rows.Count > _importSettings.MaxRows)
+        {
+            result.Errors.Add(new ImportErrorDto
+            {
+                RowNumber = 0,
+                Reason = $"Vượt quá giới hạn {_importSettings.MaxRows.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))} dòng"
+            });
             return result;
         }
 
@@ -311,18 +380,21 @@ public class StudentService : IStudentService
             if (string.IsNullOrWhiteSpace(row.Major)) errors.Add("Thiếu Major.");
             if (string.IsNullOrWhiteSpace(row.ClassName)) errors.Add("Thiếu ClassName.");
 
-            if (!string.IsNullOrWhiteSpace(row.Email) && !EmailRegex.IsMatch(row.Email))
-                errors.Add("Email không đúng định dạng.");
+            if (!string.IsNullOrWhiteSpace(row.Email) &&
+                !EmailAddressValidator.TryValidate(row.Email, out _))
+            {
+                errors.Add(EmailAddressValidator.GetErrorMessage(row.Email));
+            }
 
             if (!string.IsNullOrWhiteSpace(row.PhoneNumber) && !PhoneRegex.IsMatch(row.PhoneNumber))
-                errors.Add("PhoneNumber không đúng định dạng (10 số, bắt đầu bằng 0).");
+                errors.Add("Số điện thoại không đúng định dạng (10 số, bắt đầu bằng 0).");
 
             if (errors.Count == 0)
             {
                 if (existingCodes.Contains(row.StudentCode))
-                    errors.Add($"StudentCode '{row.StudentCode}' đã tồn tại trong hệ thống.");
+                    errors.Add($"Mã số sinh viên '{row.StudentCode}' đã tồn tại trong hệ thống.");
                 else if (codesInFile.Contains(row.StudentCode))
-                    errors.Add($"StudentCode '{row.StudentCode}' bị trùng ngay trong file import.");
+                    errors.Add($"Mã số sinh viên '{row.StudentCode}' bị trùng ngay trong file import.");
             }
 
             if (errors.Count > 0)
@@ -404,8 +476,26 @@ public class StudentService : IStudentService
         };
         using var csv = new CsvReader(reader, config);
 
-        csv.Read();
+        if (!csv.Read())
+        {
+            throw new InvalidDataException("CSV rỗng hoặc thiếu tiêu đề.");
+        }
+
         csv.ReadHeader();
+        var headers = csv.HeaderRecord ?? Array.Empty<string>();
+        var requiredHeaders = new[]
+        {
+            "StudentCode", "FullName", "Email", "PhoneNumber", "Major", "ClassName"
+        };
+        var missingHeaders = requiredHeaders
+            .Where(required => !headers.Contains(required, StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+        if (missingHeaders.Length > 0)
+        {
+            throw new InvalidDataException(
+                $"CSV thiếu cột bắt buộc: {string.Join(", ", missingHeaders)}.");
+        }
+
         int rowNumber = 1; // dòng 1 là header, dữ liệu bắt đầu từ dòng 2
         while (csv.Read())
         {
@@ -597,13 +687,7 @@ public class StudentService : IStudentService
             .Include(s => s.User)
             .AsQueryable();
 
-        query = ApplyStudentSearch(query, filter.Search);
-
-        if (filter.Status.HasValue)
-            query = query.Where(s => s.Status == filter.Status.Value);
-
-        if (filter.CompanyId.HasValue)
-            query = query.Where(s => s.CompanyId == filter.CompanyId.Value);
+        query = ApplyStudentFilter(query, filter);
 
         var students = await query
             .OrderBy(s => s.StudentCode)

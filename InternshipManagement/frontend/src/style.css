@@ -5,9 +5,10 @@
   --ui-surface-sunken: #F1EEE6;
   --ui-border: #E2DED3;
   --ui-border-strong: #CFCABC;
+  --ui-input-border: #97958D;
   --ui-ink: #1C201E;
   --ui-muted: #5F655F;
-  --ui-placeholder: #9A9D95;
+  --ui-placeholder: #757771;
 
   /* Primary green scale (50-950) */
   --ui-primary-50: #EEF6F2;
@@ -26,7 +27,7 @@
   --ui-error: #B42318;
   --ui-error-bg: #FDF1EF;
   --ui-success: #1F7A4D;
-  --ui-warning: #B7791F;
+  --ui-warning: #98651A;
   --ui-warning-bg: #FBF3E1;
 
   /* Surfaces & Radii */
@@ -73,7 +74,7 @@
   --apply-surface: var(--ui-surface);
   --apply-ink: var(--ui-ink);
   --apply-muted: var(--ui-muted);
-  --apply-border: var(--ui-border);
+  --apply-border: var(--ui-input-border);
   --apply-canvas: var(--ui-canvas);
   --apply-error: var(--ui-error);
   --apply-success: var(--ui-success);
@@ -85,8 +86,8 @@
   --apply-error-ink: var(--ui-error);
   --apply-success-soft: var(--ui-primary-100);
   --apply-disabled-bg: var(--ui-primary-200);
-  --apply-focus-ring: none;
-  --apply-error-ring: none;
+  --apply-focus-ring: 0 0 0 2px var(--ui-primary-600);
+  --apply-error-ring: 0 0 0 2px var(--ui-error);
   --apply-button-shadow: none;
   --apply-shadow: none;
 
@@ -97,6 +98,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:where(.p-inputtext, .p-textarea, .p-select, .p-password input, .p-inputnumber-input, .p-datepicker-input, .p-checkbox-box, .p-radiobutton-box, .p-toggleswitch-slider) {
+  border-color: var(--ui-input-border);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -139,6 +144,10 @@ body {
 }
 
 /* ===== Global PrimeVue overrides (gọn & đẹp hơn, không đổi logic) ===== */
+
+.p-button.p-button-secondary.p-button-text {
+  color: var(--ui-muted);
+}
 
 .p-card {
   border-radius: var(--radius-md);
@@ -408,7 +417,7 @@ body {
   border-radius: var(--ui-radius-md);
 }
 
-:focus-visible {
+:is(a, button, input, textarea, select, [tabindex], .p-select, .nav-link, .mobile-tab, .user-chip, .mobile-avatar, .password-toggle):focus-visible {
   outline: 2px solid var(--ui-primary-600);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }

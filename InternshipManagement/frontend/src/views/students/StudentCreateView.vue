@@ -442,7 +442,7 @@ onBeforeUnmount(() => {
   font-size: 14.5px;
   color: var(--ui-ink);
   background: var(--ui-surface);
-  border: 1px solid var(--ui-border-strong);
+  border: 1px solid var(--ui-input-border);
   border-radius: var(--ui-radius-sm);
   transition: var(--ui-transition);
 }

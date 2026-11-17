@@ -11,3 +11,11 @@ export function getNeedAssignmentList() {
 export function getRecentRejections() {
   return axiosClient.get('/dashboard/recent-rejections').then((res) => res.data.data)
 }
+
+export function getOverdueRequests() {
+  return axiosClient.get('/dashboard/overdue-requests').then((res) => res.data.data)
+}
+
+export function getPendingInterviewResults() {
+  return axiosClient.get('/dashboard/pending-interview-results').then((res) => res.data.data)
+}

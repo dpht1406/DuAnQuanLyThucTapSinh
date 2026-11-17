@@ -10,25 +10,23 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import { getCompanyById } from '../../api/companies.js'
 import { getStudentById, getStudentStatusHistory, resetStudentPassword } from '../../api/students.js'
-import ResetPasswordDialog from '../../components/students/ResetPasswordDialog.vue'
-import StudentStatusDialog from '../../components/students/StudentStatusDialog.vue'
+import { useAccountResultStore } from '../../stores/accountResult.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
 import { STATUS_LABELS, STATUS_SEVERITY } from '../../utils/studentStatus.js'
 
 const route = useRoute()
 const router = useRouter()
+const accountResultStore = useAccountResultStore()
 const student = ref(null)
 const company = ref(null)
 const history = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
-const statusDialogVisible = ref(false)
-const resetDialogVisible = ref(false)
-const resetPasswordResult = ref(null)
 const resettingPassword = ref(false)
 const confirm = useConfirm()
 let toast = null
 try { toast = useToast() } catch { }
+
 
 const sortedHistory = computed(() => [...history.value].sort(
   (left, right) => dayjs(right.changedAt).valueOf() - dayjs(left.changedAt).valueOf()
@@ -95,8 +93,12 @@ function confirmPasswordReset() {
 async function resetPassword() {
   resettingPassword.value = true
   try {
-    resetPasswordResult.value = await resetStudentPassword(student.value.id)
-    resetDialogVisible.value = true
+    const result = await resetStudentPassword(student.value.id)
+    accountResultStore.set('student-reset', {
+      ...result,
+      studentId: student.value.id
+    })
+    router.push({ name: 'account-result' })
   } catch (err) {
     toast?.add({
       severity: 'error',
@@ -109,10 +111,6 @@ async function resetPassword() {
   }
 }
 
-function onResetDialogVisibilityChange(visible) {
-  resetDialogVisible.value = visible
-  if (!visible) resetPasswordResult.value = null
-}
 
 watch(() => route.params.id, loadStudentDetails, { immediate: true })
 </script>
@@ -155,7 +153,19 @@ watch(() => route.params.id, loadStudentDetails, { immediate: true })
                 :disabled="resettingPassword"
                 @click="confirmPasswordReset"
               />
-              <Button label="Đổi giai đoạn" icon="pi pi-sync" @click="statusDialogVisible = true" />
+              <Button
+                label="Đổi giai đoạn"
+                icon="pi pi-sync"
+                @click="router.push({ name: 'student-status', params: { id: student.id }, query: { from: 'detail' } })"
+              />
+              <Button
+                v-if="student.status === 0"
+                label="Gán doanh nghiệp"
+                icon="pi pi-building"
+                severity="secondary"
+                outlined
+                @click="router.push({ name: 'student-assign-company', params: { id: student.id }, query: { from: 'detail' } })"
+              />
             </div>
           </div>
         </template>
@@ -221,25 +231,15 @@ watch(() => route.params.id, loadStudentDetails, { immediate: true })
           </div>
         </template>
       </Card>
-
-      <StudentStatusDialog
-        v-model:visible="statusDialogVisible"
-        :student="student"
-        @changed="loadStudentDetails"
-      />
-      <ResetPasswordDialog
-        :visible="resetDialogVisible"
-        :student-code="resetPasswordResult?.studentCode ?? ''"
-        :temporary-password="resetPasswordResult?.temporaryPassword ?? ''"
-        @update:visible="onResetDialogVisibilityChange"
-      />
     </template>
   </div>
 </template>
 
+
 <style scoped>
 .student-detail-page { display: grid; gap: 1rem; }
-.back-button { justify-self: start; min-height: 40px; }
+.back-button { justify-self: start; min-height: 40px; color: var(--apply-muted); }
+.back-button:hover { color: var(--apply-ink); }
 .student-detail-page > .page-title { margin: -.4rem 0 .25rem; }
 .detail-message { margin: 0; }
 .student-header-content, .student-identity, .detail-actions { display: flex; align-items: center; }

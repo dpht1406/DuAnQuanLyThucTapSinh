@@ -1,7 +1,8 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StudentInternshipMgmt.Application.Features.Companies.Accounts;
+using StudentInternshipMgmt.Application.Features.Companies.Dtos;
 using StudentInternshipMgmt.Domain.Entities;
 using StudentInternshipMgmt.Domain.Enums;
 using StudentInternshipMgmt.Infrastructure.Persistence;
@@ -24,6 +25,35 @@ public class CompanyAccountService : ICompanyAccountService
     {
         _db = db;
         _logger = logger;
+    }
+
+    public static string GenerateUsername(int companyId) => "cty" + companyId.ToString("D4");
+
+    public static (bool IsValid, string? Error, string? NormalizedEmail) ValidateContactEmail(string? rawEmail)
+    {
+        if (string.IsNullOrWhiteSpace(rawEmail))
+            return (false, "Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.", null);
+
+        var email = rawEmail.Trim();
+        if (!ContactEmailRegex.IsMatch(email))
+            return (false, "Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.", null);
+
+        return (true, null, email);
+    }
+
+    public static User CreateCompanyUserEntity(int companyId, string username, string temporaryPassword)
+    {
+        return new User
+        {
+            Username = username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(temporaryPassword),
+            Role = UserRole.Company,
+            CompanyId = companyId,
+            StudentId = null,
+            IsActive = true,
+            MustChangePassword = true,
+            CreatedAt = DateTime.UtcNow
+        };
     }
 
     public async Task<CompanyAccountDto?> GetAccountAsync(int companyId)
@@ -63,41 +93,23 @@ public class CompanyAccountService : ICompanyAccountService
         if (company is null)
             return (false, CompanyNotFoundError, true, null);
 
-        if (string.IsNullOrWhiteSpace(company.ContactEmail))
-            return (false,
-                "Doanh nghiệp chưa có email liên hệ. Hãy cập nhật ContactEmail trước khi tạo tài khoản.",
-                false,
-                null);
-
-        var contactEmail = company.ContactEmail.Trim();
-        if (!ContactEmailRegex.IsMatch(contactEmail))
-            return (false,
-                "Email liên hệ của doanh nghiệp không đúng định dạng. Hãy cập nhật trước khi tạo tài khoản.",
-                false,
-                null);
+        var (emailValid, emailError, contactEmail) = ValidateContactEmail(company.ContactEmail);
+        if (!emailValid)
+            return (false, emailError, false, null);
 
         var existingAccount = await _db.Users.AnyAsync(user =>
             user.CompanyId == companyId && user.Role == UserRole.Company);
         if (existingAccount)
             return (false, "Doanh nghiệp này đã có tài khoản.", false, null);
 
-        var username = "cty" + companyId.ToString("D4");
+        var username = GenerateUsername(companyId);
         var usernameInUse = await _db.Users.AnyAsync(user => user.Username == username);
         if (usernameInUse)
             return (false, $"Tên đăng nhập '{username}' đã được sử dụng.", false, null);
 
         var temporaryPassword = PasswordGenerator.Generate();
-        _db.Users.Add(new User
-        {
-            Username = username,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(temporaryPassword),
-            Role = UserRole.Company,
-            CompanyId = companyId,
-            StudentId = null,
-            IsActive = true,
-            MustChangePassword = true,
-            CreatedAt = DateTime.UtcNow
-        });
+        var user = CreateCompanyUserEntity(companyId, username, temporaryPassword);
+        _db.Users.Add(user);
 
         try
         {
@@ -113,8 +125,148 @@ public class CompanyAccountService : ICompanyAccountService
             CompanyId = companyId,
             Username = username,
             TemporaryPassword = temporaryPassword,
-            ContactEmail = contactEmail
+            ContactEmail = contactEmail!
         });
+    }
+
+    public async Task<CreateCompanyAccountsResultDto> CreateAccountsBulkAsync(
+        List<int> companyIds,
+        int adminUserId)
+    {
+        _logger.LogInformation(
+            "Admin {AdminUserId} requested bulk company account creation for {Count} company IDs",
+            adminUserId,
+            companyIds?.Count ?? 0);
+
+        var result = new CreateCompanyAccountsResultDto();
+        if (companyIds == null || companyIds.Count == 0)
+            return result;
+
+        var distinctIds = companyIds.Distinct().ToList();
+
+        var companies = await _db.Companies
+            .Include(c => c.User)
+            .Where(c => distinctIds.Contains(c.Id))
+            .ToListAsync();
+
+        var companyMap = companies.ToDictionary(c => c.Id);
+
+        // Preload existing candidate usernames to eliminate N+1 queries in the loop
+        var candidateUsernames = distinctIds.Select(GenerateUsername).ToList();
+        var existingUsernames = (await _db.Users
+            .Where(u => candidateUsernames.Contains(u.Username))
+            .Select(u => u.Username)
+            .ToListAsync()).ToHashSet();
+
+        foreach (var companyId in distinctIds)
+        {
+            if (!companyMap.TryGetValue(companyId, out var company))
+            {
+                result.SkippedCount++;
+                result.Skipped.Add(new SkippedCompanyAccountDto
+                {
+                    CompanyId = companyId,
+                    CompanyName = string.Empty,
+                    Reason = "Không tìm thấy doanh nghiệp."
+                });
+                continue;
+            }
+
+            // 1. Kiểm tra doanh nghiệp đã có tài khoản chưa (đã nạp qua Include)
+            var hasAccount = company.User != null && company.User.Role == UserRole.Company;
+            if (hasAccount)
+            {
+                result.SkippedCount++;
+                result.Skipped.Add(new SkippedCompanyAccountDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Reason = "Doanh nghiệp này đã có tài khoản."
+                });
+                continue;
+            }
+
+            // 2. Kiểm tra email liên hệ hợp lệ
+            var (emailValid, emailError, contactEmail) = ValidateContactEmail(company.ContactEmail);
+            if (!emailValid)
+            {
+                result.SkippedCount++;
+                result.Skipped.Add(new SkippedCompanyAccountDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Reason = emailError!
+                });
+                continue;
+            }
+
+            // 3. Kiểm tra tên đăng nhập đã được dùng chưa (tra cứu in-memory O(1))
+            var username = GenerateUsername(company.Id);
+            if (existingUsernames.Contains(username))
+            {
+                result.SkippedCount++;
+                result.Skipped.Add(new SkippedCompanyAccountDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Reason = $"Tên đăng nhập '{username}' đã được sử dụng."
+                });
+                continue;
+            }
+
+            // 4. Tạo tài khoản
+            var temporaryPassword = PasswordGenerator.Generate();
+            var user = CreateCompanyUserEntity(company.Id, username, temporaryPassword);
+            _db.Users.Add(user);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                existingUsernames.Add(username);
+                result.SuccessCount++;
+                result.Created.Add(new CreatedCompanyAccountDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Username = username,
+                    TemporaryPassword = temporaryPassword,
+                    ContactEmail = contactEmail!
+                });
+            }
+            catch (DbUpdateException)
+            {
+                _db.Entry(user).State = EntityState.Detached;
+                result.SkippedCount++;
+                result.Skipped.Add(new SkippedCompanyAccountDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Reason = "Doanh nghiệp này đã có tài khoản."
+                });
+            }
+        }
+
+        return result;
+    }
+
+    public async Task<(bool Success, string? Error, CreateCompanyAccountsResultDto? Data)> CreateAccountsBulkByFilterAsync(
+        CompanyFilterDto filter,
+        int adminUserId)
+    {
+        var query = _db.Companies.AsQueryable();
+        query = CompanyService.ApplyCompanyFilter(query, filter);
+
+        var totalMatches = await query.CountAsync();
+        if (totalMatches > 500)
+        {
+            return (false,
+                "Số lượng doanh nghiệp khớp bộ lọc vượt quá giới hạn (tối đa 500). Vui lòng thu hẹp bộ lọc.",
+                null);
+        }
+
+        var companyIds = await query.OrderBy(c => c.Id).Select(c => c.Id).ToListAsync();
+        var result = await CreateAccountsBulkAsync(companyIds, adminUserId);
+        return (true, null, result);
     }
 
     public async Task<(bool Success, string? Error, bool NotFound, CompanyAccountCredentialsDto? Data)> ResetPasswordAsync(

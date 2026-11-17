@@ -22,6 +22,26 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("StudentInternshipMgmt.Domain.Entities.AboutPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AboutPages", (string)null);
+                });
+
             modelBuilder.Entity("StudentInternshipMgmt.Domain.Entities.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -400,9 +420,6 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime?>("StudentReportDismissedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("StudentReportDismissNote")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -410,6 +427,9 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                     b.Property<string>("StudentReportDismissSource")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("StudentReportDismissedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("StudentReportedInterviewAt")
                         .HasColumnType("datetime2");
@@ -656,7 +676,7 @@ namespace StudentInternshipMgmt.Infrastructure.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
-                            MustChangePassword = false,
+                            MustChangePassword = true,
                             PasswordHash = "$2b$11$1zB61f0oX7e98EaZGDvS8OVQumC4VlWWMXlU/yXz7v8q.Pe.dy9QW",
                             Role = "Admin",
                             Username = "admin"

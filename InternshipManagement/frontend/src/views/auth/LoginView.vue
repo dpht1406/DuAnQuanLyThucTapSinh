@@ -61,7 +61,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="login-page">
+  <main class="login-page">
     <section class="login-panel">
       <header class="brand">
         <div class="brand-mark" aria-hidden="true">
@@ -87,7 +87,7 @@ async function onSubmit() {
           <div class="field">
             <label for="username">Tên đăng nhập</label>
             <IconField>
-              <InputIcon class="pi pi-user" />
+              <InputIcon class="pi pi-user" aria-hidden="true" />
               <InputText
                 id="username"
                 v-model="username"
@@ -103,7 +103,7 @@ async function onSubmit() {
           <div class="field">
             <label for="password">Mật khẩu</label>
             <IconField>
-              <InputIcon class="pi pi-lock" />
+              <InputIcon class="pi pi-lock" aria-hidden="true" />
               <InputText
                 id="password"
                 v-model="password"
@@ -114,15 +114,15 @@ async function onSubmit() {
                 placeholder="Nhập mật khẩu"
                 :disabled="loading"
               />
-              <InputIcon
-                :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                class="password-toggle"
-                role="button"
-                tabindex="0"
-                aria-label="Hiện hoặc ẩn mật khẩu"
+              <button
+                type="button"
+                class="password-toggle p-inputicon"
+                :aria-label="showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+                :aria-pressed="showPassword"
                 @click="showPassword = !showPassword"
-                @keydown.enter.prevent="showPassword = !showPassword"
-              />
+              >
+                <span :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" aria-hidden="true" />
+              </button>
             </IconField>
           </div>
         </div>
@@ -188,7 +188,7 @@ async function onSubmit() {
         </div>
       </div>
     </aside>
-  </div>
+  </main>
 </template>
 
 <style scoped>
@@ -296,7 +296,7 @@ async function onSubmit() {
 
 .login-form :deep(.p-inputtext) {
   height: 40px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--ui-input-border);
   border-radius: 8px;
   background: #f8fafc;
   color: #1e293b;
@@ -305,7 +305,7 @@ async function onSubmit() {
 }
 
 .login-form :deep(.p-inputtext::placeholder) {
-  color: #94a3b8;
+  color: #6a7484;
 }
 
 .login-form :deep(.p-inputtext:enabled:focus) {
@@ -314,12 +314,24 @@ async function onSubmit() {
 }
 
 .login-form :deep(.p-inputicon) {
-  color: #94a3b8;
+  color: #6a7484;
 }
 
 .password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  margin-top: 0;
+  transform: translateY(-50%);
   cursor: pointer;
   pointer-events: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font: inherit;
 }
 
 .remember-row {
@@ -381,7 +393,7 @@ async function onSubmit() {
 }
 
 .login-footer {
-  color: #94a3b8;
+  color: #6a7484;
   font-size: 12px;
 }
 

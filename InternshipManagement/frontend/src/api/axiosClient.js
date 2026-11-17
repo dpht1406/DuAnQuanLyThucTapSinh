@@ -30,6 +30,14 @@ axiosClient.interceptors.request.use((config) => {
 let refreshPromise = null
 let loginRedirectInProgress = false
 
+function getRequestPath(config) {
+  try {
+    return new URL(config.url, config.baseURL || 'http://localhost').pathname
+  } catch {
+    return (config.url || '').split('?')[0]
+  }
+}
+
 async function redirectToLoginOnce() {
   if (loginRedirectInProgress) return
 
@@ -51,6 +59,29 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     const status = error.response?.status
+    const isGet = originalRequest?.method?.toUpperCase() === 'GET'
+    const canRetry =
+      isGet &&
+      error.code !== 'ERR_CANCELED' &&
+      (!error.response ||
+        error.code === 'ECONNABORTED' ||
+        error.code === 'ETIMEDOUT' ||
+        [502, 503, 504].includes(status))
+
+    if (canRetry) {
+      const retryCount = originalRequest.__getRetryCount || 0
+      if (retryCount < 2) {
+        const nextRetry = retryCount + 1
+        const delay = nextRetry === 1 ? 400 : 1000
+        originalRequest.__getRetryCount = nextRetry
+        console.warn(`[api] retry ${nextRetry}/2 GET ${getRequestPath(originalRequest)}`)
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        return axiosClient(originalRequest)
+      }
+
+      error.isNetworkError = true
+      return Promise.reject(error)
+    }
 
     // Không có config (lỗi network trước khi request được gửi) hoặc không phải 401,
     // hoặc request này đã retry rồi -> trả lỗi ra ngoài như bình thường.

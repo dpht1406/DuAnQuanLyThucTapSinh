@@ -11,4 +11,7 @@ public class CompanyFilterDto : PaginationParams
     // Lọc gần đúng (Contains), không phân biệt hoa/thường.
     [SafeString(150)]
     public string? Industry { get; set; }
+
+    // Lọc theo trạng thái tài khoản: null = tất cả, true = đã có tài khoản, false = chưa có.
+    public bool? HasAccount { get; set; }
 }

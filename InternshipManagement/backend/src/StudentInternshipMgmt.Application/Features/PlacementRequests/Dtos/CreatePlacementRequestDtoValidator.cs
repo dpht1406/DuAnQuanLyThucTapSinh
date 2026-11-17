@@ -85,10 +85,14 @@ public class CreatePlacementRequestDtoValidator : AbstractValidator<CreatePlacem
 
     private static bool IsAllowedCvUrl(string? value)
     {
-        if (string.IsNullOrWhiteSpace(value) || value.Any(char.IsWhiteSpace))
+        if (string.IsNullOrWhiteSpace(value))
             return false;
 
-        return Uri.TryCreate(value, UriKind.Absolute, out var uri)
+        var trimmed = value.Trim();
+        if (trimmed.Any(char.IsWhiteSpace))
+            return false;
+
+        return Uri.TryCreate(trimmed, UriKind.Absolute, out var uri)
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 

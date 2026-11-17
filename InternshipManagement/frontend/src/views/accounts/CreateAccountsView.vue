@@ -1,26 +1,25 @@
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
-import Dialog from 'primevue/dialog'
-import FileUpload from 'primevue/fileupload'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import Select from 'primevue/select'
-import TabPanel from 'primevue/tabpanel'
-import TabView from 'primevue/tabview'
 import Tag from 'primevue/tag'
 import { useConfirm } from 'primevue/useconfirm'
 import {
   createAccounts,
   createAccountsByFilter,
-  exportAccountsCsv,
-  getStudents,
-  importStudents
+  getStudents
 } from '../../api/students.js'
+import { useAccountResultStore } from '../../stores/accountResult.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
+
+const router = useRouter()
+const accountResultStore = useAccountResultStore()
 
 const filter = reactive({
   Search: '',
@@ -38,17 +37,8 @@ const loadingStudents = ref(false)
 const studentsError = ref('')
 const selectedStudents = ref([])
 
-const selectedFile = ref(null)
-const fileUpload = ref(null)
-const importing = ref(false)
-const importError = ref('')
-const importResult = ref(null)
-
 const creatingAccounts = ref(false)
 const createError = ref('')
-const accountResult = ref(null)
-const resultDialogVisible = ref(false)
-const exporting = ref(false)
 const confirm = useConfirm()
 let searchDebounceTimer = null
 
@@ -95,33 +85,6 @@ watch(searchInput, () => {
   }, 400)
 })
 
-function onFileSelect(event) {
-  selectedFile.value = event.files?.[0] ?? null
-  importError.value = ''
-  importResult.value = null
-}
-
-async function uploadStudents() {
-  if (!selectedFile.value) return
-
-  importing.value = true
-  importError.value = ''
-  importResult.value = null
-
-  try {
-    importResult.value = await importStudents(selectedFile.value)
-    if ((importResult.value?.successCount ?? 0) > 0) {
-      await fetchStudents()
-    }
-    selectedFile.value = null
-    fileUpload.value?.clear()
-  } catch (err) {
-    importError.value = extractErrorMessage(err, 'Không thể import sinh viên, vui lòng thử lại.')
-  } finally {
-    importing.value = false
-  }
-}
-
 function onSelectionChange(selection) {
   selectedStudents.value = (selection ?? []).filter((student) => !student.hasAccount)
 }
@@ -133,17 +96,14 @@ async function submitCreateAccounts() {
   createError.value = ''
 
   try {
-    openAccountResult(await createAccounts(selectedStudents.value.map((student) => student.id)))
+    const result = await createAccounts(selectedStudents.value.map((student) => student.id))
+    accountResultStore.set('student-bulk', result)
+    router.push({ name: 'account-result' })
   } catch (err) {
     createError.value = extractErrorMessage(err, 'Không thể tạo tài khoản, vui lòng thử lại.')
   } finally {
     creatingAccounts.value = false
   }
-}
-
-function openAccountResult(result) {
-  accountResult.value = result
-  resultDialogVisible.value = true
 }
 
 function submitCreateAccountsByFilter() {
@@ -160,12 +120,14 @@ function submitCreateAccountsByFilter() {
       creatingAccounts.value = true
       createError.value = ''
       try {
-        openAccountResult(await createAccountsByFilter({
+        const result = await createAccountsByFilter({
           Search: filter.Search,
           Status: filter.Status,
           CompanyId: filter.CompanyId,
           HasAccount: filter.HasAccount
-        }))
+        })
+        accountResultStore.set('student-bulk', result)
+        router.push({ name: 'account-result' })
       } catch (err) {
         createError.value = extractErrorMessage(err, 'Không thể tạo tài khoản, vui lòng thử lại.')
       } finally {
@@ -175,39 +137,6 @@ function submitCreateAccountsByFilter() {
   })
 }
 
-function getFileName(response) {
-  const header = response.headers?.['content-disposition'] ?? ''
-  const match = header.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i)
-  return match?.[1] ? decodeURIComponent(match[1]) : 'accounts.csv'
-}
-
-async function downloadAccountsCsv() {
-  if (!accountResult.value?.createdAccounts?.length) return
-
-  exporting.value = true
-  createError.value = ''
-  try {
-    const response = await exportAccountsCsv(accountResult.value.createdAccounts)
-    const url = URL.createObjectURL(response.data)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = getFileName(response)
-    link.click()
-    URL.revokeObjectURL(url)
-  } catch (err) {
-    createError.value = extractErrorMessage(err, 'Không thể tải file CSV, vui lòng thử lại.')
-  } finally {
-    exporting.value = false
-  }
-}
-
-function closeResultDialog() {
-  resultDialogVisible.value = false
-  selectedStudents.value = []
-  accountResult.value = null
-  createError.value = ''
-  fetchStudents()
-}
 
 onMounted(fetchStudents)
 
@@ -221,54 +150,6 @@ onBeforeUnmount(() => {
   <Card>
     <template #title><span class="page-title">Tạo tài khoản</span></template>
     <template #content>
-      <TabView>
-        <TabPanel header="Nhập từ file">
-          <div class="import-panel">
-            <FileUpload
-              ref="fileUpload"
-              mode="basic"
-              accept=".xlsx,.xls,.csv"
-              :auto="false"
-              choose-label="Chọn file"
-              :disabled="importing"
-              @select="onFileSelect"
-            />
-            <span v-if="selectedFile" class="selected-file">{{ selectedFile.name }}</span>
-            <Button
-              label="Tải lên"
-              icon="pi pi-upload"
-              :loading="importing"
-              :disabled="!selectedFile"
-              @click="uploadStudents"
-            />
-          </div>
-
-          <Message v-if="importError" severity="error" :closable="false" class="view-message">
-            {{ importError }}
-          </Message>
-          <Message v-if="importResult" severity="success" :closable="false" class="view-message">
-            Đã import thành công {{ importResult.successCount }} sinh viên.
-          </Message>
-          <Message
-            v-if="importResult?.errors?.length"
-            severity="warn"
-            :closable="false"
-            class="view-message"
-          >
-            Các dòng lỗi dưới đây đã được bỏ qua.
-          </Message>
-          <DataTable
-            v-if="importResult?.errors?.length"
-            :value="importResult.errors"
-            size="small"
-            class="errors-table"
-          >
-            <Column field="rowNumber" header="Dòng" />
-            <Column field="reason" header="Lý do" />
-          </DataTable>
-        </TabPanel>
-
-        <TabPanel header="Tạo tài khoản">
           <div class="filters-toolbar">
             <div class="toolbar-field toolbar-search">
               <label for="account-search">Tìm kiếm</label>
@@ -344,67 +225,17 @@ onBeforeUnmount(() => {
               </template>
             </Column>
           </DataTable>
-        </TabPanel>
-      </TabView>
-
-      <Dialog
-        v-model:visible="resultDialogVisible"
-        modal
-        header="Tài khoản đã tạo"
-        :closable="!creatingAccounts && !exporting && !(accountResult?.successCount > 0)"
-        :dismissable-mask="false"
-        :style="{ width: 'min(42rem, calc(100vw - 2rem))' }"
-        @hide="closeResultDialog"
-      >
-        <Message severity="success" :closable="false">
-          Đã tạo {{ accountResult?.successCount ?? 0 }} tài khoản, bỏ qua {{ accountResult?.skippedCount ?? 0 }} (đã có tài khoản).
-        </Message>
-        <template v-if="accountResult?.successCount > 0">
-          <Message severity="warn" :closable="false">
-            Mật khẩu chỉ hiển thị một lần. Hãy tải file CSV ngay trước khi đóng.
-          </Message>
-          <DataTable :value="accountResult.createdAccounts" size="small" class="accounts-result-table">
-            <Column field="studentCode" header="MSSV" />
-            <Column field="plainPassword" header="Mật khẩu" />
-          </DataTable>
-        </template>
-        <Message v-if="createError" severity="error" :closable="false" class="view-message">
-          {{ createError }}
-        </Message>
-        <div class="dialog-actions">
-          <Button
-            label="Tải CSV"
-            icon="pi pi-download"
-            :loading="exporting"
-            :disabled="!accountResult?.createdAccounts?.length"
-            @click="downloadAccountsCsv"
-          />
-          <Button label="Đóng" severity="secondary" icon="pi pi-times" @click="closeResultDialog" />
-        </div>
-      </Dialog>
     </template>
   </Card>
   </div>
 </template>
 
 <style scoped>
-.import-panel,
 .filters-toolbar,
-.accounts-toolbar,
-.dialog-actions {
+.accounts-toolbar {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.import-panel {
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.selected-file {
-  color: var(--text-color);
-  overflow-wrap: anywhere;
 }
 
 .accounts-toolbar {
@@ -444,9 +275,7 @@ onBeforeUnmount(() => {
   margin-bottom: 1rem;
 }
 
-.errors-table,
-.accounts-table,
-.accounts-result-table {
+.accounts-table {
   margin-top: 0.25rem;
 }
 
@@ -454,22 +283,11 @@ onBeforeUnmount(() => {
   opacity: 0.5;
 }
 
-.dialog-actions {
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
-
 @media (max-width: 600px) {
-  .import-panel,
-  .accounts-toolbar,
-  .dialog-actions {
+  .accounts-toolbar {
     align-items: stretch;
     flex-direction: column;
   }
-
-  .import-panel > *,
-  .dialog-actions > * {
-    width: 100%;
-  }
 }
 </style>
+

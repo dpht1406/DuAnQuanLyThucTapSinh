@@ -30,10 +30,8 @@ public class CompanyService : ICompanyService
         _db = db;
     }
 
-    public async Task<PagedResult<CompanyDto>> GetCompaniesAsync(CompanyFilterDto filter)
+    public static IQueryable<Company> ApplyCompanyFilter(IQueryable<Company> query, CompanyFilterDto filter)
     {
-        var query = _db.Companies.AsQueryable();
-
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
             var search = filter.Search.Trim().ToLower();
@@ -45,6 +43,21 @@ public class CompanyService : ICompanyService
             var industry = filter.Industry.Trim().ToLower();
             query = query.Where(c => c.Industry.ToLower().Contains(industry));
         }
+
+        if (filter.HasAccount.HasValue)
+        {
+            query = filter.HasAccount.Value
+                ? query.Where(c => c.User != null && c.User.Role == UserRole.Company)
+                : query.Where(c => c.User == null || c.User.Role != UserRole.Company);
+        }
+
+        return query;
+    }
+
+    public async Task<PagedResult<CompanyDto>> GetCompaniesAsync(CompanyFilterDto filter)
+    {
+        var query = _db.Companies.AsQueryable();
+        query = ApplyCompanyFilter(query, filter);
 
         // Chiếu (Select) trực tiếp sang CompanyDto ngay trong LINQ-to-Entities để EF Core
         // dịch được ra SQL — không gọi qua hàm map thủ công ở bước này.
@@ -59,7 +72,8 @@ public class CompanyService : ICompanyService
                 ContactPerson = c.ContactPerson,
                 ContactPhone = c.ContactPhone,
                 ContactEmail = c.ContactEmail,
-                ContactPosition = c.ContactPosition
+                ContactPosition = c.ContactPosition,
+                HasAccount = c.User != null && c.User.Role == UserRole.Company
             })
             .ToPagedResultAsync(filter);
     }
@@ -87,7 +101,8 @@ public class CompanyService : ICompanyService
                 ContactPerson = c.ContactPerson,
                 ContactPhone = c.ContactPhone,
                 ContactEmail = c.ContactEmail,
-                ContactPosition = c.ContactPosition
+                ContactPosition = c.ContactPosition,
+                HasAccount = c.User != null && c.User.Role == UserRole.Company
             })
             .FirstOrDefaultAsync();
     }
@@ -266,6 +281,7 @@ public class CompanyService : ICompanyService
         ContactPerson = c.ContactPerson,
         ContactPhone = c.ContactPhone,
         ContactEmail = c.ContactEmail,
-        ContactPosition = c.ContactPosition
+        ContactPosition = c.ContactPosition,
+        HasAccount = c.User != null && c.User.Role == UserRole.Company
     };
 }

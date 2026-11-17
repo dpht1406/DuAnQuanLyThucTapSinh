@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using StudentInternshipMgmt.Application.Common;
 using StudentInternshipMgmt.Application.Features.Students;
 using System.Globalization;
@@ -14,10 +15,14 @@ namespace StudentInternshipMgmt.API.Controllers;
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
+    private readonly ImportSettings _importSettings;
 
-    public StudentsController(IStudentService studentService)
+    public StudentsController(
+        IStudentService studentService,
+        IOptions<ImportSettings>? importSettings = null)
     {
         _studentService = studentService;
+        _importSettings = importSettings?.Value ?? new ImportSettings();
     }
 
     // GET /api/students
@@ -136,6 +141,15 @@ public class StudentsController : ControllerBase
     {
         if (file is null || file.Length == 0)
             return BadRequest(ApiResponse<ImportResultDto>.FailResponse("File trống hoặc không hợp lệ."));
+
+        if (file.Length > _importSettings.MaxFileSizeBytes)
+        {
+            var maxFileSizeMb = _importSettings.MaxFileSizeBytes / 1_048_576d;
+            return StatusCode(
+                StatusCodes.Status413PayloadTooLarge,
+                ApiResponse<ImportResultDto>.FailResponse(
+                    $"File vượt quá giới hạn {maxFileSizeMb:0.##} MB."));
+        }
 
         using var stream = file.OpenReadStream();
         var result = await _studentService.ImportStudentsAsync(stream, file.FileName);

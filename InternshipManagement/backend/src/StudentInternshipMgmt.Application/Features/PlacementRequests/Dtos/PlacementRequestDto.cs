@@ -35,6 +35,7 @@ public class PlacementRequestDto
     public string? ResultNote { get; set; }
     public DateTime? StudentReportedInterviewAt { get; set; }
     public string? StudentInterviewNote { get; set; }
+    public DateTime? StudentReportDismissedAt { get; set; }
     public ActorType? ResultActorType { get; set; }
 
     public int? ReviewedBy { get; set; }

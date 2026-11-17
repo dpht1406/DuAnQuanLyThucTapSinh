@@ -15,9 +15,7 @@ public static class SeedData
     // the generated migration snapshot stays stable across re-builds.
     public static readonly DateTime SeedTimestamp = new(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-    // Default admin credentials for first login: username "admin", password "Admin@123".
-    // The hash below was pre-computed with BCrypt (work factor 11); it must be
-    // changed to a fresh hash if the default password is changed.
+    // The seeded admin account must change its password on first login.
     public const string AdminDefaultPasswordHash =
         "$2b$11$1zB61f0oX7e98EaZGDvS8OVQumC4VlWWMXlU/yXz7v8q.Pe.dy9QW";
 
@@ -31,7 +29,7 @@ public static class SeedData
             Role = UserRole.Admin,
             IsActive = true,
             StudentId = null,
-            MustChangePassword = false,
+            MustChangePassword = true,
             CreatedAt = SeedTimestamp
         }
     };

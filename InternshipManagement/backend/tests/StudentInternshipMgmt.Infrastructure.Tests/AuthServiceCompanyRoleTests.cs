@@ -15,6 +15,35 @@ namespace StudentInternshipMgmt.Infrastructure.Tests;
 public class AuthServiceCompanyRoleTests
 {
     [Fact]
+    public async Task Login_with_valid_jwt_settings_issues_an_access_token()
+    {
+        await using var dbContext = CreateDbContext();
+        var user = CreateUser("jwt-key-validation-user", UserRole.Admin);
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
+
+        var settings = new JwtSettings
+        {
+            Issuer = "jwt-key-validation",
+            Audience = "jwt-key-validation",
+            SecretKey = "valid-jwt-test-secret-key-at-least-32-characters",
+            AccessTokenExpiryMinutes = 15,
+            RefreshTokenExpiryDays = 7
+        };
+        JwtSettingsValidator.Validate(settings);
+        var service = new AuthService(dbContext, Options.Create(settings));
+
+        var response = await service.LoginAsync(new LoginRequestDto
+        {
+            Username = user.Username,
+            Password = "test-password"
+        });
+
+        new JwtSecurityTokenHandler().ReadJwtToken(response.AccessToken).Claims
+            .Should().Contain(claim => claim.Type == JwtRegisteredClaimNames.Sub);
+    }
+
+    [Fact]
     public async Task Login_company_user_includes_company_claim_and_company_role()
     {
         await using var dbContext = CreateDbContext();

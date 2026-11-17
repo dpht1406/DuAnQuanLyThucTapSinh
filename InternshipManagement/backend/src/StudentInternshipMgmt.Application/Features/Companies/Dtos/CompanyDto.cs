@@ -10,4 +10,5 @@ public class CompanyDto
     public string? ContactPhone { get; set; }
     public string? ContactEmail { get; set; }
     public string? ContactPosition { get; set; }
+    public bool HasAccount { get; set; }
 }

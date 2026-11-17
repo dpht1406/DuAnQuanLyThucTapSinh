@@ -28,8 +28,12 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception while processing {Method} {Path}",
-                context.Request.Method, context.Request.Path);
+            _logger.LogError(
+                "Unhandled {ExceptionType} while processing {Method} {Path}. TraceId: {TraceId}",
+                ex.GetType().Name,
+                context.Request.Method,
+                context.Request.Path,
+                context.TraceIdentifier);
 
             await HandleExceptionAsync(context, ex);
         }
@@ -38,10 +42,24 @@ public class ExceptionHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = ResolveStatusCode(exception);
+        var message = exception switch
+        {
+            ArgumentException => "Dữ liệu gửi lên không hợp lệ.",
+            _ when statusCode == HttpStatusCode.InternalServerError =>
+                "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.",
+            _ => "Đã xảy ra lỗi trong quá trình xử lý yêu cầu."
+        };
+        var errors = exception switch
+        {
+            ArgumentException => new List<string> { "Dữ liệu gửi lên không hợp lệ." },
+            _ when statusCode == HttpStatusCode.InternalServerError =>
+                new List<string> { $"TraceId: {context.TraceIdentifier}" },
+            _ => new List<string> { exception.Message }
+        };
 
         var response = ApiResponse<object>.FailResponse(
-            "Da xay ra loi trong qua trinh xu ly yeu cau.",
-            new List<string> { exception.Message });
+            message,
+            errors);
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;

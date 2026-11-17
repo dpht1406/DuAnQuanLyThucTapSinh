@@ -57,8 +57,8 @@ public class CreatePlacementRequestDtoValidatorTests
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "file:///c:/cv.pdf"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "not a url"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/cv file.pdf"];
-        yield return [nameof(CreatePlacementRequestDto.CvUrl), " https://a.com/cv"];
-        yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/cv "];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "/relative/path/cv.pdf"];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "  https://a.com/c v  "];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://a.com/c v"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), $"https://x.com/{new string('x', 487)}"];
         yield return [nameof(CreatePlacementRequestDto.CoverLetter), new string('x', 19)];
@@ -89,6 +89,9 @@ public class CreatePlacementRequestDtoValidatorTests
             $"{new string('a', 64)}@{new string('b', 63)}.{new string('c', 63)}.{new string('d', 61)}"];
         yield return [nameof(CreatePlacementRequestDto.ApplicantPhone), "0901234567"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "http://x.com/cv"];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "  http://x.com/cv  "];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://drive.google.com/file/d/abc/view "];
+        yield return [nameof(CreatePlacementRequestDto.CvUrl), " https://drive.google.com/file/d/abc/view"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), "https://drive.google.com/file/d/abc/view"];
         yield return [nameof(CreatePlacementRequestDto.CvUrl), $"https://x.com/{new string('x', 486)}"];
         yield return [nameof(CreatePlacementRequestDto.CoverLetter), new string('x', 20)];

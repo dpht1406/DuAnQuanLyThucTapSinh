@@ -74,6 +74,32 @@ public class CompanyPlacementDecisionTests
     }
 
     [Fact]
+    public async Task Company_can_pass_an_interview_invite_without_a_student_report()
+    {
+        await using var db = CreateDbContext();
+        var fixture = await SeedAsync(db);
+        var request = CreateRequest(
+            104,
+            fixture.CompanyA,
+            fixture.StudentA,
+            fixture.PositionA,
+            RequestStatus.InterviewInvited);
+        db.PlacementRequests.Add(request);
+        await db.SaveChangesAsync();
+
+        var result = await CreateService(db).RecordCompanyResultAsync(
+            fixture.CompanyA.Id,
+            request.Id,
+            new CompanyPlacementResultDto { IsPassed = true },
+            fixture.CompanyAUser.Id);
+
+        result.Status.Should().Be(PlacementRequestOperationStatus.Success);
+        request.StudentReportedInterviewAt.Should().BeNull();
+        request.Status.Should().Be(RequestStatus.Accepted);
+        fixture.StudentA.Status.Should().Be(StudentStatus.Accepted);
+    }
+
+    [Fact]
     public async Task Another_company_cannot_accept_a_student_already_accepted()
     {
         await using var db = CreateDbContext();

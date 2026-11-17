@@ -13,7 +13,6 @@ import { useConfirm } from 'primevue/useconfirm'
 import { deleteStudent, getStudents } from '../../api/students.js'
 import { getCompanies } from '../../api/companies.js'
 import { extractErrorMessage } from '../../utils/apiError.js'
-import StudentStatusDialog from '../../components/students/StudentStatusDialog.vue'
 import {
   STATUS_OPTIONS,
   STATUS_LABELS,
@@ -38,8 +37,6 @@ const companyOptions = ref([])
 const confirm = useConfirm()
 const route = useRoute()
 const router = useRouter()
-const statusDialogVisible = ref(false)
-const selectedStatusStudent = ref(null)
 
 let searchDebounceTimer = null
 let latestRequestId = 0
@@ -72,11 +69,6 @@ function emptyDisplay(value) {
 
 function onMobileMediaChange(event) {
   isMobile.value = event.matches
-}
-
-function openStatusDialog(student) {
-  selectedStatusStudent.value = student
-  statusDialogVisible.value = true
 }
 
 function openStudentDetails(student) {
@@ -123,10 +115,7 @@ async function fetchStudents() {
     totalRecords.value = result.totalCount ?? 0
   } catch (err) {
     if (requestId !== latestRequestId) return
-    errorMessage.value =
-      err?.response?.data?.message?.trim() ||
-      err?.message?.trim() ||
-      'Không tải được danh sách sinh viên, vui lòng thử lại.'
+    errorMessage.value = extractErrorMessage(err, 'Không tải được danh sách sinh viên, vui lòng thử lại.')
     students.value = []
     totalRecords.value = 0
   } finally {
@@ -235,12 +224,22 @@ onBeforeUnmount(() => {
             @update:model-value="onCompanyChange"
           />
         </div>
-        <Button
-          label="Thêm mới"
-          icon="pi pi-plus"
-          class="toolbar-create"
-          @click="router.push({ name: 'students-new' })"
-        />
+        <div class="toolbar-actions">
+          <Button
+            label="Thêm mới"
+            icon="pi pi-plus"
+            class="toolbar-create"
+            @click="router.push({ name: 'students-new' })"
+          />
+          <Button
+            label="Nhập từ file"
+            icon="pi pi-file-import"
+            severity="secondary"
+            outlined
+            class="toolbar-import"
+            @click="router.push({ name: 'students-import' })"
+          />
+        </div>
       </div>
 
       <Message v-if="errorMessage" severity="error" :closable="false" class="students-error">
@@ -305,7 +304,7 @@ onBeforeUnmount(() => {
                 rounded
                 aria-label="Đổi giai đoạn"
                 title="Đổi giai đoạn"
-                @click="openStatusDialog(data)"
+                @click="router.push({ name: 'student-status', params: { id: data.id }, query: { from: 'list' } })"
               />
               <Button
                 icon="pi pi-eye"
@@ -338,11 +337,6 @@ onBeforeUnmount(() => {
         </Column>
       </DataTable>
 
-      <StudentStatusDialog
-        v-model:visible="statusDialogVisible"
-        :student="selectedStatusStudent"
-        @changed="fetchStudents"
-      />
     </template>
   </Card>
   </div>
@@ -356,14 +350,21 @@ onBeforeUnmount(() => {
   margin-bottom: 1rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .students-toolbar {
-    grid-template-columns: 1.5fr 1fr 1fr auto;
+    grid-template-columns: minmax(0, 1.5fr) minmax(10rem, 1fr) minmax(10rem, 1fr) auto;
     align-items: end;
   }
 }
 
-.toolbar-create {
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-create,
+.toolbar-import {
   white-space: nowrap;
 }
 
@@ -394,6 +395,17 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+@media (max-width: 767px) {
+  .toolbar-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-actions :deep(.p-button) {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {

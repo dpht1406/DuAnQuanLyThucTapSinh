@@ -11,3 +11,12 @@ export function getMyProfile() {
 export function getMyStatusHistory() {
   return axiosClient.get('/me/status-history').then((res) => res.data.data)
 }
+
+export function getMyPlacementRequests() {
+  return axiosClient.get('/me/placement-requests').then((res) => res.data.data)
+}
+
+export function reportInterviewed(id, note) {
+  return axiosClient.post(`/me/placement-requests/${id}/report-interviewed`, { note })
+    .then((res) => res.data.data)
+}

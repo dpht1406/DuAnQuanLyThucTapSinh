@@ -29,6 +29,17 @@ public class PlacementRequestsController : ControllerBase
         return Ok(ApiResponse<PagedResult<PlacementRequestDto>>.SuccessResponse(result));
     }
 
+    // GET /api/placement-requests/{id}
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ApiResponse<PlacementRequestDto>>> GetRequestById(int id)
+    {
+        var result = await _placementRequestService.GetRequestByIdAsync(id);
+        if (result is null)
+            return NotFound(ApiResponse<PlacementRequestDto>.FailResponse("Không tìm thấy đơn ứng tuyển."));
+
+        return Ok(ApiResponse<PlacementRequestDto>.SuccessResponse(result));
+    }
+
     // GET /api/placement-requests/pending-confirmation
     [HttpGet("pending-confirmation")]
     public async Task<ActionResult<ApiResponse<PagedResult<PlacementRequestDto>>>> GetPendingConfirmation(

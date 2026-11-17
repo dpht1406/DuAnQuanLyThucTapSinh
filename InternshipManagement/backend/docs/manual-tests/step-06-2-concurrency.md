@@ -47,4 +47,18 @@ Receive-Job $job1, $job2
 Remove-Job $job1, $job2
 ```
 
-Trong mỗi lượt phải có đúng một `200` và một lỗi `400` hoặc `409`. Kiểm tra dữ liệu sau đó để xác nhận đơn chỉ được xử lý một lần.
+## Passed và DismissReport đồng thời
+
+Chạy Admin xác nhận **Đạt** và Admin **Bác báo cáo** đồng thời trên cùng đơn đã có báo cáo phỏng vấn. Sau khi báo cáo bị bác bỏ, sinh viên không thể báo cáo lại cho cùng đơn.
+
+```powershell
+$passed = '{"decision":0,"confirmationSource":"Đã xác minh với doanh nghiệp","note":"Đạt"}'
+$dismiss = '{"decision":2,"confirmationSource":"Đã xác minh với doanh nghiệp","note":"Báo cáo không hợp lệ"}'
+$job1 = Start-Job -ScriptBlock $sendAdminResult -ArgumentList $baseUrl, $requestId, $adminToken, $passed
+$job2 = Start-Job -ScriptBlock $sendAdminResult -ArgumentList $baseUrl, $requestId, $adminToken, $dismiss
+Wait-Job $job1, $job2 | Out-Null
+Receive-Job $job1, $job2
+Remove-Job $job1, $job2
+```
+
+Trong mỗi lượt phải có đúng một phản hồi `200` và một phản hồi lỗi `400` hoặc `409`. Kiểm tra dữ liệu sau đó để xác nhận đơn chỉ được xử lý một lần. Nếu `DismissReport` thắng, đơn vẫn ở `InterviewInvited` nhưng báo cáo bị đánh dấu đã xử lý; sinh viên không báo lại được cho cùng đơn.

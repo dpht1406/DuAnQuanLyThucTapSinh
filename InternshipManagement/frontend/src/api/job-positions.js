@@ -20,6 +20,14 @@ export function deleteJobPosition(id) {
   return axiosClient.delete(`/job-positions/${id}`)
 }
 
+export function approveJobPosition(id) {
+  return axiosClient.post(`/job-positions/${id}/approve`)
+}
+
+export function rejectJobPosition(id, note) {
+  return axiosClient.post(`/job-positions/${id}/reject`, { note })
+}
+
 export function toggleOpenJobPosition(id, isOpen) {
   const body = isOpen === undefined ? {} : { isOpen }
   return axiosClient.patch(`/job-positions/${id}/toggle-open`, body).then((res) => res.data.data)
