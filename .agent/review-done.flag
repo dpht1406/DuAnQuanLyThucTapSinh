@@ -1,0 +1,8 @@
+﻿CÓ-LỆCH: 7 phát hiện (2 P2, 3 P3, 2 P4)
+- P2-01: Sai lệch thông tin báo cáo UAT (nói quá: tuyên bố giải quyết 10 phản hồi trong khi KNOWN-ISSUES từ chối 2 và hoãn 3)
+- P2-02: Lỗi tài liệu tái lập README-REPRODUCE.md (thiếu bước build InternshipManagement.sln gây crash khi chạy dotnet test --no-build)
+- P3-01: Bước Cross-review trong script chạy 0.00s mang tính hình thức, cross-review.md soạn sẵn bỏ qua rủi ro T-SQL locking
+- P3-02: Gói zip sinh từ commit 34ec284, lệch 32 files tài liệu/evidence so với commit gắn tag v1.0.0 (5a3bc91)
+- P3-03: Dự án Application.Tests mồ côi, rỗng và không nằm trong solution nào
+- P4-01: Log UAT-03 ghi nhận UTF-8 BOM False do script parse chuỗi
+- P4-02: Chuỗi fallback vô nghĩa còn sót lại ở CompanyPlacementRequestDetailView.vue

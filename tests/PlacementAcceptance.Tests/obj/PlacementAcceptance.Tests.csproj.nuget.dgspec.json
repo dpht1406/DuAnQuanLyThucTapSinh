@@ -1,0 +1,380 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\baitapthuctap\\duanquanlythuctapsinh\\tests\\PlacementAcceptance.Tests\\PlacementAcceptance.Tests.csproj": {}
+  },
+  "projects": {
+    "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj": {
+      "version": "1.0.1",
+      "restore": {
+        "projectUniqueName": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj",
+        "projectName": "StudentInternshipMgmt.Application",
+        "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj",
+        "packagesPath": "C:\\Users\\PHAT\\.nuget\\packages\\",
+        "outputPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "D:\\baitapthuctap\\duanquanlythuctapsinh\\NuGet.Config",
+          "C:\\Users\\PHAT\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Users\\PHAT\\.nuget\\packages\\": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.*, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.*, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.31, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.*, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj": {
+      "version": "1.0.1",
+      "restore": {
+        "projectUniqueName": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj",
+        "projectName": "StudentInternshipMgmt.Domain",
+        "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj",
+        "packagesPath": "C:\\Users\\PHAT\\.nuget\\packages\\",
+        "outputPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "D:\\baitapthuctap\\duanquanlythuctapsinh\\NuGet.Config",
+          "C:\\Users\\PHAT\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Users\\PHAT\\.nuget\\packages\\": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\StudentInternshipMgmt.Infrastructure.csproj": {
+      "version": "1.0.1",
+      "restore": {
+        "projectUniqueName": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\StudentInternshipMgmt.Infrastructure.csproj",
+        "projectName": "StudentInternshipMgmt.Infrastructure",
+        "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\StudentInternshipMgmt.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\PHAT\\.nuget\\packages\\",
+        "outputPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "D:\\baitapthuctap\\duanquanlythuctapsinh\\NuGet.Config",
+          "C:\\Users\\PHAT\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Users\\PHAT\\.nuget\\packages\\": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj"
+              },
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.1, )"
+            },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.1.0, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.1.1, )"
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.1, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.18.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.31, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.31, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.31, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\baitapthuctap\\duanquanlythuctapsinh\\tests\\PlacementAcceptance.Tests\\PlacementAcceptance.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\baitapthuctap\\duanquanlythuctapsinh\\tests\\PlacementAcceptance.Tests\\PlacementAcceptance.Tests.csproj",
+        "projectName": "PlacementAcceptance.Tests",
+        "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\tests\\PlacementAcceptance.Tests\\PlacementAcceptance.Tests.csproj",
+        "packagesPath": "C:\\Users\\PHAT\\.nuget\\packages\\",
+        "outputPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\tests\\PlacementAcceptance.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "D:\\baitapthuctap\\duanquanlythuctapsinh\\NuGet.Config",
+          "C:\\Users\\PHAT\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Users\\PHAT\\.nuget\\packages\\": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Application\\StudentInternshipMgmt.Application.csproj"
+              },
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Domain\\StudentInternshipMgmt.Domain.csproj"
+              },
+              "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\StudentInternshipMgmt.Infrastructure.csproj": {
+                "projectPath": "D:\\baitapthuctap\\duanquanlythuctapsinh\\InternshipManagement\\backend\\src\\StudentInternshipMgmt.Infrastructure\\StudentInternshipMgmt.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.12.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[8.0.31, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+UAT2 TAB2 REVIEWER & QA PASS
+CompletedAt: 2026-11-03 14:02:00
+Scope: 10 UAT Scenarios (UAT2-01 .. UAT2-10) - 10/10 PASS
+Cross-Review: 0 P1, 0 P2, 0 Open P3
+Resolved Findings:
+- CR-03 (P3): Saving flag wrapped in try...finally in JobPositionApplyView.vue + 4 unit tests (commit 6588fb3) - VERIFIED PASS
+- DOC-01 (P3): Added npm install before npm test in README-REPRODUCE-UAT.md (commit e8dec7b) - VERIFIED PASS
+Clean Clone Reproduction: 100% SUCCESS (0 errors, 402/1/0 backend tests, 194 frontend tests, dist build passed)
+Status: APPROVED FOR RELEASE
+Tag: uat-v1.1

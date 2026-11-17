@@ -1,0 +1,18 @@
+UAT2 TAB1 BUILDER DONE (UPDATED WITH CR-03 & DOC-01 FIXES)
+CompletedAt: 2026-11-03 13:56:00
+Branch: feature/uat-feedback
+Latest Commit: e8dec7b docs(uat): resolve DOC-01 and update changelog and known issues for CR-03
+CR-03 Commit: 6588fb3 fix(uat): CR-03 ensure saving flag resets via try-finally in submit
+Backend Tests: 402 Passed, 1 Skipped (by design), 0 Failed (Total: 403)
+Frontend Tests: 194 Passed (17 files), 0 Failed
+Frontend Build: Production Build Passed (Vite dist created successfully)
+Resolved Issues:
+- FB-04 (P4): UTF-8 README mojibake fixed (commit 381d0eb)
+- FB-01 (P3): Student validation messages in Vietnamese (commit cde0541)
+- FB-02 (P3): Job position validation messages cleaned (commit 40ff5a9)
+- FB-03 (P3): Trim CV URL & reject invalid schemes / spaces (commit 838f6de)
+- FB-10 (P2): Prevent duplicate placement request on double submit (commit 21d7ded)
+- CR-03 (P3): Saving flag reset via try...finally in submit() + 4 unit tests (commit 6588fb3)
+- DOC-01 (P3): Added npm install before npm test in README-REPRODUCE-UAT.md (commit e8dec7b)
+Tag Status: Pending confirmation from TAB 2 (uat-v1.1 NOT tagged yet)
+Status: Ready for TAB 2 Re-verification
