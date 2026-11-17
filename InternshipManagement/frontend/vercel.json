@@ -5,7 +5,7 @@
       "destination": "https://qunalythuctapsinh.runasp.net/api/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]
